@@ -3,3 +3,10 @@ extends layout
 block content
   h1= title
   p Welcome to #{title}
+
+  if error
+    p.error= error
+  else if database_connected
+    p Database connection successful!
+  else
+    p Failed to connect to the database.
