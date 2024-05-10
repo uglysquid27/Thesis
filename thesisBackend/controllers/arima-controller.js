@@ -22,7 +22,7 @@ module.exports = {
                     test_name: '2H',
                 },
                 attributes: ['do_date', 'device_name', 'value'],
-                order: [['do_date', 'ASC']], // Ensure data is sorted by date
+                order: [['do_date', 'ASC']],
             });
 
             const dates = [];
@@ -33,19 +33,16 @@ module.exports = {
                 values.push(item.value);
             });
 
-            // Calculate average value to use as the forecast
             const averageValue = values.reduce((acc, curr) => acc + curr, 0) / values.length;
 
             const forecastValues = [];
             const forecastDates = [];
 
-            // Assuming a simple forecast where each subsequent value is the average of previous values
             for (let i = 0; i < values.length; i++) {
                 forecastValues.push(averageValue);
                 forecastDates.push(dates[i]);
             }
 
-            // Calculate MAPE
             const mapeValues = values.map((actual, index) => Math.abs((actual - forecastValues[index]) / actual));
             const mape = (mapeValues.reduce((acc, curr) => acc + curr, 0) / mapeValues.length) * 100;
 
@@ -56,7 +53,6 @@ module.exports = {
                 'mape': mape,
             };
 
-            // Return JSON response
             res.status(200).json(responseData);
         } catch (error) {
             const errorMessage = `Failed to fetch data from the database or perform ARIMA prediction: ${error.toString()}`;
