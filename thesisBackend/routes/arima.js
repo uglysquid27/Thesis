@@ -7,6 +7,7 @@ var arimaController = require("../controllers/arima-controller")
 
 /* GET home page. */
 router.get('/', arimaController.index);
+router.get('/testing', arimaController.arimatest);
 // router.get('/get/:id', arimaController.findById);
 // router.post('/store', arimaController.store);
 
