@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var { test, checkDatabaseConnection } = require('../connection'); // Assuming the connection.js file is one level up
+var { test, checkDatabaseConnection } = require('../config/connection'); // Assuming the connection.js file is one level up
 
 /* GET home page. */
 router.get('/', async function(req, res, next) {
