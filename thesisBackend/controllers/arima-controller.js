@@ -9,7 +9,7 @@ module.exports = {
             console.log(pr)
             res.status(200).json(pr);
         } catch (e) {
-            res.status(500).json(e)
+            res.status(500).json(e) 
         }
     },
 
