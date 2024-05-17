@@ -10,10 +10,10 @@ module.exports = {
             res.status(200).json(pr);
         } catch (e) {
             res.status(500).json(e) 
-        } 
+        }
     },
 
-    arimatest: async (req, res) => {
+    montecarlotest: async (req, res) => {
         try {
             const historyData = await HistoryTab.findAll({
                 where: {
@@ -22,41 +22,53 @@ module.exports = {
                     test_name: '2H',
                 },
                 attributes: ['do_date', 'device_name', 'value'],
-                order: [['do_date', 'ASC']],
+                order: [['do_date', 'ASC']]
             });
-
-            const dates = [];
-            const values = [];
-
-            historyData.forEach(item => {
-                dates.push(item.do_date);
-                values.push(item.value);
-            });
-
-            const averageValue = values.reduce((acc, curr) => acc + curr, 0) / values.length;
-
-            const forecastValues = [];
-            const forecastDates = [];
-
-            for (let i = 0; i < values.length; i++) {
-                forecastValues.push(averageValue);
-                forecastDates.push(dates[i]);
-            }
-
-            const mapeValues = values.map((actual, index) => Math.abs((actual - forecastValues[index]) / actual));
-            const mape = (mapeValues.reduce((acc, curr) => acc + curr, 0) / mapeValues.length) * 100;
-
-            const responseData = {
-                'forecast_values': forecastValues,
-                'forecast_dates': forecastDates,
-                'original_values': values,
-                'mape': mape,
+    
+            const dates = historyData.map(item => item.do_date);
+            const values = historyData.map(item => item.value);
+    
+            const monteCarloSimulations = 1000;
+            const simulationResults = [];
+    
+            // Function to generate normally distributed random numbers
+            const generateNormalNoise = (mean, stdDev, size) => {
+                const noise = [];
+                for (let i = 0; i < size; i++) {
+                    let u1 = Math.random();
+                    let u2 = Math.random();
+                    let randStdNormal = Math.sqrt(-2.0 * Math.log(u1)) * Math.sin(2.0 * Math.PI * u2);
+                    noise.push(mean + stdDev * randStdNormal);
+                }
+                return noise;
             };
-
+    
+            for (let i = 0; i < monteCarloSimulations; i++) {
+                const noise = generateNormalNoise(0, 1, values.length);
+                const simulatedValues = values.map((value, index) => value + noise[index]);
+                simulationResults.push(simulatedValues);
+            }
+    
+            const mapeMonteCarlo = simulationResults.map(simValues => {
+                const mapeValues = values.map((actual, index) => Math.abs((actual - simValues[index]) / actual));
+                return (mapeValues.reduce((acc, curr) => acc + curr, 0) / mapeValues.length) * 100;
+            });
+    
+            const minMapeIndex = mapeMonteCarlo.indexOf(Math.min(...mapeMonteCarlo));
+            const minMapeSimulation = simulationResults[minMapeIndex];
+    
+            const responseData = {
+                min_mape_simulation: minMapeSimulation,
+                min_mape_value: mapeMonteCarlo[minMapeIndex],
+                simulation_results: simulationResults,
+                mape_monte_carlo: mapeMonteCarlo,
+                data: historyData
+            };
+    
             res.status(200).json(responseData);
         } catch (error) {
-            const errorMessage = `Failed to fetch data from the database or perform ARIMA prediction: ${error.toString()}`;
-            console.log(errorMessage);
+            const errorMessage = `Failed to fetch data from the database or perform Monte Carlo simulation: ${error.toString()}`;
+            console.error(errorMessage);
             res.status(500).json({ error: errorMessage });
         }
     }
