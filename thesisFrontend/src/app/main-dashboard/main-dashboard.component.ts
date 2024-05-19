@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-// import { CountService } from '../../service/master/count.service';
+import { CountService } from '../service/CountService';
 import { Chart } from 'chart.js/auto';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ChartOptions } from './chart'
