@@ -186,7 +186,6 @@ export class MainDashboardComponent implements OnInit {
       });
 
     });
-    //// ////////////////////////////console.log("1");
     this.spinner.show();
     this.loaddata = await this.loaddata;
   }
