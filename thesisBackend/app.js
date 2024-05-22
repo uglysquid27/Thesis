@@ -3,6 +3,7 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var cors = require('cors'); // Import the cors package
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -10,6 +11,16 @@ var arimaRouter = require('./routes/arima');
 var moncarRouter = require('./routes/monte-carlo');
 
 var app = express();
+
+// Enable CORS for all routes
+app.use(cors());
+
+// Alternatively, you can specify the allowed origin(s)
+/*
+app.use(cors({
+  origin: 'http://localhost:4200'
+}));
+*/
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
