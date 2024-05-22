@@ -18,6 +18,6 @@ export class CountService {
   }
 
   getReadPdmAssetoci1() {
-    return this.httpClient.get(api + 'pdm/' + "pdmassetoci1");
+    return this.httpClient.get(api + 'arima/' + "testing");
   }
 }
