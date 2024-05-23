@@ -1,0 +1,194 @@
+<div class="fixed top-0 left-0 flex flex-col h-full bg-white border-r w-52 max-lg:hidden">
+    <a routerLink="/am_checksheet" class="flex items-center justify-center border-b h-28">
+      <img src="assets/img/preprlogo.png" class="w-28" alt="" />
+    </a>
+    <!-- fill="#3d90e3" -->
+    <div class="flex-grow overflow-x-hidden overflow-y-auto grid content-between">
+      <ul class="flex flex-col py-4 space-y-1" role="group">
+        <li>
+          <a [ngClass]="
+          router.url == '/am_checksheet'
+            ? 'text-gray-100 pl-4 bg-blue-400'
+            : 'text-gray-600 hover:text-blue-400 hover:bg-gray-100 hover:pl-4 duration-200'
+          " routerLink="/am_checksheet" class="relative flex items-center py-3 space-x-4">
+            <span class="inline-flex items-center justify-center ml-3">
+              <svg xmlns="http://www.w3.org/2000/svg" id="Layer_1" data-name="Layer 1" viewBox="0 0 24 24" width="20"
+                height="20">
+                <path class=" fill-current group-hover:text-cyan-600" fill-rule="evenodd"
+                  d="M13,0h6a5,5,0,0,1,5,5v6H13ZM11,0h-.959L0,10.041V11H3.172L11,3.172Zm2,18,5-5H13Zm11-5H20.828L13,20.828V24h.959L24,13.959ZM11,13H0v6a5,5,0,0,0,5,5h6Zm0-7L6,11h5Zm5.787,18H19a5,5,0,0,0,5-5V16.787ZM7.213,0H5A5,5,0,0,0,0,5V7.213Z" />
+              </svg>
+            </span>
+            <span [ngClass]=" 
+            router.url == '/am_checksheet' 
+              ? 'text-gray-100'
+              : 'text-gray-600'
+            " class="ml-2 text-sm tracking-wide truncate">Dashboard</span>
+  
+          </a>
+        </li>
+        <li *ngIf="adminLevel">
+          <a [ngClass]="
+          router.url == '/temuan_list' ||
+          router.url == '/temuan_input' 
+            ? 'text-gray-100 pl-4 bg-blue-400'
+            : 'text-gray-600 hover:text-blue-400 hover:bg-gray-100 hover:pl-4 duration-200'
+          " routerLink="/temuan_list" class="relative flex items-center py-3 space-x-4">
+            <span class="inline-flex items-center justify-center ml-3">
+              <svg class="w-5 h-5" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" class=" fill-current group-hover:text-cyan-600"
+                  d="M6.5 1C6.22386 1 6 1.22386 6 1.5C6 1.77614 6.22386 2 6.5 2C7.12671 2 7.45718 2.20028 7.65563 2.47812C7.8781 2.78957 8 3.28837 8 4V11C8 11.7116 7.8781 12.2104 7.65563 12.5219C7.45718 12.7997 7.12671 13 6.5 13C6.22386 13 6 13.2239 6 13.5C6 13.7761 6.22386 14 6.5 14C7.37329 14 8.04282 13.7003 8.46937 13.1031C8.47976 13.0886 8.48997 13.0739 8.5 13.0591C8.51003 13.0739 8.52024 13.0886 8.53063 13.1031C8.95718 13.7003 9.62671 14 10.5 14C10.7761 14 11 13.7761 11 13.5C11 13.2239 10.7761 13 10.5 13C9.87329 13 9.54282 12.7997 9.34437 12.5219C9.1219 12.2104 9 11.7116 9 11V4C9 3.28837 9.1219 2.78957 9.34437 2.47812C9.54282 2.20028 9.87329 2 10.5 2C10.7761 2 11 1.77614 11 1.5C11 1.22386 10.7761 1 10.5 1C9.62671 1 8.95718 1.29972 8.53063 1.89688C8.52024 1.91143 8.51003 1.92611 8.5 1.9409C8.48997 1.92611 8.47976 1.91143 8.46937 1.89688C8.04282 1.29972 7.37329 1 6.5 1ZM14 5H11V4H14C14.5523 4 15 4.44772 15 5V10C15 10.5523 14.5523 11 14 11H11V10H14V5ZM6 4V5H1L1 10H6V11H1C0.447715 11 0 10.5523 0 10V5C0 4.44772 0.447715 4 1 4H6Z"
+                  fill="currentColor" />
+              </svg>
+            </span>
+            <span [ngClass]=" 
+            router.url == '/temuan_list' 
+              ? 'text-gray-100'
+              : 'text-gray-600'
+            " class="ml-2 text-sm tracking-wide truncate">Input Temuan</span>
+          </a>
+        </li>
+        <li *ngIf="plannerLevel || purchasinLevel || adminLevel">
+          <a [ngClass]="
+          router.url == '/pr_list' ||
+          router.url == '/pr_input' ||
+          router.url == '/pr_update'
+            ? 'text-gray-100 pl-4 bg-blue-400'
+            : 'text-gray-600 hover:text-blue-400 hover:bg-gray-100 hover:pl-4 duration-200'
+          " routerLink="/pr_list" routerLinkActive="active" class="relative flex items-center py-3 space-x-4">
+            <span class="inline-flex items-center justify-center ml-3">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M2 5a2 2 0 012-2h8a2 2 0 012 2v10a2 2 0 002 2H4a2 2 0 01-2-2V5zm3 1h6v4H5V6zm6 6H5v2h6v-2z"
+                  clip-rule="evenodd" />
+                <path d="M15 7h1a2 2 0 012 2v5.5a1.5 1.5 0 01-3 0V7z" />
+              </svg>
+            </span>
+            <span [ngClass]=" 
+            router.url == '/pr_list' ||
+            router.url == '/pr_input' ||
+            router.url == '/pr_update'
+              ? 'text-gray-100'
+              : 'text-gray-600'
+            " class="ml-2 text-sm tracking-wide truncate">Checksheet</span>
+          </a>
+        </li>
+        <li *ngIf="adminLevel">
+          <a [ngClass]="
+          router.url == '/user_level'
+            ? 'text-gray-100 pl-4 bg-blue-400'
+            : 'text-gray-600 hover:text-blue-400 hover:bg-gray-100 hover:pl-4 duration-200'
+          " routerLink="/user_level" class="relative flex items-center py-3 space-x-4">
+            <span class="inline-flex items-center justify-center ml-3">
+              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" fill="currentColor"
+                  d="M11 21H5.6C5.03995 21 4.75992 21 4.54601 20.891C4.35785 20.7951 4.20487 20.6422 4.10899 20.454C4 20.2401 4 19.9601 4 19.4V17.6841C4 17.0485 4 16.7306 4.04798 16.4656C4.27087 15.2344 5.23442 14.2709 6.46558 14.048C6.5425 14.0341 6.6237 14.0242 6.71575 14.0172C6.94079 14 7.05331 13.9914 7.20361 14.0026C7.35983 14.0143 7.4472 14.0297 7.59797 14.0722C7.74302 14.1131 8.00429 14.2315 8.52682 14.4682C8.98953 14.6778 9.48358 14.8304 10 14.917M19.8726 15.2038C19.8044 15.2079 19.7357 15.21 19.6667 15.21C18.6422 15.21 17.7077 14.7524 17 14C16.2923 14.7524 15.3578 15.2099 14.3333 15.2099C14.2643 15.2099 14.1956 15.2078 14.1274 15.2037C14.0442 15.5853 14 15.9855 14 16.3979C14 18.6121 15.2748 20.4725 17 21C18.7252 20.4725 20 18.6121 20 16.3979C20 15.9855 19.9558 15.5853 19.8726 15.2038ZM15 7C15 9.20914 13.2091 11 11 11C8.79086 11 7 9.20914 7 7C7 4.79086 8.79086 3 11 3C13.2091 3 15 4.79086 15 7Z" />
+              </svg>
+            </span>
+            <span [ngClass]=" 
+            router.url == '/user_level' 
+              ? 'text-gray-100'
+              : 'text-gray-600'
+            " class="ml-2 text-sm tracking-wide truncate">User Level</span>
+          </a>
+        </li>
+        
+      </ul>
+    </div>
+  </div>
+  
+  
+  <!-- /* ------------------------------Short Sidebar---------------------------- */ -->
+  <div class="fixed z-50 min-h-screen bg-gray-100 lg:hidden" (mouseenter)="onMouseEnter()" (mouseleave)="onMouseOut()">
+    <div class="sidebar min-h-screen w-[3.3rem] overflow-hidden border-r hover:w-48 hover:bg-white hover:shadow-lg">
+      <div class="flex flex-col h-screen">
+        <div>
+          <div class="w-max p-2 pb-8 pt-8 border-b" *ngIf="hideElement; else unHide">
+            <img src="assets/img/preprlogo.png" class="w-10" alt="" />
+          </div>
+          <ng-template #unHide><a [routerLink]="['/']" class="flex items-center justify-center border-b h-28">
+              <img src="assets/img/preprlogo.png" class="w-28" alt="" /> </a></ng-template>
+        </div>
+        <div class="grid content-between flex-grow overflow-x-hidden overflow-y-auto">
+          <ul class="mt-2 space-y-2 tracking-wide">
+            <li class="min-w-max">
+              <a [routerLink]="['/am_checksheet']" routerLinkActive="router-link-active" aria-label="am_checksheet"
+                class="relative flex items-center py-3 space-x-4" [ngClass]="
+                  router.url == '/am_checksheet'
+                    ? 'bg-gradient-to-r from-sky-600 to-cyan-400 px-4 text-white border-l-0  '
+                    : ' text-gray-600 hover:bg-gray-50 hover:text-gray-800 border-l-4 px-3 border-transparent hover:border-indigo-500'
+                ">
+                <svg class="w-6 h-6 -ml-1" viewBox="0 0 24 24" fill="none">
+                  <path
+                    d="M6 8a2 2 0 0 1 2-2h1a2 2 0 0 1 2 2v1a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V8ZM6 15a2 2 0 0 1 2-2h1a2 2 0 0 1 2 2v1a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-1Z"
+                    class="text-cyan-400 fill-slate-600"></path>
+                  <path d="M13 8a2 2 0 0 1 2-2h1a2 2 0 0 1 2 2v1a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2V8Z"
+                    class="fill-current text-cyan-200 group-hover:text-cyan-300"></path>
+                  <path d="M13 15a2 2 0 0 1 2-2h1a2 2 0 0 1 2 2v1a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-1Z"
+                    class="fill-current group-hover:text-sky-300"></path>
+                </svg>
+                <span class="group-hover:text-gray-700">Dashboard</span>
+              </a>
+            </li>
+  
+            <li class="min-w-max">
+              <a routerLink="/pr_list" class="relative flex items-center py-3 space-x-4" [ngClass]="
+                  router.url == '/pr_list'
+                    ? 'bg-gradient-to-r from-sky-600 to-cyan-400  px-4  text-white  border-l-0  '
+                    : ' text-gray-600 hover:bg-gray-50 hover:text-gray-800 border-l-4 px-3 border-transparent hover:border-indigo-500'
+                ">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
+                  <path [ngClass]="
+                      router.url == '/pr_list' ? 'fill-white' : ''
+                    " class="text-gray-300 fill-current group-hover:text-cyan-300" fill-rule="evenodd"
+                    d="M2 6a2 2 0 012-2h4l2 2h4a2 2 0 012 2v1H8a3 3 0 00-3 3v1.5a1.5 1.5 0 01-3 0V6z"
+                    clip-rule="evenodd" />
+                  <path class="text-gray-600 fill-current group-hover:text-cyan-600"
+                    d="M6 12a2 2 0 012-2h8a2 2 0 012 2v2a2 2 0 01-2 2H2h2a2 2 0 002-2v-2z" />
+                </svg>
+                <span class="group-hover:text-gray-700">Checksheet</span>
+              </a>
+            </li>
+          </ul>
+          <div class="my-5">
+            <a (click)="AccountDropdown()"
+              class="relative flex flex-row items-center pr-6 space-x-4 text-gray-600 border-l-4 border-transparent h-11 focus:outline-none hover:bg-gray-50 hover:text-gray-800 hover:border-indigo-500"
+              [ngClass]="boolAcc ? 'bg-gray-50 px-4' : ' px-3'">
+              <span class="inline-flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 96 960 960" width="24" fill="currentColor">
+                  <path
+                    d="M640 656q-50 0-85-35t-35-85q0-50 35-85t85-35q50 0 85 35t35 85q0 50-35 85t-85 35ZM400 896v-76q0-21 10-40t28-30q45-27 95.5-40.5T640 696q56 0 106.5 13.5T842 750q18 11 28 30t10 40v76H400Zm86-80h308q-35-20-74-30t-80-10q-41 0-80 10t-74 30Zm154-240q17 0 28.5-11.5T680 536q0-17-11.5-28.5T640 496q-17 0-28.5 11.5T600 536q0 17 11.5 28.5T640 576Zm0-40Zm0 280ZM120 656v-80h320v80H120Zm0-320v-80h480v80H120Zm324 160H120v-80h360q-14 17-22.5 37T444 496Z" />
+                </svg>
+              </span>
+              <span class="ml-2 text-sm tracking-wide truncate">Apps Link</span>
+              <span class="flex justify-end grow">
+                <svg class="w-5 h-5 text-white" [ngClass]="boolAcc ? 'rotate-180' : ''" xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd"
+                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                    clip-rule="evenodd" fill="gray" />
+                </svg>
+              </span>
+            </a>
+            <ul *ngIf="boolAcc"
+              class="w-11/12 mx-auto text-sm truncate rounded-sm shadow bg-base-100 transition ease-in-out delay-150">
+              <li>
+                <a [routerLink]="['/']" routerLinkActive="router-link-active"
+                  class="relative flex items-center justify-between p-3 space-x-4" [ngClass]="
+                    router.url == '/'
+                      ? 'bg-gradient-to-r from-sky-600 to-cyan-400  px-4  text-white  border-l-0  '
+                      : 'bg-white text-gray-600 hover:bg-gray-50 hover:text-gray-800 border-l-4 border-transparent hover:border-indigo-500'
+                  ">Maissy
+                  <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 96 960 960" width="24"
+                    class="fill-gray-500">
+                    <path
+                      d="M197.386 915.999q-23.538 0-40.077-16.491-16.538-16.49-16.538-40.048v-72.538L291.539 653v262.999h-94.153Zm131.076 0V765.23h303.076v150.769H328.462Zm339.999 0V606.66L506.692 463.308l114.077-100.845 179.614 159.383q9.231 8.616 14.039 19.453 4.807 10.838 4.807 23.089v294.974q0 23.56-16.49 40.098-16.49 16.539-40.048 16.539h-94.23Zm-527.69-179.23V564.647q0-12.227 4.807-23.514 4.808-11.287 14.039-19.287l282.691-250.614q8-7.615 17.748-10.923 9.749-3.308 19.962-3.308t19.943 3.308q9.731 3.308 17.731 10.923l75.384 67.154-452.305 398.383Z" />
+                  </svg>
+                </a>
+              </li>
+              <li>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
