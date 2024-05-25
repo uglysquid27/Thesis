@@ -1,49 +1,28 @@
-<!-- <div class="flex items-center justify-center z-50 absolute px-72 bg-green-200" *ngIf="showSuccessAlert">
-  <h3>Success Alert Message</h3>
-  <a class="close" (click)="closeSuccessAlert()">&times;</a>
-</div> -->
-
-<div class="lg:pl-80 pt-10 max-sm:pl-6 md:pl-6 pr-6">
-    <!-- row 1 -->
-    <!-- <div class="relative flex flex-col min-w-0 break-words shadow-soft-2xl bg-white  mb-1 bg-clip-border">
-      <div class="flex-auto p-6"> -->
-  
-    <div class="flex flex-wrap -mx-3 duration-2000 ">
-    <div class="flex flex-wrap ">
-      <div class="w-full px-1 py-1 mx-auto">
-          <div class="w-full px-1">
-            <div
-              class="relative flex flex-col min-w-0 break-words bg-white shadow-soft-lg rounded-md mb-1 bg-clip-border">
-              <div class="flex-auto p-4">
-                <h5 class="text-center font-semibold text-2xl">Total Request</h5>
-                <h5 class="text-center font-semibold text-xs">PR Number</h5>
-              </div>
-            </div>
-            <div
-              class="relative flex flex-col mb-2 min-w-0 break-words bg-white shadow-soft-lg rounded-md bg-clip-border">
-              <div class="flex-auto p-6">
-                <div style="height: 550px;">
-                    <!-- <canvas id="dum" width="400" height="300"></canvas> -->
-                    <apx-chart [series]="bulanan.series" [chart]="bulanan.chart" [dataLabels]="bulanan.dataLabels"
-                    [plotOptions]="bulanan.plotOptions" [yaxis]="bulanan.yaxis" [legend]="bulanan.legend"
-                    [fill]="bulanan.fill" [stroke]="bulanan.stroke" [tooltip]="bulanan.tooltip"
-                    [xaxis]="bulanan.xaxis" [colors]="bulanan.colors"></apx-chart>
-                </div>
-                <!-- <div class="px-6 pb-2 text-center">
-                  <span style="background-color: #8ecae6;" class="text-white inline-block bg-red rounded  px-3 py-1 text-md font-semibold mr-2 mb-2">Total Request: {{totalReq}}</span>
-                  <span style="background-color: #219ebc" class="text-white inline-block bg-red rounded  px-3 py-1 text-md font-semibold mr-2 mb-2">PR Number: {{totalReqNoNum}}</span>
-                </div>
-              </div> -->
+<div class="lg:pl-60 pt-10 max-sm:pl-6 md:pl-6 pr-2">
+  <div class="flex flex-wrap duration-2000 ">
+    <div class="w-full px-1 py-1 mx-auto">
+      <div class="w-full px-1">
+        <div class="relative flex flex-col min-w-0 break-words bg-white shadow-soft-lg rounded-md mb-1 bg-clip-border">
+          <div class="flex-auto p-4">
+            <h5 class="text-center font-semibold text-2xl">Total Request</h5>
+            <h5 class="text-center font-semibold text-xs">PR Number</h5>
           </div>
         </div>
-      </div> 
+        <div class="relative flex flex-col mb-2 min-w-0 break-words bg-white shadow-soft-lg rounded-md bg-clip-border">
+          <div class="flex-auto p-6">
+            <div style="height: 550px;">
+              <apx-chart [series]="bulanan.series" [chart]="bulanan.chart" [dataLabels]="bulanan.dataLabels"
+                [plotOptions]="bulanan.plotOptions" [yaxis]="bulanan.yaxis" [legend]="bulanan.legend"
+                [fill]="bulanan.fill" [stroke]="bulanan.stroke" [tooltip]="bulanan.tooltip" [xaxis]="bulanan.xaxis"
+                [colors]="bulanan.colors"></apx-chart>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-    <!-- </div>
-    </div> -->
-  </div>
-  <!-- <div  [style.visibility]="(resolved === true) ? 'hidden' : 'visible' ">
+    <!-- <div  [style.visibility]="(resolved === true) ? 'hidden' : 'visible' ">
     <ngx-spinner  bdColor="rgba(51,51,51,0.8)"
     size="medium"
     color="#fff"type="fire"> <p style="font-size: 20px; color: white">{{deskripsi}}</p></ngx-spinner>
   </div> -->
-  <!-- <ngx-spinner type="fire"></ngx-spinner> -->
+    <!-- <ngx-spinner type="fire"></ngx-spinner> -->

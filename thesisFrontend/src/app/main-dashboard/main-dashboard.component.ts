@@ -1,9 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { CountService } from '../service/CountService';
-import { Chart } from 'chart.js/auto';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { ChartOptions, bulanan } from './chart'
-import { forkJoin } from 'rxjs';
+import { ChartOptions, bulanan } from './chart';
+
+interface ForecastData {
+  forecast_values: number[];
+  forecast_dates: string[];
+  original_values: number[];
+  mape: number;
+}
 
 @Component({
   selector: 'app-main-dashboard',
@@ -11,59 +16,69 @@ import { forkJoin } from 'rxjs';
   styleUrls: ['./main-dashboard.component.css']
 })
 export class MainDashboardComponent implements OnInit {
-  public chartOptions!: Partial<ChartOptions> | any;
-  public bulanan!: Partial<bulanan> | any;
+  public bulanan: Partial<bulanan> | any;
   public resolved: boolean = false;
   public loaddata: any;
 
-  dataTest : object = {}
-  dataTestArr : any = []
-  date : any
-  forecastData : any
-  realData : any
+  forecastValues: number[] = [];
+  forecastDates: string[] = [];
+  originalValues: number[] = [];
+  mape: number | undefined;
+
   showSuccessAlert: boolean = true;
   deskripsi: any = 'Loading..';
-  closeSuccessAlert() {
 
-  }
   constructor(private service: CountService, private spinner: NgxSpinnerService) { }
+
+  closeSuccessAlert() {
+    this.showSuccessAlert = false;
+  }
 
   async ngOnInit(): Promise<void> {
     window.scrollTo(0, 0);
-    this.loaddata = new Promise(resolve => {
-
-      this.service.getReadPdmAssetoci1().subscribe(data => {
-        this.resolved = true;
-        // console.log(data);
-        
-        this.dataTest = data
-        console.log(this.dataTest);
-        Object.values(this.dataTest).forEach(data => {
-          var array = Object.keys(data).map(function (key) {
-            return data[key];
-          });
-          for (let i = 0; i < array.length; i++) {
-            this.dataTestArr.splice(this.dataTestArr.lenght, 0, array[i]);
-          }
-          console.log(this.dataTestArr);
-          
-        });
-        this.bulananChart()
-      }, (error: any) => { }, () => {
-        this.spinner.hide();
-      })
-  
-
-    });
     this.spinner.show();
-    this.loaddata = await this.loaddata;
+
+    this.loaddata = new Promise<void>((resolve, reject) => {
+      this.service.getReadPdmAssetoci1().subscribe({
+        next: (data) => {
+          const forecastData = data as ForecastData;
+          this.resolved = true;
+          console.log(forecastData);
+
+          // Assign the respective properties to component variables
+          this.forecastValues = forecastData.forecast_values;
+          this.forecastDates = forecastData.forecast_dates;
+          this.originalValues = forecastData.original_values;
+          this.mape = forecastData.mape;
+
+          console.log('Forecast Values:', this.forecastValues);
+          console.log('Forecast Dates:', this.forecastDates);
+          console.log('Original Values:', this.originalValues);
+          console.log('MAPE:', this.mape);
+
+          this.bulananChart();  // Proceed with using the separated data
+
+          resolve();
+        },
+        error: (error) => {
+          console.error('Error fetching data', error);
+          reject(error);
+        },
+        complete: () => {
+          this.spinner.hide();
+        }
+      });
+    });
+
+    await this.loaddata;
   }
+
   bulananChart() {
     this.bulanan = {
       series: [
         {
           name: "Desktops",
-          data: [10, 41, 35, 51, 49, 62, 69, 91, 148]
+          data: this.originalValues // Use the actual forecast values here
         }
       ],
       chart: {
@@ -90,18 +105,8 @@ export class MainDashboardComponent implements OnInit {
         }
       },
       xaxis: {
-        categories: [
-          "Jan",
-          "Feb",
-          "Mar",
-          "Apr",
-          "May",
-          "Jun",
-          "Jul",
-          "Aug",
-          "Sep"
-        ]
+        categories: this.forecastDates // Use the actual forecast dates here
       }
     };
   }
-};
+}
