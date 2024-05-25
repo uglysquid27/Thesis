@@ -38,54 +38,38 @@ module.exports = {
 
             console.log('Original Values:', values);
 
-            // Configure the ARIMA model
-            const p = 1; // Order of the AR part
-            const d = 0; // Number of differences needed for stationarity
-            const q = 1; // Order of the MA part
+            let bestModel = null;
+            let bestMAPE = Number.POSITIVE_INFINITY;
 
-            // Create and fit the ARIMA model
-            const arima = new ARIMA({ p, d, q }).fit(values);
-            console.log('Model fitted');
+            // Try different combinations of ARIMA parameters
+            for (let p = 0; p <= 2; p++) {
+                for (let d = 0; d <= 2; d++) {
+                    for (let q = 0; q <= 2; q++) {
+                        const arima = new ARIMA({ p, d, q }).fit(values);
+                        const forecastValues = arima.predict(forecastLength).map(f => f[0]);
+                        const mape = calculateMAPE(forecastValues, values.slice(-forecastLength));
+                        console.log(`ARIMA (${p}, ${d}, ${q}) MAPE: ${mape}`);
 
-            // Forecasting the next value
-            const forecastValues = arima.predict(forecastLength).map(f => f[0]);
+                        if (mape < bestMAPE) {
+                            bestModel = arima;
+                            bestMAPE = mape;
+                        }
+                    }
+                }
+            }
+
+            console.log('Best ARIMA Model:', bestModel);
+            console.log('Best MAPE:', bestMAPE);
+
+            // Forecast using the best model
+            const forecastValues = bestModel.predict(forecastLength).map(f => f[0]);
             console.log('Forecast Values:', forecastValues);
-
-            // Ensure forecastValues has the same length as forecastLength
-            if (forecastValues.length !== forecastLength) {
-                console.error(`Expected ${forecastLength} forecast values but got ${forecastValues.length}`);
-                while (forecastValues.length < forecastLength) {
-                    forecastValues.push(null);
-                }
-            }
-
-            // Calculate MAPE (Mean Absolute Percentage Error)
-            const originalValues = values.slice(-forecastLength - forecastLength, -forecastLength);
-            console.log('Original Values for MAPE:', originalValues);
-
-            if (originalValues.length !== forecastValues.length) {
-                console.error(`Mismatch in lengths: originalValues(${originalValues.length}), forecastValues(${forecastValues.length})`);
-            }
-
-            const mapeValues = originalValues.map((actual, index) => {
-                const forecast = forecastValues[index];
-                if (actual === 0 || forecast === null) {
-                    return 0; // Avoid division by zero and null forecast values
-                } else {
-                    return Math.abs((actual - forecast) / actual);
-                }
-            });
-
-            console.log('MAPE Values:', mapeValues);
-
-            const mape = (mapeValues.reduce((acc, curr) => acc + curr, 0) / mapeValues.length) * 100;
-            console.log('MAPE:', mape);
 
             const responseData = {
                 forecast_values: forecastValues,
                 forecast_dates: dates.slice(-forecastLength),
-                original_values: originalValues,
-                mape: mape,
+                original_values: values.slice(-forecastLength),
+                mape: bestMAPE,
             };
 
             res.status(200).json(responseData);
@@ -95,5 +79,16 @@ module.exports = {
             res.status(500).json({ error: errorMessage });
         }
     }
+};
 
+// Function to calculate MAPE
+function calculateMAPE(forecastValues, actualValues) {
+    const mapeValues = forecastValues.map((forecast, i) => {
+        if (actualValues[i] === 0 || forecast === null) {
+            return 0; // Avoid division by zero and handle null values
+        } else {
+            return Math.abs((actualValues[i] - forecast) / actualValues[i]);
+        }
+    });
+    return (mapeValues.reduce((acc, curr) => acc + curr, 0) / mapeValues.length) * 100;
 }
