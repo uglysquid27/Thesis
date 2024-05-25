@@ -3,6 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 import { NgxSpinnerModule } from "ngx-spinner";
+import { NgApexchartsModule } from 'ng-apexcharts';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { MainDashboardComponent } from './main-dashboard/main-dashboard.component';
@@ -22,6 +23,7 @@ import { NavbarComponent } from './layout/navbar/navbar.component';
     NgxSpinnerModule,
     HttpClientModule,
     BrowserAnimationsModule,
+    NgApexchartsModule,
 
   ],
   providers: [],

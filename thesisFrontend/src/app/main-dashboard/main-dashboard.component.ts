@@ -2,8 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CountService } from '../service/CountService';
 import { Chart } from 'chart.js/auto';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { ChartOptions } from './chart'
-import { bulanan } from './chart'
+import { ChartOptions, bulanan } from './chart'
 import { forkJoin } from 'rxjs';
 
 @Component({
@@ -15,29 +14,13 @@ export class MainDashboardComponent implements OnInit {
   public chartOptions!: Partial<ChartOptions> | any;
   public bulanan!: Partial<bulanan> | any;
   public resolved: boolean = false;
-
-  const: object = {};
-  const2: any = [];
-  currentDate = new Date();
-  Setting: number = 0;
-  Replacement: number = 0;
-  Improvement: number = 0;
-  totalkategori: object = {};
-  totalvendr1: object = {};
-  totalvend2: object = {};
-  totalkategoriarr: any = [];
   public loaddata: any;
-  donut: any = [];
-  coba: any = [];
-  pendingexecute: number = 0;
-  finishexecute: number = 0;
-  readyexecute: number = 0;
-  Preventive: number = 0;
-  totalReq: number = 0;
-  totalReqNoNum: number = 0;
-  totalReqNum: number = 0;
-  totalv1: number = 0;
-  totalv2: number = 0;
+
+  dataTest : object = {}
+  dataTestArr : any = []
+  date : any
+  forecastData : any
+  realData : any
   showSuccessAlert: boolean = true;
   deskripsi: any = 'Loading..';
   closeSuccessAlert() {
@@ -49,101 +32,27 @@ export class MainDashboardComponent implements OnInit {
     window.scrollTo(0, 0);
     this.loaddata = new Promise(resolve => {
 
-      
-  
-      forkJoin([
-        this.service.getReadPdmAssetoci1(),
-      ]).subscribe(([dataReq]) => {
-        console.log(dataReq);
-        //////console.log(dataNum);
-        //////console.log(dataV1);
-        //////console.log(dataV2);
-        this.totalkategori = dataReq
-        Object.values(this.totalkategori).forEach(data => {
-          ////////console.log(data);
+      this.service.getReadPdmAssetoci1().subscribe(data => {
+        this.resolved = true;
+        // console.log(data);
+        
+        this.dataTest = data
+        console.log(this.dataTest);
+        Object.values(this.dataTest).forEach(data => {
           var array = Object.keys(data).map(function (key) {
             return data[key];
           });
-          array.forEach(element => {
-            this.totalReq++
-          });
-          ////////console.log(this.totalReq);
-
-        })
-        Object.values(this.const).forEach(data => {
-          ////////console.log(data);
-          var array = Object.keys(data).map(function (key) {
-            return data[key];
-          });
-          array.forEach(element => {
-            this.totalReqNum++
-          });
-          ////////console.log(this.totalReqNum);
-        })
-
-        Object.values(this.totalvendr1).forEach(data => {
-          ////////console.log(data);
-          var array = Object.keys(data).map(function (key) {
-            return data[key];
-          });
-          array.forEach(element => {
-            this.totalv1++
-          });
-          ////////console.log(this.totalv1);
+          for (let i = 0; i < array.length; i++) {
+            this.dataTestArr.splice(this.dataTestArr.lenght, 0, array[i]);
+          }
+          console.log(this.dataTestArr);
           
-      })
-        Object.values(this.totalvend2).forEach(data => {
-          ////////console.log(data);
-          var array = Object.keys(data).map(function (key) {
-            return data[key];
-          });
-          array.forEach(element => {
-            this.totalv2++
-          });
-          ////////console.log(this.totalv2);
-          
-      })
-
-        this.totalReqNoNum = this.totalReq - this.totalReqNum
-        new Chart('dum', {
-          type: 'bar',
-          data: {
-            labels: [""],
-            datasets: [
-              {
-                label: 'Total Request',
-                data: [this.totalReq],
-                backgroundColor: [
-                  '#8ecae6'
-                ],
-                borderColor: [
-                  'white'
-                ],
-                borderWidth: 1,
-                borderRadius: 20,
-              },
-              {
-                label: 'PR Number',
-                data: [this.totalReqNum],
-                backgroundColor: [
-                  '#219ebc'
-                ],
-                borderColor: [
-                  'white'
-                ],
-                borderWidth: 1,
-                borderRadius: 20,
-              },
-            ]
-          },
         });
         this.bulananChart()
-        
-      
+      }, (error: any) => { }, () => {
         this.spinner.hide();
-        this.resolved = true;
-
-      });
+      })
+  
 
     });
     this.spinner.show();
@@ -153,50 +62,46 @@ export class MainDashboardComponent implements OnInit {
     this.bulanan = {
       series: [
         {
-          name: "Total Finding Per Bulan",
-          data: this.totalReq
-        },
+          name: "Desktops",
+          data: [10, 41, 35, 51, 49, 62, 69, 91, 148]
+        }
       ],
       chart: {
-        type: "bar",
-        height: 500,
-      },
-      plotOptions: {
-        bar: {
-          horizontal: false,
-          columnWidth: "60%",
+        height: 350,
+        type: "line",
+        zoom: {
+          enabled: false
         }
       },
       dataLabels: {
         enabled: false
       },
-      xaxis: {
-        axixTicks: {
-          show: false,
-        },
-        crosshairs: {
-          show: false,
-        },
-        categories: [
-          "January", "February", "Maret", "April", "May", "June", "July", "August", "September", "October", "November", "December",
-        ]
+      stroke: {
+        curve: "straight"
       },
-      yaxis: {
-        axixTicks: {
-          show: false,
-        },
-        crosshairs: {
-          show: false,
-        },
-        title: {
-          text: ""
+      title: {
+        text: "Product Trends by Month",
+        align: "left"
+      },
+      grid: {
+        row: {
+          colors: ["#f3f3f3", "transparent"], // takes an array which will be repeated on columns
+          opacity: 0.5
         }
       },
-      fill: {
-        opacity: 1,
-        colors: ['#007bff']
-      }, legend: {
-      }, colors: ['#007bff']
+      xaxis: {
+        categories: [
+          "Jan",
+          "Feb",
+          "Mar",
+          "Apr",
+          "May",
+          "Jun",
+          "Jul",
+          "Aug",
+          "Sep"
+        ]
+      }
     };
   }
 };

@@ -23,13 +23,17 @@
               class="relative flex flex-col mb-2 min-w-0 break-words bg-white shadow-soft-lg rounded-md bg-clip-border">
               <div class="flex-auto p-6">
                 <div style="height: 550px;">
-                    <canvas id="dum" width="400" height="300"></canvas>
+                    <!-- <canvas id="dum" width="400" height="300"></canvas> -->
+                    <apx-chart [series]="bulanan.series" [chart]="bulanan.chart" [dataLabels]="bulanan.dataLabels"
+                    [plotOptions]="bulanan.plotOptions" [yaxis]="bulanan.yaxis" [legend]="bulanan.legend"
+                    [fill]="bulanan.fill" [stroke]="bulanan.stroke" [tooltip]="bulanan.tooltip"
+                    [xaxis]="bulanan.xaxis" [colors]="bulanan.colors"></apx-chart>
                 </div>
-                <div class="px-6 pb-2 text-center">
+                <!-- <div class="px-6 pb-2 text-center">
                   <span style="background-color: #8ecae6;" class="text-white inline-block bg-red rounded  px-3 py-1 text-md font-semibold mr-2 mb-2">Total Request: {{totalReq}}</span>
                   <span style="background-color: #219ebc" class="text-white inline-block bg-red rounded  px-3 py-1 text-md font-semibold mr-2 mb-2">PR Number: {{totalReqNoNum}}</span>
                 </div>
-              </div>
+              </div> -->
           </div>
         </div>
       </div> 
