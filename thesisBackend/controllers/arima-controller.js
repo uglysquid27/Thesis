@@ -16,13 +16,13 @@ module.exports = {
 
     arimatest: async (req, res) => {
         try {
-            const forecastLength = parseInt(req.query.forecastLength) || 3; // Get forecast length from query parameter, default to 3
+            const forecastLength = parseInt(req.query.forecastLength) || 5; // Get forecast length from query parameter, default to 3
 
             const historyData = await HistoryTab.findAll({
                 where: {
-                    area_name: 'OCI1',
-                    device_name: 'CAP - FEEDER C/V 1',
-                    test_name: '2H',
+                    area_name: 'OCI2',
+                    device_name: 'CV M2',
+                    test_name: 'R',
                 },
                 attributes: ['do_date', 'value'],
                 order: [['do_date', 'ASC']],
