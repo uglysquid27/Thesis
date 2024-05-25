@@ -3,6 +3,7 @@ import { CountService } from '../service/CountService';
 import { Chart } from 'chart.js/auto';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ChartOptions } from './chart'
+import { bulanan } from './chart'
 import { forkJoin } from 'rxjs';
 
 @Component({
@@ -12,6 +13,7 @@ import { forkJoin } from 'rxjs';
 })
 export class MainDashboardComponent implements OnInit {
   public chartOptions!: Partial<ChartOptions> | any;
+  public bulanan!: Partial<bulanan> | any;
   public resolved: boolean = false;
 
   const: object = {};
@@ -46,9 +48,9 @@ export class MainDashboardComponent implements OnInit {
   async ngOnInit(): Promise<void> {
     window.scrollTo(0, 0);
     this.loaddata = new Promise(resolve => {
-       
-      console.log('here');
+
       
+  
       forkJoin([
         this.service.getReadPdmAssetoci1(),
       ]).subscribe(([dataReq]) => {
@@ -135,51 +137,9 @@ export class MainDashboardComponent implements OnInit {
             ]
           },
         });
-
-        new Chart('vendor', {
-          type: 'bar',
-          data: {
-            labels: [""],
-            datasets: [
-              {
-                label: 'Total Request',
-                data: [this.totalReq],
-                backgroundColor: [
-                  '#4ECDC4'
-                ],
-                borderColor: [
-                  'white'
-                ],
-                borderWidth: 1,
-                borderRadius: 20,
-              },
-              {
-                label: 'Vendor 1',
-                data: [this.totalv1],
-                backgroundColor: [
-                  '#83c5be'
-                ],
-                borderColor: [
-                  'white'
-                ],
-                borderWidth: 1,
-                borderRadius: 20,
-              },
-              {
-                label: 'Vendor 2',
-                data: [this.totalv2],
-                backgroundColor: [
-                  '#87bba2'
-                ],
-                borderColor: [
-                  'white'
-                ],
-                borderWidth: 1,
-                borderRadius: 20,
-              },
-            ]
-          },
-        });
+        this.bulananChart()
+        
+      
         this.spinner.hide();
         this.resolved = true;
 
@@ -188,5 +148,55 @@ export class MainDashboardComponent implements OnInit {
     });
     this.spinner.show();
     this.loaddata = await this.loaddata;
+  }
+  bulananChart() {
+    this.bulanan = {
+      series: [
+        {
+          name: "Total Finding Per Bulan",
+          data: this.totalReq
+        },
+      ],
+      chart: {
+        type: "bar",
+        height: 500,
+      },
+      plotOptions: {
+        bar: {
+          horizontal: false,
+          columnWidth: "60%",
+        }
+      },
+      dataLabels: {
+        enabled: false
+      },
+      xaxis: {
+        axixTicks: {
+          show: false,
+        },
+        crosshairs: {
+          show: false,
+        },
+        categories: [
+          "January", "February", "Maret", "April", "May", "June", "July", "August", "September", "October", "November", "December",
+        ]
+      },
+      yaxis: {
+        axixTicks: {
+          show: false,
+        },
+        crosshairs: {
+          show: false,
+        },
+        title: {
+          text: ""
+        }
+      },
+      fill: {
+        opacity: 1,
+        colors: ['#007bff']
+      }, legend: {
+      }, colors: ['#007bff']
+    };
   }
 };
