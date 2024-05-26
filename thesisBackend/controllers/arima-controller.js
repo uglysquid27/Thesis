@@ -10,31 +10,24 @@ module.exports = {
             console.log(pr)
             res.status(200).json(pr);
         } catch (e) {
-            res.status(500).json(e) 
+            res.status(500).json(e)
         }
     },
 
     arimatest: async (req, res) => {
         try {
-            const forecastLength = parseInt(req.query.forecastLength) || 5; // Get forecast length from query parameter, default to 3
+            const forecastLength = parseInt(req.query.forecastLength) || 5; // Get forecast length from query parameter, default to 5
 
-            const historyData = await HistoryTab.findAll({
-                where: {
-                    area_name: 'OCI2',
-                    device_name: 'CV M2',
-                    test_name: 'R',
-                },
-                attributes: ['do_date', 'value'],
-                order: [['do_date', 'ASC']],
-            });
+            // Generate dummy historical data
+            const generateDummyData = (length) => {
+                const data = [];
+                for (let i = 0; i < length; i++) {
+                    data.push(Math.sin(i / 10) + (Math.random() * 0.5 - 0.25)); // Simple sine wave with some noise
+                }
+                return data;
+            };
 
-            const dates = [];
-            const values = [];
-
-            historyData.forEach(item => {
-                dates.push(item.do_date);
-                values.push(parseFloat(item.value));
-            });
+            const values = generateDummyData(200);
 
             console.log('Original Values:', values);
 
@@ -67,28 +60,28 @@ module.exports = {
 
             const responseData = {
                 forecast_values: forecastValues,
-                forecast_dates: dates.slice(-forecastLength),
                 original_values: values.slice(-forecastLength),
                 mape: bestMAPE,
             };
 
             res.status(200).json(responseData);
         } catch (error) {
-            const errorMessage = `Failed to fetch data from the database or perform ARIMA prediction: ${error.toString()}`;
+            const errorMessage = `Failed to perform ARIMA prediction: ${error.toString()}`;
             console.log(errorMessage);
             res.status(500).json({ error: errorMessage });
         }
-    }
-};
 
-// Function to calculate MAPE
-function calculateMAPE(forecastValues, actualValues) {
-    const mapeValues = forecastValues.map((forecast, i) => {
-        if (actualValues[i] === 0 || forecast === null) {
-            return 0; // Avoid division by zero and handle null values
-        } else {
-            return Math.abs((actualValues[i] - forecast) / actualValues[i]);
+
+        // Function to calculate MAPE
+        function calculateMAPE(forecastValues, actualValues) {
+            const mapeValues = forecastValues.map((forecast, i) => {
+                if (actualValues[i] === 0 || forecast === null) {
+                    return 0; // Avoid division by zero and handle null values
+                } else {
+                    return Math.abs((actualValues[i] - forecast) / actualValues[i]);
+                }
+            });
+            return (mapeValues.reduce((acc, curr) => acc + curr, 0) / mapeValues.length) * 100;
         }
-    });
-    return (mapeValues.reduce((acc, curr) => acc + curr, 0) / mapeValues.length) * 100;
+    }
 }
