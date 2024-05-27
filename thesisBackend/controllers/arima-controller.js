@@ -1,28 +1,31 @@
 const { log } = require('console');
 const { HistoryTab } = require('../models/mst-history')
+const { LabelTab } = require('../models/label_plan')
 const fs = require('fs')
 const ARIMA = require('arima');
 
 module.exports = {
     index: async (req, res) => {
         try {
-            const pr = await HistoryTab.findAll();
-            console.log(pr)
+            const pr = await LabelTab.findAll({
+                limit: 10 
+            });
+            console.log(pr);
             res.status(200).json(pr);
         } catch (e) {
-            res.status(500).json(e)
+            res.status(500).json(e);
         }
     },
 
     arimatest: async (req, res) => {
         try {
-            const forecastLength = parseInt(req.query.forecastLength) || 5; // Get forecast length from query parameter, default to 5
+            const forecastLength = parseInt(req.query.forecastLength) || 5; 
 
             // Generate dummy historical data
             const generateDummyData = (length) => {
                 const data = [];
                 for (let i = 0; i < length; i++) {
-                    data.push(Math.sin(i / 10) + (Math.random() * 0.5 - 0.25)); // Simple sine wave with some noise
+                    data.push(Math.sin(i / 10) + (Math.random() * 0.5 - 0.25)); 
                 }
                 return data;
             };
@@ -76,7 +79,7 @@ module.exports = {
         function calculateMAPE(forecastValues, actualValues) {
             const mapeValues = forecastValues.map((forecast, i) => {
                 if (actualValues[i] === 0 || forecast === null) {
-                    return 0; // Avoid division by zero and handle null values
+                    return 0;
                 } else {
                     return Math.abs((actualValues[i] - forecast) / actualValues[i]);
                 }

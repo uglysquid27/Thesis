@@ -2,7 +2,7 @@
     "test": {
       "username": "root",
       "password": null,
-      "database": "plan_pdm",
+      "database": "node_red",
       "host": "localhost",
       "dialect": "mysql"
     },
