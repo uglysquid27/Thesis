@@ -1,6 +1,7 @@
 const { log } = require('console');
 const { HistoryTab } = require('../models/mst-history')
 const { LabelTab } = require('../models/label_plan')
+const { Op, fn, col, literal } = require('sequelize');
 const fs = require('fs')
 const ARIMA = require('arima');
 
@@ -8,7 +9,21 @@ module.exports = {
     index: async (req, res) => {
         try {
             const pr = await LabelTab.findAll({
-                limit: 10 
+                where: {
+                    [Op.or]: [
+                        { Label_Length_AVE: { [Op.ne]: 0 } },
+                        { Label_Length_PV: { [Op.ne]: 0 } },
+                        { Label_Length_SV: { [Op.ne]: 0 } },
+                        { Temp_G_Roller_Body_PV: { [Op.ne]: 0 } },
+                        { Temp_Glue_Bar_PV: { [Op.ne]: 0 } },
+                        { Temp_Glue_PV: { [Op.ne]: 0 } },
+                        { Temp_Glue_Scrapper_PV: { [Op.ne]: 0 } },
+                        { Temp_Glue_Tank_PV: { [Op.ne]: 0 } },
+                        { Temp_Glue_Roller_PV: { [Op.ne]: 0 } },
+                        { Speed_Label: { [Op.ne]: 0 } },
+                    ]
+                },
+                limit: 100
             });
             console.log(pr);
             res.status(200).json(pr);
