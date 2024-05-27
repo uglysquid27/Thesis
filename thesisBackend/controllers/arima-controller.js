@@ -7,8 +7,26 @@ const ARIMA = require('arima');
 
 module.exports = {
     index: async (req, res) => {
-        try {
+       try {
             const pr = await LabelTab.findAll({
+                attributes: [
+                    [literal('DISTINCT DATE(time)'), 'date'],
+                    'epochtime',
+                    'time',
+                    'plc_time',
+                    'Label_Length_AVE',
+                    'Label_Length_PV',
+                    'Label_Length_SV',
+                    'Temp_G_Roller_Body_PV',
+                    'Temp_Glue_Bar_PV',
+                    'Temp_Glue_PV',
+                    'Temp_Glue_Scrapper_PV',
+                    'Temp_Glue_Tank_PV',
+                    'Temp_Glue_Roller_PV',
+                    'Speed_Label',
+                    'bpd_Lower_pressure_Min',
+                    'bpd_Upper_pressure_Max'
+                ],
                 where: {
                     [Op.or]: [
                         { Label_Length_AVE: { [Op.ne]: 0 } },
@@ -23,7 +41,10 @@ module.exports = {
                         { Speed_Label: { [Op.ne]: 0 } },
                     ]
                 },
-                limit: 100
+                group: [literal('DATE(time)')],
+                order: [[literal('DATE(time)'), 'ASC']],
+                limit: 100,
+                order: [[literal('date'), 'ASC']]
             });
             console.log(pr);
             res.status(200).json(pr);
