@@ -1,9 +1,10 @@
 const { log } = require('console');
-const { HistoryTab } = require('../models/mst-history')
-const { LabelTab } = require('../models/label_plan')
+const { HistoryTab } = require('../models/mst-history');
+const { LabelTab } = require('../models/label_plan');
 const { Op, fn, col, literal } = require('sequelize');
-const fs = require('fs')
+const fs = require('fs');
 const ARIMA = require('arima');
+const Timeseries = require('timeseries-analysis');
 
 module.exports = {
     index: async (req, res) => {
@@ -55,72 +56,61 @@ module.exports = {
 
     arimatest: async (req, res) => {
         try {
-            const forecastLength = parseInt(req.query.forecastLength) || 5; 
+            const pr = await LabelTab.findAll({
+                attributes: [
+                    [literal('DISTINCT DATE(time)'), 'date'],
+                    'Label_Length_AVE'
+                ],
+                where: {
+                    Label_Length_AVE: { [Op.ne]: 0 }
+                },
+                order: [[literal('DATE(time)'), 'ASC']],
+                limit: 100
+            });
 
-            // Generate dummy historical data
-            const generateDummyData = (length) => {
-                const data = [];
-                for (let i = 0; i < length; i++) {
-                    data.push(Math.sin(i / 10) + (Math.random() * 0.5 - 0.25)); 
+            const data = pr.map(entry => ({
+                date: entry.dataValues.date,
+                value: entry.dataValues.Label_Length_AVE
+            }));
+
+            const filteredEntries = data.filter(entry => entry.value !== null && entry.value !== undefined);
+
+            const values = filteredEntries.map(entry => entry.value);
+
+
+            let forecasts = [];
+            if (values.length > 0) {
+                const t = new Timeseries.main(Timeseries.adapter.fromArray(values));
+
+                t.smoother({ period: 5 });
+
+                const forecastValues = t.sliding_regression_forecast({ window: 12, degree: 1 });
+                console.log('Forecast values:', forecastValues);
+
+                if (Array.isArray(forecastValues)) {
+                    // Step 8: Prepare the forecast result with original dates
+                    forecasts = forecastValues.map((value, index) => {
+                        const date = new Date(filteredEntries[filteredEntries.length - 1].date);
+                        date.setDate(date.getDate() + index + 1); // Assuming daily intervals for simplicity
+                        return { date: date.toISOString(), value };
+                    });
+
+                } else {
+                    console.error('Expected an array for forecastValues but got:', forecastValues);
                 }
-                return data;
-            };
-
-            const values = generateDummyData(200);
-
-            console.log('Original Values:', values);
-
-            let bestModel = null;
-            let bestMAPE = Number.POSITIVE_INFINITY;
-
-            // Try different combinations of ARIMA parameters
-            for (let p = 0; p <= 2; p++) {
-                for (let d = 0; d <= 2; d++) {
-                    for (let q = 0; q <= 2; q++) {
-                        const arima = new ARIMA({ p, d, q }).fit(values);
-                        const forecastValues = arima.predict(forecastLength).map(f => f[0]);
-                        const mape = calculateMAPE(forecastValues, values.slice(-forecastLength));
-                        console.log(`ARIMA (${p}, ${d}, ${q}) MAPE: ${mape}`);
-
-                        if (mape < bestMAPE) {
-                            bestModel = arima;
-                            bestMAPE = mape;
-                        }
-                    }
-                }
+            } else {
+                console.warn('No valid data available for forecasting.');
             }
 
-            console.log('Best ARIMA Model:', bestModel);
-            console.log('Best MAPE:', bestMAPE);
-
-            // Forecast using the best model
-            const forecastValues = bestModel.predict(forecastLength).map(f => f[0]);
-            console.log('Forecast Values:', forecastValues);
-
-            const responseData = {
-                forecast_values: forecastValues,
-                original_values: values.slice(-forecastLength),
-                mape: bestMAPE,
-            };
-
-            res.status(200).json(responseData);
-        } catch (error) {
-            const errorMessage = `Failed to perform ARIMA prediction: ${error.toString()}`;
-            console.log(errorMessage);
-            res.status(500).json({ error: errorMessage });
-        }
-
-
-        // Function to calculate MAPE
-        function calculateMAPE(forecastValues, actualValues) {
-            const mapeValues = forecastValues.map((forecast, i) => {
-                if (actualValues[i] === 0 || forecast === null) {
-                    return 0;
-                } else {
-                    return Math.abs((actualValues[i] - forecast) / actualValues[i]);
-                }
+            console.log('Final forecast data:', { Label_Length_AVE: forecasts });
+            console.log(forecasts)
+            res.status(200).json({ Label_Length_AVE: forecasts });
+        } catch (e) {
+            console.error(e);
+            res.status(500).json({
+                error: 'An error occurred while processing your request.',
+                details: e.message
             });
-            return (mapeValues.reduce((acc, curr) => acc + curr, 0) / mapeValues.length) * 100;
         }
     }
 }
