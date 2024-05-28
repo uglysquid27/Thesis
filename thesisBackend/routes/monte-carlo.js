@@ -7,7 +7,7 @@ var monteCarloController = require("../controllers/monte-carlo-controller")
 
 /* GET home page. */
 router.get('/', monteCarloController.index);
-router.get('/testing', monteCarloController.montecarlotest);
+// router.get('/testing', monteCarloController.montecarlotest);
 
 
 
