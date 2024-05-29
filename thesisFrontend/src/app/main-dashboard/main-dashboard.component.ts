@@ -4,10 +4,13 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { ChartOptions, bulanan } from './chart';
 
 interface ForecastData {
-  forecast_values: number[];
+  forecastedAverages: number[];
   forecast_dates: string[];
-  original_values: number[];
   mape: number;
+}
+
+interface OriginalValue {
+  historicalValues: { time: string; Label_Length_AVE: number }[];
 }
 
 @Component({
@@ -21,8 +24,9 @@ export class MainDashboardComponent implements OnInit {
   public loaddata: any;
 
   forecastValues: number[] = [];
-  forecastDates: string[] = [];
-  originalValues: number[] = [];
+  realValues: number[] = [];
+  realDates: string[] = [];
+  originalValues: { time: string; Label_Length_AVE: number }[] = [];
   mape: number | undefined;
 
   showSuccessAlert: boolean = true;
@@ -39,24 +43,26 @@ export class MainDashboardComponent implements OnInit {
     this.spinner.show();
 
     this.loaddata = new Promise<void>((resolve, reject) => {
-      this.service.getReadPdmAssetoci1().subscribe({
+      this.service.getMonteCarloTest().subscribe({
         next: (data) => {
           const forecastData = data as ForecastData;
+          const orgValue = data as OriginalValue
           this.resolved = true;
-          console.log(forecastData);
-
-          // Assign the respective properties to component variables
-          this.forecastValues = forecastData.forecast_values;
-          this.forecastDates = forecastData.forecast_dates;
-          this.originalValues = forecastData.original_values;
+          console.log(forecastData.forecastedAverages );
+          this.forecastValues = forecastData.forecastedAverages;
+          this.originalValues = orgValue.historicalValues;
           this.mape = forecastData.mape;
 
           console.log('Forecast Values:', this.forecastValues);
-          console.log('Forecast Dates:', this.forecastDates);
           console.log('Original Values:', this.originalValues);
           console.log('MAPE:', this.mape);
 
-          this.bulananChart();  // Proceed with using the separated data
+          this.originalValues.forEach((value, index) => {
+            this.realValues.push(value.Label_Length_AVE)
+            this.realDates.push(value.time)
+          });
+
+          this.bulananChart(); 
 
           resolve();
         },
@@ -78,7 +84,7 @@ export class MainDashboardComponent implements OnInit {
       series: [
         {
           name: "Desktops",
-          data: this.originalValues // Use the actual forecast values here
+          data: this.realValues // Use the actual forecast values here
         }
       ],
       chart: {
@@ -105,7 +111,7 @@ export class MainDashboardComponent implements OnInit {
         }
       },
       xaxis: {
-        categories: this.forecastDates // Use the actual forecast dates here
+        categories: this.realDates // Use the actual forecast dates here
       }
     };
   }

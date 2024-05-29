@@ -17,7 +17,10 @@ export class CountService {
     })
   }
 
-  getReadPdmAssetoci1() {
+  getArimaTest() {
     return this.httpClient.get(api + 'arima/' + "testing");
+  }
+  getMonteCarloTest() {
+    return this.httpClient.get(api + 'montecarlo/');
   }
 }
