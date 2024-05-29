@@ -59,7 +59,7 @@ export class MainDashboardComponent implements OnInit {
 
           this.originalValues.forEach((value, index) => {
             this.realValues.unshift(value.Label_Length_AVE)
-            this.realDates.unshift(value.time)
+            this.realDates.push(value.time)
           });
 
           this.bulananChart(); 
