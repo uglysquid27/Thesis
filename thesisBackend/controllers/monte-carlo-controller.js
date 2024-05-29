@@ -26,8 +26,8 @@ const monteCarloForecast = async () => {
                 ]
             },
             group: [literal('DATE(time)')],
-            order: [[literal('DATE(time)'), 'ASC']],
-            limit: 100
+            order: [[literal('DATE(time)'), 'DESC']], // Order by date in descending order
+            limit: 30 // Fetch only the latest 30 records
         });
 
         const historicalValues = historicalData.map(item => ({
