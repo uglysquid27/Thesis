@@ -58,8 +58,8 @@ export class MainDashboardComponent implements OnInit {
           console.log('MAPE:', this.mape);
 
           this.originalValues.forEach((value, index) => {
-            this.realValues.push(value.Label_Length_AVE)
-            this.realDates.push(value.time)
+            this.realValues.unshift(value.Label_Length_AVE)
+            this.realDates.unshift(value.time)
           });
 
           this.bulananChart(); 
