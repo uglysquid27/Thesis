@@ -28,4 +28,5 @@ export type ChartOptions = {
   grid: ApexGrid; // Add the grid type here
 };
 
-export type bulanan = ChartOptions;
+export type monteCarlo = ChartOptions;
+export type dataSet = ChartOptions;

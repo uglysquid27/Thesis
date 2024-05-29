@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CountService } from '../service/CountService';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { ChartOptions, bulanan } from './chart';
+import { monteCarlo, dataSet } from './chart';
 
 interface ForecastData {
   forecastedAverages: number[];
@@ -9,9 +9,6 @@ interface ForecastData {
   mape: number;
 }
 
-interface OriginalValue {
-  historicalValues: { time: string; Label_Length_AVE: number }[];
-}
 
 @Component({
   selector: 'app-main-dashboard',
@@ -19,15 +16,18 @@ interface OriginalValue {
   styleUrls: ['./main-dashboard.component.css']
 })
 export class MainDashboardComponent implements OnInit {
-  public bulanan: Partial<bulanan> | any;
+  public monteCarlo: Partial<monteCarlo> | any;
+  public dataSet: Partial<dataSet> | any;
   public resolved: boolean = false;
   public loaddata: any;
 
   forecastValues: number[] = [];
   realValues: number[] = [];
   realDates: string[] = [];
-  originalValues: { time: string; Label_Length_AVE: number }[] = [];
+  combinedValues: number[] = [];
+  combinedDates: string[] = [];
   mape: number | undefined;
+
 
   showSuccessAlert: boolean = true;
   deskripsi: any = 'Loading..';
@@ -43,48 +43,67 @@ export class MainDashboardComponent implements OnInit {
     this.spinner.show();
 
     this.loaddata = new Promise<void>((resolve, reject) => {
+
+      this.service.getDataSet().subscribe(data => {
+        
+        const dataArray = Object.values(data);
+      
+        dataArray.sort((a, b) => {
+          const dateA = new Date(a.time.split('/').reverse().join('-')).getTime();
+          const dateB = new Date(b.time.split('/').reverse().join('-')).getTime();
+          return dateA - dateB; 
+        });
+      
+        this.realDates = [];
+        this.realValues = [];
+      
+        dataArray.forEach(item => {
+          if (item.time && item.Label_Length_AVE) {
+            this.realDates.push(item.time);
+            this.realValues.push(item.Label_Length_AVE);
+          }
+        });
+      
+        console.log(this.realValues);
+        console.log(this.realDates);
+      
+        this.realValueChart();
+      });
+      
+
+
       this.service.getMonteCarloTest().subscribe({
         next: (data) => {
           const forecastData = data as ForecastData;
-          const orgValue = data as OriginalValue
-          this.resolved = true;
-          console.log(forecastData.forecastedAverages );
           this.forecastValues = forecastData.forecastedAverages;
-          this.originalValues = orgValue.historicalValues;
           this.mape = forecastData.mape;
 
-          console.log('Forecast Values:', this.forecastValues);
-          console.log('Original Values:', this.originalValues);
-          console.log('MAPE:', this.mape);
+          this.combinedValues = [...this.realValues, ...this.forecastValues];
+          this.combinedDates = [...this.realDates, ...forecastData.forecast_dates];
 
-          this.originalValues.forEach((value, index) => {
-            this.realValues.unshift(value.Label_Length_AVE)
-            this.realDates.push(value.time)
-          });
-
-          this.bulananChart(); 
-
+          this.createCombinedChart();
           resolve();
         },
         error: (error) => {
-          console.error('Error fetching data', error);
+          console.error('Error fetching forecast data', error);
           reject(error);
         },
         complete: () => {
           this.spinner.hide();
         }
       });
+
     });
 
     await this.loaddata;
   }
 
-  bulananChart() {
-    this.bulanan = {
+  realValueChart() {
+    this.dataSet = {
       series: [
         {
           name: "Desktops",
-          data: this.realValues // Use the actual forecast values here
+          data: this.realValues  
         }
       ],
       chart: {
@@ -106,12 +125,53 @@ export class MainDashboardComponent implements OnInit {
       },
       grid: {
         row: {
-          colors: ["#f3f3f3", "transparent"], // takes an array which will be repeated on columns
+          colors: ["#f3f3f3", "transparent"],
           opacity: 0.5
         }
       },
       xaxis: {
-        categories: this.realDates // Use the actual forecast dates here
+        categories: this.realDates 
+      }
+    }
+  }
+
+  createCombinedChart() {
+    this.dataSet = {
+      series: [
+        {
+          name: "Actual",
+          data: this.realValues
+        },
+        {
+          name: "Forecast",
+          data: this.forecastValues
+        }
+      ],
+      chart: {
+        height: 350,
+        type: "line",
+        zoom: {
+          enabled: false
+        }
+      },
+      dataLabels: {
+        enabled: false
+      },
+      stroke: {
+        curve: "straight"
+      },
+      title: {
+        text: "Product Trends by Month",
+        align: "left"
+      },
+      grid: {
+        row: {
+          colors: ["#f3f3f3", "transparent"],
+          opacity: 0.5
+        }
+      },
+      xaxis: {
+        categories: this.combinedDates
       }
     };
   }
