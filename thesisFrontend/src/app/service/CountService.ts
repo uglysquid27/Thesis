@@ -17,6 +17,9 @@ export class CountService {
     })
   }
 
+  getDataSet() {
+    return this.httpClient.get(api + 'data/');
+  }
   getArimaTest() {
     return this.httpClient.get(api + 'arima/' + "testing");
   }
