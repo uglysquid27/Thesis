@@ -74,6 +74,8 @@ export class MainDashboardComponent implements OnInit {
 
       this.service.getMonteCarloTest().subscribe({
         next: (data) => {
+          console.log(data);
+          
           const forecastData = data as ForecastData;
           this.forecastValues = forecastData.forecastedAverages;
           this.mape = forecastData.mape;

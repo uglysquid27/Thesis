@@ -15,8 +15,8 @@ const monteCarloForecast = async () => {
     try {
         const historicalData = await LabelTab.findAll({
             attributes: [
-                [literal('DATE(time)'), 'date'],
-                [fn('MIN', col('time')), 'time'], 
+                [fn('DATE', col('time')), 'date'],
+                'time',
                 'Label_Length_AVE'
             ],
             where: {
@@ -25,8 +25,7 @@ const monteCarloForecast = async () => {
                     { time: { [Op.not]: null } } 
                 ]
             },
-            group: [literal('DATE(time)')],
-            order: [[literal('DATE(time)'), 'DESC']], 
+            order: [[literal('DATE(time)'), 'DESC']],
             limit: 30
         });
 
@@ -76,4 +75,13 @@ module.exports = {
             res.status(500).json({ error: 'Internal Server Error' });
         }
     },
+    all: async (req,res) => {
+        try {
+            const labels = await LabelTab.findAll();
+            res.json(labels);
+        } catch (error) {
+            console.error('Error fetching data from label_oci1:', error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    }
 };

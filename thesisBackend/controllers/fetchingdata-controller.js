@@ -15,8 +15,7 @@ const monteCarloForecast = async () => {
     try {
         const historicalData = await LabelTab.findAll({
             attributes: [
-                [literal('DATE(time)'), 'date'],
-                [fn('MIN', col('time')), 'time'], 
+                'time',
                 'Label_Length_AVE'
             ],
             where: {
@@ -25,8 +24,7 @@ const monteCarloForecast = async () => {
                     { time: { [Op.not]: null } } 
                 ]
             },
-            group: [literal('DATE(time)')],
-            order: [[literal('DATE(time)'), 'DESC']], 
+            order: [[literal('DATE(time)'), 'DESC']],
             limit: 90
         });
 
@@ -35,7 +33,7 @@ const monteCarloForecast = async () => {
             Label_Length_AVE: item.Label_Length_AVE
         }));
 
-        return {historicalValues };
+        return { historicalValues };
     } catch (error) {
         console.error('Error in Monte Carlo Forecasting:', error);
         throw error;
