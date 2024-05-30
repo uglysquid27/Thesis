@@ -8,7 +8,10 @@ const formatTime = (timeString) => {
     const day = date.getDate();
     const month = date.getMonth() + 1;
     const year = date.getFullYear();
-    return `${day}/${month}/${year}`;
+    const time = date.getHours();
+    const min = date.getMinutes();
+    const sec = date.getSeconds();
+    return `${day}/${month}/${year} ${time}:${min}:${sec}`;
 };
 
 const monteCarloForecast = async () => {

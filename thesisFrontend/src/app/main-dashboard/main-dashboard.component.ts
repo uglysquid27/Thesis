@@ -24,6 +24,7 @@ export class MainDashboardComponent implements OnInit {
   forecastValues: number[] = [];
   realValues: number[] = [];
   realDates: string[] = [];
+  realTimes: string[] = [];
   combinedValues: number[] = [];
   combinedDates: string[] = [];
   mape: number | undefined;
@@ -45,30 +46,36 @@ export class MainDashboardComponent implements OnInit {
     this.loaddata = new Promise<void>((resolve, reject) => {
 
       this.service.getDataSet().subscribe(data => {
+        console.log(data);
         
         const dataArray = Object.values(data);
-      
+        
         dataArray.sort((a, b) => {
           const dateA = new Date(a.time.split('/').reverse().join('-')).getTime();
           const dateB = new Date(b.time.split('/').reverse().join('-')).getTime();
-          return dateA - dateB; 
+          return dateA - dateB;
         });
-      
+        
         this.realDates = [];
+        this.realTimes = [];
         this.realValues = [];
-      
+        
         dataArray.forEach(item => {
           if (item.time && item.Label_Length_AVE) {
-            this.realDates.push(item.time);
+            const [date, time] = item.time.split(' '); // Assuming time is space-separated from date
+            this.realDates.push(date);
+            this.realTimes.push(time);
             this.realValues.push(item.Label_Length_AVE);
           }
         });
-      
+        
         console.log(this.realValues);
         console.log(this.realDates);
-      
+        console.log(this.realTimes);
+        
         this.realValueChart();
       });
+      
       
 
 
@@ -109,7 +116,7 @@ export class MainDashboardComponent implements OnInit {
         }
       ],
       chart: {
-        height: 350,
+        height: 550,
         type: "line",
         zoom: {
           enabled: false
@@ -132,7 +139,7 @@ export class MainDashboardComponent implements OnInit {
         }
       },
       xaxis: {
-        categories: this.realDates 
+        categories: this.realTimes 
       }
     }
   }
