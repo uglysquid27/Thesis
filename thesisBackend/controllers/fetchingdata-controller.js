@@ -1,6 +1,6 @@
 const { log } = require('console');
 const { LabelTab } = require('../models/label_plan');
-const { Op, fn, col, literal } = require('sequelize');
+const { Op, fn, col, literal, Sequelize } = require('sequelize');
 const fs = require('fs');
 
 const formatTime = (timeString) => {
@@ -18,8 +18,8 @@ const monteCarloForecast = async () => {
     try {
         const historicalData = await LabelTab.findAll({
             attributes: [
-                'time',
-                'Label_Length_AVE'
+                [Sequelize.literal('DATE_FORMAT(FROM_UNIXTIME(UNIX_TIMESTAMP(time) - MOD(UNIX_TIMESTAMP(time), 600)), "%Y-%m-%d %H:%i:00")'), 'interval_time'],
+                [fn('AVG', col('Label_Length_AVE')), 'Label_Length_AVE']
             ],
             where: {
                 [Op.and]: [
@@ -27,13 +27,14 @@ const monteCarloForecast = async () => {
                     { time: { [Op.not]: null } } 
                 ]
             },
-            order: [[literal('DATE(time)'), 'DESC']],
+            group: [Sequelize.literal('interval_time')],
+            order: [[literal('interval_time'), 'DESC']],
             limit: 90
         });
 
         const historicalValues = historicalData.map(item => ({
-            time: formatTime(item.time),
-            Label_Length_AVE: item.Label_Length_AVE
+            time: formatTime(item.dataValues.interval_time),
+            Label_Length_AVE: parseFloat(item.dataValues.Label_Length_AVE)
         }));
 
         return { historicalValues };
