@@ -11,7 +11,7 @@ const formatTime = (timeString) => {
     return `${day}/${month}/${year}`;
 };
 
-const monteCarloForecast = async () => {
+const dataFetching = async () => {
     try {
         const historicalData = await LabelTab.findAll({
             attributes: [
@@ -68,7 +68,7 @@ const monteCarloForecast = async () => {
 module.exports = {
     index: async (req, res) => {
         try {
-            const { forecastedAverages, historicalValues } = await monteCarloForecast();
+            const { forecastedAverages, historicalValues } = await dataFetching();
             res.status(200).json({ forecastedAverages, historicalValues });
         } catch (error) {
             console.error('Error in index route:', error);
