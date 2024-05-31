@@ -17,7 +17,7 @@ const dataFetching = async () => {
             attributes: [
                 [fn('DATE', col('time')), 'date'],
                 'time',
-                'Label_Length_AVE'
+                'Label_Length_AVE' 
             ],
             where: {
                 [Op.and]: [
