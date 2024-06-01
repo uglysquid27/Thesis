@@ -1,48 +1,59 @@
 const { log } = require('console');
 const { LabelTab } = require('../models/label_plan');
-const { Op, fn, col, literal } = require('sequelize');
+const { Op, fn, col, literal, Sequelize } = require('sequelize');
 const fs = require('fs');
+const express = require('express');
+const app = express();
 
 const formatTime = (timeString) => {
     const date = new Date(timeString);
     const day = date.getDate();
     const month = date.getMonth() + 1;
     const year = date.getFullYear();
-    return `${day}/${month}/${year}`;
+    const time = date.getHours();
+    const min = date.getMinutes();
+    const sec = date.getSeconds();
+    return `${day}/${month}/${year} ${time}:${min}:${sec}`;
 };
 
-const dataFetching = async () => {
+const monteCarlo = async (req, res) => {
     try {
+        // Fetch historical data with intervals rounded to 10 minutes
         const historicalData = await LabelTab.findAll({
             attributes: [
-                [fn('DATE', col('time')), 'date'],
-                'time',
-                'Label_Length_AVE' 
+                [Sequelize.literal('DATE_FORMAT(FROM_UNIXTIME(UNIX_TIMESTAMP(time) - MOD(UNIX_TIMESTAMP(time), 600)), "%Y-%m-%d %H:%i:00")'), 'interval_time'],
+                [Sequelize.fn('AVG', Sequelize.col('Label_Length_AVE')), 'Label_Length_AVE']
             ],
             where: {
                 [Op.and]: [
                     { Label_Length_AVE: { [Op.ne]: 0 } },
-                    { time: { [Op.not]: null } } 
+                    { time: { [Op.not]: null } }
                 ]
             },
-            order: [[literal('DATE(time)'), 'DESC']],
+            group: [Sequelize.literal('interval_time')],
+            order: [[Sequelize.literal('interval_time'), 'DESC']],
             limit: 30
         });
 
+        // Format the fetched data
         const historicalValues = historicalData.map(item => ({
-            time: formatTime(item.time),
-            Label_Length_AVE: item.Label_Length_AVE
+            time: formatTime(item.dataValues.interval_time),
+            Label_Length_AVE: parseFloat(item.dataValues.Label_Length_AVE)
         }));
 
-        const numberOfSimulations = 1000; 
+        const numberOfSimulations = 1000;
+
+        // Generate simulations
         const simulations = Array.from({ length: numberOfSimulations }, () => {
             return historicalValues.map(dataPoint => {
-                const deviation = Math.random() * 0.1;
+                // Adjust deviation range for more realistic simulation (e.g., -0.1 to 0.1)
+                const deviation = (Math.random() - 0.5) * 0.2;
                 const newValue = dataPoint.Label_Length_AVE * (1 + deviation);
                 return { time: dataPoint.time, Label_Length_AVE: newValue };
             });
         });
 
+        // Aggregate results by time intervals
         const forecastResults = simulations.reduce((acc, curr) => {
             curr.forEach((dataPoint, index) => {
                 acc[index] = acc[index] ? [...acc[index], dataPoint] : [dataPoint];
@@ -50,38 +61,57 @@ const dataFetching = async () => {
             return acc;
         }, []);
 
+        // Calculate the average forecasted value for each interval
         const forecastedAverages = forecastResults.map(simulation => {
             const sum = simulation.reduce((total, dataPoint) => total + dataPoint.Label_Length_AVE, 0);
             return sum / simulation.length;
         });
 
-        console.log('Monte Carlo Forecast:', forecastedAverages);
+        // Get the last historical time and generate times for the forecast
+        const lastHistoricalTime = new Date(historicalValues[0].time);
+        const forecastTimes = [];
+        for (let i = 1; i <= forecastedAverages.length; i++) {
+            const forecastTime = new Date(lastHistoricalTime.getTime() + i * 10 * 60 * 1000);
+            forecastTimes.push(formatTime(forecastTime));
+        }
+
+        // Combine forecasted values with their corresponding times
+        const forecastedResultsWithTime = forecastedAverages.map((value, index) => ({
+            time: forecastTimes[index],
+            Label_Length_AVE: value
+        }));
+
+        console.log('Monte Carlo Forecast:', forecastedResultsWithTime);
         console.log('Historical values with formatted time:', historicalValues);
 
-        return { forecastedAverages, historicalValues };
+        // Send the JSON response
+        res.json({ forecastedResultsWithTime, historicalValues });
     } catch (error) {
         console.error('Error in Monte Carlo Forecasting:', error);
-        throw error;
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
+const index = async (req, res) => {
+    try {
+        await monteCarlo(req, res);
+    } catch (error) {
+        console.error('Error in index route:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
+const all = async (req, res) => {
+    try {
+        const labels = await LabelTab.findAll();
+        res.json(labels);
+    } catch (error) {
+        console.error('Error fetching data from label_oci1:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 };
 
 module.exports = {
-    index: async (req, res) => {
-        try {
-            const { forecastedAverages, historicalValues } = await dataFetching();
-            res.status(200).json({ forecastedAverages, historicalValues });
-        } catch (error) {
-            console.error('Error in index route:', error);
-            res.status(500).json({ error: 'Internal Server Error' });
-        }
-    },
-    all: async (req,res) => {
-        try {
-            const labels = await LabelTab.findAll();
-            res.json(labels);
-        } catch (error) {
-            console.error('Error fetching data from label_oci1:', error);
-            res.status(500).json({ error: 'Internal Server Error' });
-        }
-    }
+    index,
+    all
 };
