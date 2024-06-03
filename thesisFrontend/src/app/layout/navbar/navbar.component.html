@@ -1,22 +1,22 @@
-<div data-aos="fade-down" data-aos-duration="1500" class="w-90 h-full p-1 ml-80  bg-white border-r rounded-bl-full">
+<div data-aos="fade-down" data-aos-duration="1500" class="w-90 h-full p-1 ml-60  bg-[#6B8A7A] border-r rounded-bl-full">
     <nav
     class="my-1 px-1 w-full max-w-full relative flex flex-col mt-2 mb-4 min-w-0 break-words shadow-soft-lg rounded-2xl bg-clip-border ">
-    <div class="flex items-center justify-between w-full px-4 py-1 mx-auto flex-wrap-inherit">
+    <div class="flex text-gray-100 items-center justify-between w-full px-4 py-1 mx-auto flex-wrap-inherit">
       <div *ngIf="router.url === '/'">
         <nav class="pl-16">
           <!-- breadcrumb -->
-          <ol class="flex flex-wrap pt-1 mr-12 bg-transparent rounded-lg sm:mr-16">
+          <ol class="flex flex-wrap pt-1 bg-transparent rounded-lg sm:mr-16">
             <li class="leading-normal text-sm">
-              <a class="opacity-50 text-slate-700" routerLink="/">Pages</a>
+              <a class="opacity-50 text-gray-100" routerLink="/">Pages</a>
             </li>
             <li
-              class="text-sm pl-2 capitalize leading-normal text-slate-700 before:float-left before:pr-2 before:text-gray-600 before:content-['/']"
+              class="text-sm pl-2 capitalize leading-normal text-slate-100 before:float-left before:pr-2 before:text-gray-100 before:content-['/']"
               aria-current="page">Dashboard</li>
           </ol>
-          <h6 class="mb-0 font-bold capitalize">Dashboard</h6>
+          <h6 class="mb-0 font-bold capitalize ">Dashboard</h6>
         </nav>
       </div>
-      <div class="flex pr-60 items-start mt-2 grow sm:mt-0 sm:mr-6 md:mr-0 lg:flex lg:basis-auto">
+      <div class="opacity-80 flex items-start mt-2 grow sm:mt-0 sm:mr-6 md:mr-0 lg:flex lg:basis-auto">
         <div class="flex items-start md:ml-auto md:pr-4">
           <div class="relative flex flex-wrap items-stretch w-full transition-all rounded-lg ease-soft">
             <h5 class="ml-4 font-semibold text-xl">{{currentDate | date: 'EEEE, d-MM-yy, h:mm:ss'}}</h5>

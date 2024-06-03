@@ -1,4 +1,4 @@
-<div class="fixed top-0 left-0 flex flex-col h-full bg-white border-r w-52 max-lg:hidden rounded-tr-full">
+<div class="fixed top-0 left-0 flex flex-col h-full mt-16 bg-[#6B8A7A] border-r w-52 max-lg:hidden rounded-tr-full">
   <div class="pt-24">
      <a routerLink="/am_checksheet" class="flex items-center justify-center border-b h-28">
     <img src="assets/img/preprlogo.png" class="w-28" alt="" />
@@ -9,8 +9,8 @@
       <li>
         <a [ngClass]="
           router.url == '/'
-            ? 'text-gray-100 pl-4 bg-blue-400'
-            : 'text-gray-600 hover:text-blue-400 hover:bg-gray-100 hover:pl-4 duration-200'
+            ? 'text-gray-100 pl-4 bg-[#B7B597]'
+            : 'text-gray-300 hover:text-[#B7B597] hover:bg-gray-100 hover:pl-4 duration-200'
           " routerLink="/" class="relative flex items-center py-3 space-x-4">
           <span class="inline-flex items-center justify-center ml-3">
             <svg xmlns="http://www.w3.org/2000/svg" id="Layer_1" data-name="Layer 1" viewBox="0 0 24 24" width="20"
@@ -22,7 +22,7 @@
           <span [ngClass]=" 
             router.url == '/' 
               ? 'text-gray-100'
-              : 'text-gray-600'
+              : 'text-gray-300'
             " class="ml-2 text-sm tracking-wide truncate">Dashboard</span>
 
         </a>
@@ -30,8 +30,8 @@
       <li>
         <a [ngClass]="
           router.url == '/montecarlo'
-            ? 'text-gray-100 pl-4 bg-blue-400'
-            : 'text-gray-600 hover:text-blue-400 hover:bg-gray-100 hover:pl-4 duration-200'
+            ? 'text-gray-100 pl-4 bg-[#B7B597]'
+            : 'text-gray-300 hover:text-[#B7B597] hover:bg-gray-100 hover:pl-4 duration-200'
           " routerLink="/montecarlo" class="relative flex items-center py-3 space-x-4">
           <span class="inline-flex items-center justify-center ml-3">
             <svg xmlns="http://www.w3.org/2000/svg" id="Layer_1" data-name="Layer 1" viewBox="0 0 24 24" width="20"
@@ -43,7 +43,7 @@
           <span [ngClass]=" 
             router.url == '/montecarlo' 
               ? 'text-gray-100'
-              : 'text-gray-600'
+              : 'text-gray-300'
             " class="ml-2 text-sm tracking-wide truncate">Monte Carlo</span>
 
         </a>
@@ -73,7 +73,7 @@
               class="relative flex items-center py-3 space-x-4" [ngClass]="
                   router.url == '/am_checksheet'
                     ? 'bg-gradient-to-r from-sky-600 to-cyan-400 px-4 text-white border-l-0  '
-                    : ' text-gray-600 hover:bg-gray-50 hover:text-gray-800 border-l-4 px-3 border-transparent hover:border-indigo-500'
+                    : ' text-gray-300 hover:bg-gray-50 hover:text-gray-800 border-l-4 px-3 border-transparent hover:border-indigo-500'
                 ">
               <svg class="w-6 h-6 -ml-1" viewBox="0 0 24 24" fill="none">
                 <path
@@ -92,7 +92,7 @@
             <a routerLink="/pr_list" class="relative flex items-center py-3 space-x-4" [ngClass]="
                   router.url == '/pr_list'
                     ? 'bg-gradient-to-r from-sky-600 to-cyan-400  px-4  text-white  border-l-0  '
-                    : ' text-gray-600 hover:bg-gray-50 hover:text-gray-800 border-l-4 px-3 border-transparent hover:border-indigo-500'
+                    : ' text-gray-300 hover:bg-gray-50 hover:text-gray-800 border-l-4 px-3 border-transparent hover:border-indigo-500'
                 ">
               <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
                 <path [ngClass]="
@@ -100,7 +100,7 @@
                     " class="text-gray-300 fill-current group-hover:text-cyan-300" fill-rule="evenodd"
                   d="M2 6a2 2 0 012-2h4l2 2h4a2 2 0 012 2v1H8a3 3 0 00-3 3v1.5a1.5 1.5 0 01-3 0V6z"
                   clip-rule="evenodd" />
-                <path class="text-gray-600 fill-current group-hover:text-cyan-600"
+                <path class="text-gray-300 fill-current group-hover:text-cyan-600"
                   d="M6 12a2 2 0 012-2h8a2 2 0 012 2v2a2 2 0 01-2 2H2h2a2 2 0 002-2v-2z" />
               </svg>
               <span class="group-hover:text-gray-700">Checksheet</span>
@@ -109,7 +109,7 @@
         </ul>
         <div class="my-5">
           <a (click)="AccountDropdown()"
-            class="relative flex flex-row items-center pr-6 space-x-4 text-gray-600 border-l-4 border-transparent h-11 focus:outline-none hover:bg-gray-50 hover:text-gray-800 hover:border-indigo-500"
+            class="relative flex flex-row items-center pr-6 space-x-4 text-gray-300 border-l-4 border-transparent h-11 focus:outline-none hover:bg-gray-50 hover:text-gray-800 hover:border-indigo-500"
             [ngClass]="boolAcc ? 'bg-gray-50 px-4' : ' px-3'">
             <span class="inline-flex items-center justify-center">
               <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 96 960 960" width="24" fill="currentColor">
@@ -134,7 +134,7 @@
                 class="relative flex items-center justify-between p-3 space-x-4" [ngClass]="
                     router.url == '/'
                       ? 'bg-gradient-to-r from-sky-600 to-cyan-400  px-4  text-white  border-l-0  '
-                      : 'bg-white text-gray-600 hover:bg-gray-50 hover:text-gray-800 border-l-4 border-transparent hover:border-indigo-500'
+                      : 'bg-white text-gray-300 hover:bg-gray-50 hover:text-gray-800 border-l-4 border-transparent hover:border-indigo-500'
                   ">Maissy
                 <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 96 960 960" width="24"
                   class="fill-gray-500">

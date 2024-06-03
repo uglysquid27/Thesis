@@ -122,6 +122,7 @@ export class MainDashboardComponent implements OnInit {
           enabled: false
         }
       },
+      colors: ['#254336'],  // Add this line to change the series color
       dataLabels: {
         enabled: false
       },
@@ -134,18 +135,19 @@ export class MainDashboardComponent implements OnInit {
       },
       grid: {
         row: {
-          colors: ["#f3f3f3", "transparent"],
+          colors: ["#254336", "transparent"], // This changes the row background colors
           opacity: 0.5
         }
       },
       xaxis: {
         categories: this.realTimes 
       }
-    }
+    };
   }
+  
 
   createCombinedChart() {
-    this.dataSet = {
+    this.monteCarlo = {
       series: [
         {
           name: "Actual",
@@ -175,7 +177,7 @@ export class MainDashboardComponent implements OnInit {
       },
       grid: {
         row: {
-          colors: ["#f3f3f3", "transparent"],
+          colors: ["#254336", "transparent"],
           opacity: 0.5
         }
       },
