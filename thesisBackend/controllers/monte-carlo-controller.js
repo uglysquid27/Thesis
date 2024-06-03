@@ -96,7 +96,7 @@ const monteCarlo = async (req, res) => {
         console.log('MAPE:', mape);
 
         // Send the JSON response
-        res.json({ forecastedResultsWithTime, historicalValues, mape });
+        res.json({ forecastedResultsWithTime, mape });
     } catch (error) {
         console.error('Error in Monte Carlo Forecasting:', error);
         res.status(500).json({ error: 'Internal Server Error' });

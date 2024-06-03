@@ -3,12 +3,10 @@ import { CountService } from '../service/CountService';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { monteCarlo, dataSet } from './chart';
 
-interface ForecastData {
-  forecastedAverages: number[];
-  forecast_dates: string[];
+interface ForecastResponse {
+  forecastedResultsWithTime: Array<{ time: string, Label_Length_AVE: number }>;
   mape: number;
 }
-
 
 @Component({
   selector: 'app-main-dashboard',
@@ -22,13 +20,13 @@ export class MainDashboardComponent implements OnInit {
   public loaddata: any;
 
   forecastValues: number[] = [];
+  forecastDates: string[] = [];
   realValues: number[] = [];
   realDates: string[] = [];
   realTimes: string[] = [];
   combinedValues: number[] = [];
   combinedDates: string[] = [];
   mape: number | undefined;
-
 
   showSuccessAlert: boolean = true;
   deskripsi: any = 'Loading..';
@@ -76,32 +74,40 @@ export class MainDashboardComponent implements OnInit {
         this.realValueChart();
       });
       
-      
-
-
       this.service.getMonteCarloTest().subscribe({
-        next: (data) => {
-          console.log(data);
-          
-          const forecastData = data as ForecastData;
-          this.forecastValues = forecastData.forecastedAverages;
-          this.mape = forecastData.mape;
+        next: (data: ForecastResponse) => {
+            console.log(data);
 
-          this.combinedValues = [...this.realValues, ...this.forecastValues];
-          this.combinedDates = [...this.realDates, ...forecastData.forecast_dates];
+            // Access forecastedResultsWithTime from the response data
+            const forecastedResultsWithTime = data.forecastedResultsWithTime;
+            const mape = data.mape;
 
-          this.createCombinedChart();
-          resolve();
+            console.log('Forecasted Results:', forecastedResultsWithTime);
+            console.log('MAPE:', mape);
+
+            // Assuming you need to process the forecastedResultsWithTime further
+            // Extracting time and values for further processing or charting
+            this.forecastValues = forecastedResultsWithTime.map(item => item.Label_Length_AVE);
+            this.forecastDates = forecastedResultsWithTime.map(item => item.time);
+
+            console.log('Forecast Values:', this.forecastValues);
+            console.log('Forecast Dates:', this.forecastDates);
+
+            // Combine forecasted values with historical values if needed
+            this.combinedValues = [...this.realValues, ...this.forecastValues];
+            this.combinedDates = [...this.realDates, ...this.forecastDates];
+
+            this.createCombinedChart();
         },
         error: (error) => {
-          console.error('Error fetching forecast data', error);
-          reject(error);
+            console.error('Error fetching forecast data', error);
         },
         complete: () => {
-          this.spinner.hide();
+            this.spinner.hide();
         }
       });
 
+      resolve(); 
     });
 
     await this.loaddata;
@@ -122,49 +128,7 @@ export class MainDashboardComponent implements OnInit {
           enabled: false
         }
       },
-      colors: ['#40A2D8'],  // Add this line to change the series color
-      dataLabels: {
-        enabled: false
-      },
-      stroke: {
-        curve: "straight"
-      },
-      title: {
-        text: "Product Trends by Month",
-        align: "left"
-      },
-      grid: {
-        row: {
-          colors: ["#254336", "transparent"], // This changes the row background colors
-          opacity: 0.5
-        }
-      },
-      xaxis: {
-        categories: this.realTimes 
-      }
-    };
-  }
-  
-
-  createCombinedChart() {
-    this.monteCarlo = {
-      series: [
-        {
-          name: "Actual",
-          data: this.realValues
-        },
-        {
-          name: "Forecast",
-          data: this.forecastValues
-        }
-      ],
-      chart: {
-        height: 350,
-        type: "line",
-        zoom: {
-          enabled: false
-        }
-      },
+      colors: ['#40A2D8'], 
       dataLabels: {
         enabled: false
       },
@@ -182,7 +146,49 @@ export class MainDashboardComponent implements OnInit {
         }
       },
       xaxis: {
-        categories: this.combinedDates
+        categories: this.realTimes 
+      }
+    };
+  }
+
+  createCombinedChart() {
+    this.monteCarlo = {
+      series: [
+        {
+          name: "Real Values",
+          data: this.realValues  
+        },
+        {
+          name: "Forecasted Values",
+          data: this.forecastValues
+        }
+      ],
+      chart: {
+        height: 550,
+        type: "line",
+        zoom: {
+          enabled: false
+        }
+      },
+      colors: ['#40A2D8', '#FF5733'],  
+      dataLabels: {
+        enabled: false
+      },
+      stroke: {
+        curve: "straight"
+      },
+      title: {
+        text: "Product Trends by Month",
+        align: "left"
+      },
+      grid: {
+        row: {
+          colors: ["#254336", "transparent"], // This changes the row background colors
+          opacity: 0.5
+        }
+      },
+      xaxis: {
+        categories: this.combinedDates 
       }
     };
   }

@@ -6,6 +6,11 @@ import { catchError } from 'rxjs';
 
 var api = environment.baseUrlApi;
 
+interface ForecastResponse {
+  forecastedResultsWithTime: Array<{ time: string, Label_Length_AVE: number }>;
+  mape: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -24,6 +29,6 @@ export class CountService {
     return this.httpClient.get(api + 'arima/' + "testing");
   }
   getMonteCarloTest() {
-    return this.httpClient.get(api + 'montecarlo/');
+    return this.httpClient.get<ForecastResponse>(api + 'montecarlo/');
   }
 }
