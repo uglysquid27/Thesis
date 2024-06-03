@@ -81,11 +81,22 @@ const monteCarlo = async (req, res) => {
             Label_Length_AVE: value
         }));
 
+        // Calculate MAPE
+        const mape = historicalValues.reduce((totalError, historicalValue, index) => {
+            const forecastValue = forecastedResultsWithTime[index]?.Label_Length_AVE;
+            if (forecastValue !== undefined) {
+                const error = Math.abs((historicalValue.Label_Length_AVE - forecastValue) / historicalValue.Label_Length_AVE);
+                return totalError + error;
+            }
+            return totalError;
+        }, 0) / historicalValues.length * 100;
+
         console.log('Monte Carlo Forecast:', forecastedResultsWithTime);
         console.log('Historical values with formatted time:', historicalValues);
+        console.log('MAPE:', mape);
 
         // Send the JSON response
-        res.json({ forecastedResultsWithTime, historicalValues });
+        res.json({ forecastedResultsWithTime, historicalValues, mape });
     } catch (error) {
         console.error('Error in Monte Carlo Forecasting:', error);
         res.status(500).json({ error: 'Internal Server Error' });

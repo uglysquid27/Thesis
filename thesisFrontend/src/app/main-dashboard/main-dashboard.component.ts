@@ -122,7 +122,7 @@ export class MainDashboardComponent implements OnInit {
           enabled: false
         }
       },
-      colors: ['#254336'],  // Add this line to change the series color
+      colors: ['#40A2D8'],  // Add this line to change the series color
       dataLabels: {
         enabled: false
       },
