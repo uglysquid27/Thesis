@@ -97,7 +97,7 @@ export class MainDashboardComponent implements OnInit {
             this.combinedValues = [...this.realValues, ...this.forecastValues];
             this.combinedDates = [...this.realDates, ...this.forecastDates];
 
-            this.createCombinedChart();
+            this.monteCarloChart();
         },
         error: (error) => {
             console.error('Error fetching forecast data', error);
@@ -151,16 +151,12 @@ export class MainDashboardComponent implements OnInit {
     };
   }
 
-  createCombinedChart() {
+  monteCarloChart() {
     this.monteCarlo = {
       series: [
         {
-          name: "Real Values",
-          data: this.realValues  
-        },
-        {
-          name: "Forecasted Values",
-          data: this.forecastValues
+          name: "Desktops",
+          data: this.forecastValues  
         }
       ],
       chart: {
@@ -170,7 +166,7 @@ export class MainDashboardComponent implements OnInit {
           enabled: false
         }
       },
-      colors: ['#40A2D8', '#FF5733'],  
+      colors: ['#f24333'], 
       dataLabels: {
         enabled: false
       },
@@ -183,7 +179,7 @@ export class MainDashboardComponent implements OnInit {
       },
       grid: {
         row: {
-          colors: ["#254336", "transparent"], // This changes the row background colors
+          colors: ["#254336", "transparent"],
           opacity: 0.5
         }
       },

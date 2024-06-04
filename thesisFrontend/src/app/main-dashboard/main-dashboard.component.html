@@ -7,8 +7,9 @@
             <h5 class="text-center font-bold text-2xl">FORECASTING DASHBOARD</h5>
           </div>
         </div>
-        
-        <div class="py-4 relative flex flex-col mb-2 min-w-0 break-words bg-white shadow-soft-lg rounded-md bg-clip-border">
+
+        <div
+          class="py-4 relative flex flex-col mb-2 min-w-0 break-words bg-white shadow-soft-lg rounded-md bg-clip-border">
           <div class="w-full max-w-full md:w-4/12 xl:w-4/12 xs:w-4/12 pl-8">
             <label>Select Date :</label><br />
             <input type="date" style=" border: 1px solid #c4c4c4;
@@ -19,46 +20,44 @@
           " width="48">
           </div>
           <div class="flex-auto p-6">
-              <apx-chart [series]="dataSet.series" [chart]="dataSet.chart" [dataLabels]="dataSet.dataLabels"
-                [plotOptions]="dataSet.plotOptions" [yaxis]="dataSet.yaxis" [legend]="dataSet.legend"
-                [fill]="dataSet.fill" [stroke]="dataSet.stroke" [tooltip]="dataSet.tooltip" [xaxis]="dataSet.xaxis"
-                [colors]="dataSet.colors"></apx-chart>
+            <apx-chart [series]="dataSet.series" [chart]="dataSet.chart" [dataLabels]="dataSet.dataLabels"
+              [plotOptions]="dataSet.plotOptions" [yaxis]="dataSet.yaxis" [legend]="dataSet.legend"
+              [fill]="dataSet.fill" [stroke]="dataSet.stroke" [tooltip]="dataSet.tooltip" [xaxis]="dataSet.xaxis"
+              [colors]="dataSet.colors"></apx-chart>
           </div>
         </div>
 
         <div class="grid grid-cols-2 gap-2">
-          <div class="py-4 relative flex flex-col mb-2 min-w-0 break-words bg-white shadow-soft-lg rounded-md bg-clip-border">
-            <div class="w-full max-w-full md:w-4/12 xl:w-4/12 xs:w-4/12 pl-8">
-              <label>Select Date :</label><br />
-              <input type="date" style=" border: 1px solid #c4c4c4;
-              border-radius: 5px;
-              background-color: #fff;
-              padding: 3px 5px;
-              box-shadow: inset 0 3px 6px rgba(0,0,0,0.1);
-            " width="48">
+          <div>
+            <div class="relative flex flex-col min-w-0 break-words bg-white shadow-soft-lg rounded-md mb-1 bg-clip-border">
+              <div class="flex-auto p-4">
+                <h5 class="text-center font-bold text-2xl">ARIMA RESULT</h5>
+              </div>
             </div>
-            <div class="flex-auto p-6">
+            <div
+              class="py-4 relative flex flex-col mb-2 min-w-0 break-words bg-white shadow-soft-lg rounded-md bg-clip-border">
+              <div class="flex-auto p-6">
                 <apx-chart [series]="dataSet.series" [chart]="dataSet.chart" [dataLabels]="dataSet.dataLabels"
                   [plotOptions]="dataSet.plotOptions" [yaxis]="dataSet.yaxis" [legend]="dataSet.legend"
                   [fill]="dataSet.fill" [stroke]="dataSet.stroke" [tooltip]="dataSet.tooltip" [xaxis]="dataSet.xaxis"
                   [colors]="dataSet.colors"></apx-chart>
+              </div>
             </div>
           </div>
-          <div class="py-4 relative flex flex-col mb-2 min-w-0 break-words bg-white shadow-soft-lg rounded-md bg-clip-border">
-            <div class="w-full max-w-full md:w-4/12 xl:w-4/12 xs:w-4/12 pl-8">
-              <label>Select Date :</label><br />
-              <input type="date" style=" border: 1px solid #c4c4c4;
-              border-radius: 5px;
-              background-color: #fff;
-              padding: 3px 5px;
-              box-shadow: inset 0 3px 6px rgba(0,0,0,0.1);
-            " width="48">
+          <div>
+            <div class="relative flex flex-col min-w-0 break-words bg-white shadow-soft-lg rounded-md mb-1 bg-clip-border">
+              <div class="flex-auto p-4">
+                <h5 class="text-center font-bold text-2xl">MONTE CARLO RESULT</h5>
+              </div>
             </div>
-            <div class="flex-auto p-6">
+            <div
+              class="py-4 relative flex flex-col mb-2 min-w-0 break-words bg-white shadow-soft-lg rounded-md bg-clip-border">
+              <div class="flex-auto p-6">
                 <apx-chart [series]="monteCarlo.series" [chart]="monteCarlo.chart" [dataLabels]="monteCarlo.dataLabels"
                   [plotOptions]="monteCarlo.plotOptions" [yaxis]="monteCarlo.yaxis" [legend]="monteCarlo.legend"
-                  [fill]="monteCarlo.fill" [stroke]="monteCarlo.stroke" [tooltip]="monteCarlo.tooltip" [xaxis]="monteCarlo.xaxis"
-                  [colors]="monteCarlo.colors"></apx-chart>
+                  [fill]="monteCarlo.fill" [stroke]="monteCarlo.stroke" [tooltip]="monteCarlo.tooltip"
+                  [xaxis]="monteCarlo.xaxis" [colors]="monteCarlo.colors"></apx-chart>
+              </div>
             </div>
           </div>
         </div>
