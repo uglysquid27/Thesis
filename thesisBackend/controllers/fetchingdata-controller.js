@@ -29,7 +29,7 @@ const dataFetch = async () => {
             },
             group: [Sequelize.literal('interval_time')],
             order: [[literal('interval_time'), 'DESC']],
-            limit: 90
+            limit: 30
         });
 
         const historicalValues = historicalData.map(item => ({

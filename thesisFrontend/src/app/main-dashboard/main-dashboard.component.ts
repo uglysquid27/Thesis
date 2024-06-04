@@ -45,19 +45,19 @@ export class MainDashboardComponent implements OnInit {
 
       this.service.getDataSet().subscribe(data => {
         console.log(data);
-        
+
         const dataArray = Object.values(data);
-        
+
         dataArray.sort((a, b) => {
           const dateA = new Date(a.time.split('/').reverse().join('-')).getTime();
           const dateB = new Date(b.time.split('/').reverse().join('-')).getTime();
           return dateA - dateB;
         });
-        
+
         this.realDates = [];
         this.realTimes = [];
         this.realValues = [];
-        
+
         dataArray.forEach(item => {
           if (item.time && item.Label_Length_AVE) {
             const [date, time] = item.time.split(' '); // Assuming time is space-separated from date
@@ -66,48 +66,66 @@ export class MainDashboardComponent implements OnInit {
             this.realValues.push(item.Label_Length_AVE);
           }
         });
-        
+
         console.log(this.realValues);
         console.log(this.realDates);
         console.log(this.realTimes);
-        
+
         this.realValueChart();
       });
-      
+
       this.service.getMonteCarloTest().subscribe({
         next: (data: ForecastResponse) => {
-            console.log(data);
+          console.log(data);
 
-            // Access forecastedResultsWithTime from the response data
-            const forecastedResultsWithTime = data.forecastedResultsWithTime;
-            const mape = data.mape;
+          // Access forecastedResultsWithTime from the response data
+          const forecastedResultsWithTime = data.forecastedResultsWithTime;
+          const mape = data.mape;
 
-            console.log('Forecasted Results:', forecastedResultsWithTime);
-            console.log('MAPE:', mape);
+          // Sort the forecastedResultsWithTime array by date first and then hours
+          forecastedResultsWithTime.sort((a, b) => {
+            // Convert date strings to Date objects for comparison
+            const dateA = new Date(a.time);
+            const dateB = new Date(b.time);
 
-            // Assuming you need to process the forecastedResultsWithTime further
-            // Extracting time and values for further processing or charting
-            this.forecastValues = forecastedResultsWithTime.map(item => item.Label_Length_AVE);
-            this.forecastDates = forecastedResultsWithTime.map(item => item.time);
+            // Compare dates first
+            if (dateA < dateB) return -1;
+            if (dateA > dateB) return 1;
 
-            console.log('Forecast Values:', this.forecastValues);
-            console.log('Forecast Dates:', this.forecastDates);
+            // If dates are the same, compare hours
+            const hourA = parseInt(String(a.Label_Length_AVE).split(':')[0]);
+            const hourB = parseInt(String(b.Label_Length_AVE).split(':')[0]);
 
-            // Combine forecasted values with historical values if needed
-            this.combinedValues = [...this.realValues, ...this.forecastValues];
-            this.combinedDates = [...this.realDates, ...this.forecastDates];
+            return hourA - hourB;
+          });
 
-            this.monteCarloChart();
+          console.log('Sorted Forecasted Results:', forecastedResultsWithTime);
+          console.log('MAPE:', mape);
+
+          // Assuming you need to process the forecastedResultsWithTime further
+          // Extracting time and values for further processing or charting
+          this.forecastValues = forecastedResultsWithTime.map(item => item.Label_Length_AVE);
+          this.forecastDates = forecastedResultsWithTime.map(item => item.time);
+
+          console.log('Forecast Values:', this.forecastValues);
+          console.log('Forecast Dates:', this.forecastDates);
+
+          // Combine forecasted values with historical values if needed
+          this.combinedValues = [...this.realValues, ...this.forecastValues];
+          this.combinedDates = [...this.realDates, ...this.forecastDates];
+
+          this.monteCarloChart();
         },
         error: (error) => {
-            console.error('Error fetching forecast data', error);
+          console.error('Error fetching forecast data', error);
         },
         complete: () => {
-            this.spinner.hide();
+          this.spinner.hide();
         }
       });
 
-      resolve(); 
+
+      resolve();
     });
 
     await this.loaddata;
@@ -118,7 +136,7 @@ export class MainDashboardComponent implements OnInit {
       series: [
         {
           name: "Desktops",
-          data: this.realValues  
+          data: this.realValues
         }
       ],
       chart: {
@@ -128,7 +146,7 @@ export class MainDashboardComponent implements OnInit {
           enabled: false
         }
       },
-      colors: ['#40A2D8'], 
+      colors: ['#40A2D8'],
       dataLabels: {
         enabled: false
       },
@@ -146,7 +164,7 @@ export class MainDashboardComponent implements OnInit {
         }
       },
       xaxis: {
-        categories: this.realTimes 
+        categories: this.realTimes
       }
     };
   }
@@ -156,7 +174,7 @@ export class MainDashboardComponent implements OnInit {
       series: [
         {
           name: "Desktops",
-          data: this.forecastValues  
+          data: this.forecastValues
         }
       ],
       chart: {
@@ -166,7 +184,7 @@ export class MainDashboardComponent implements OnInit {
           enabled: false
         }
       },
-      colors: ['#f24333'], 
+      colors: ['#f24333'],
       dataLabels: {
         enabled: false
       },
@@ -184,7 +202,7 @@ export class MainDashboardComponent implements OnInit {
         }
       },
       xaxis: {
-        categories: this.combinedDates 
+        categories: this.combinedDates
       }
     };
   }
