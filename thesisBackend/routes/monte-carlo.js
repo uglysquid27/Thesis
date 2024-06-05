@@ -1,15 +1,8 @@
 var express = require("express");
 var router = express.Router();
-// const moment = require("moment");
-// const path = require("path");
-// const multer = require("multer");
 var monteCarloController = require("../controllers/monte-carlo-controller")
 
-/* GET home page. */
-router.get('/', monteCarloController.index);
-router.get('/all', monteCarloController.all);
-// router.get('/testing', monteCarloController.montecarlotest);
-
-
+/* GET Monte Carlo Calculation. */
+router.get('/montecarlocalc', monteCarloController.index);
 
 module.exports = router;

@@ -29,6 +29,6 @@ export class CountService {
     return this.httpClient.get(api + 'arima/' + "testing");
   }
   getMonteCarloTest() {
-    return this.httpClient.get<ForecastResponse>(api + 'montecarlo/');
+    return this.httpClient.get<ForecastResponse>(api + 'montecarlo/montecarlocalc');
   }
 }

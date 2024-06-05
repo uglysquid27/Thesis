@@ -35,7 +35,7 @@ const dataFetch = async () => {
         const historicalValues = historicalData.map(item => ({
             time: formatTime(item.dataValues.interval_time),
             Label_Length_AVE: parseFloat(item.dataValues.Label_Length_AVE)
-        }));
+        })); 
 
         return { historicalValues };
     } catch (error) {

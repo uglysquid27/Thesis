@@ -21,6 +21,5 @@ exports.checkDatabaseConnection = async (sequelize) => {
   }
 };
 
-// MYSQL
 exports.test = db('test');
 exports.production = db('production');
