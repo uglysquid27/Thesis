@@ -22,4 +22,4 @@ exports.checkDatabaseConnection = async (sequelize) => {
 };
 
 exports.test = db('test');
-exports.production = db('production');
+exports.production = db('production'); 
