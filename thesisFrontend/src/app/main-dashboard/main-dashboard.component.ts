@@ -57,7 +57,7 @@ export class MainDashboardComponent implements OnInit {
         this.realDates = [];
         this.realTimes = [];
         this.realValues = [];
-
+ 
         dataArray.forEach(item => {
           if (item.time && item.Label_Length_AVE) {
             const [date, time] = item.time.split(' '); // Assuming time is space-separated from date
