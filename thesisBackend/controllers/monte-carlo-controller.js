@@ -1,7 +1,6 @@
 const { log } = require('console');
 const { LabelTab } = require('../models/label_plan');
 const { Op, fn, col, literal, Sequelize } = require('sequelize');
-const fs = require('fs');
 const express = require('express');
 const app = express();
 
@@ -32,20 +31,23 @@ const monteCarlo = async (req, res) => {
             },
             group: [Sequelize.literal('interval_time')],
             order: [[Sequelize.literal('interval_time'), 'DESC']],
-            limit: 30
+            limit: 40 // Fetch an additional 10 data points for comparison
         });
 
         // Format the fetched data
         const historicalValues = historicalData.map(item => ({
             time: formatTime(item.dataValues.interval_time),
             Label_Length_AVE: parseFloat(item.dataValues.Label_Length_AVE)
-        }));
+        })).reverse(); // Reverse to get the data in chronological order
+
+        // Use the last 30 data points for simulation
+        const simulationBaseData = historicalValues.slice(0, 30);
 
         const numberOfSimulations = 1000;
 
         // Generate simulations
         const simulations = Array.from({ length: numberOfSimulations }, () => {
-            return historicalValues.map(dataPoint => {
+            return simulationBaseData.map(dataPoint => {
                 // Adjust deviation range for more realistic simulation (e.g., -0.1 to 0.1)
                 const deviation = (Math.random() - 0.5) * 0.2;
                 const newValue = dataPoint.Label_Length_AVE * (1 + deviation);
@@ -68,31 +70,32 @@ const monteCarlo = async (req, res) => {
         });
 
         // Get the last historical time and generate times for the forecast
-        const lastHistoricalTime = new Date(historicalValues[0].time);
+        const lastHistoricalTime = new Date(simulationBaseData[simulationBaseData.length - 1].time);
         const forecastTimes = [];
-        for (let i = 1; i <= forecastedAverages.length; i++) {
+        for (let i = 1; i <= 10; i++) {
             const forecastTime = new Date(lastHistoricalTime.getTime() + i * 10 * 60 * 1000);
             forecastTimes.push(formatTime(forecastTime));
         }
 
         // Combine forecasted values with their corresponding times
-        const forecastedResultsWithTime = forecastedAverages.map((value, index) => ({
+        const forecastedResultsWithTime = forecastedAverages.slice(0, 10).map((value, index) => ({
             time: forecastTimes[index],
             Label_Length_AVE: value
         }));
 
-        // Calculate MAPE
-        const mape = historicalValues.reduce((totalError, historicalValue, index) => {
+        // Calculate MAPE using the last 10 historical values for comparison
+        const actualValuesForComparison = historicalValues.slice(30);
+        const mape = actualValuesForComparison.reduce((totalError, historicalValue, index) => {
             const forecastValue = forecastedResultsWithTime[index]?.Label_Length_AVE;
             if (forecastValue !== undefined) {
                 const error = Math.abs((historicalValue.Label_Length_AVE - forecastValue) / historicalValue.Label_Length_AVE);
                 return totalError + error;
             }
             return totalError;
-        }, 0) / historicalValues.length * 100;
+        }, 0) / 10 * 100;
 
         console.log('Monte Carlo Forecast:', forecastedResultsWithTime);
-        console.log('Historical values with formatted time:', historicalValues);
+        console.log('Historical values with formatted time:', actualValuesForComparison);
         console.log('MAPE:', mape);
 
         // Send the JSON response

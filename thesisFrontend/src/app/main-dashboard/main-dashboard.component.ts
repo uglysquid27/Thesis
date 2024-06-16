@@ -23,7 +23,6 @@ export class MainDashboardComponent implements OnInit {
   forecastDates: string[] = [];
   realValues: number[] = [];
   realDates: string[] = [];
-  realTimes: string[] = [];
   combinedValues: number[] = [];
   combinedDates: string[] = [];
   mape: number | undefined;
@@ -55,23 +54,19 @@ export class MainDashboardComponent implements OnInit {
         });
 
         this.realDates = [];
-        this.realTimes = [];
         this.realValues = [];
  
         dataArray.forEach(item => {
           if (item.time && item.Label_Length_AVE) {
-            const [date, time] = item.time.split(' '); // Assuming time is space-separated from date
-            this.realDates.push(date);
-            this.realTimes.push(time);
+            this.realDates.push(item.time);
             this.realValues.push(item.Label_Length_AVE);
           }
         });
 
         console.log(this.realValues);
         console.log(this.realDates);
-        console.log(this.realTimes);
 
-        this.realValueChart();
+        this.updateCharts();
       });
 
       this.service.getMonteCarloTest().subscribe({
@@ -82,27 +77,12 @@ export class MainDashboardComponent implements OnInit {
           const forecastedResultsWithTime = data.forecastedResultsWithTime;
           const mape = data.mape;
 
-          // Sort the forecastedResultsWithTime array by date first and then hours
-          forecastedResultsWithTime.sort((a, b) => {
-            // Convert date strings to Date objects for comparison
-            const dateA = new Date(a.time);
-            const dateB = new Date(b.time);
-
-            // Compare dates first
-            if (dateA < dateB) return -1;
-            if (dateA > dateB) return 1;
-
-            // If dates are the same, compare hours
-            const hourA = parseInt(String(a.Label_Length_AVE).split(':')[0]);
-            const hourB = parseInt(String(b.Label_Length_AVE).split(':')[0]);
-
-            return hourA - hourB;
-          });
+          // Sort the forecastedResultsWithTime array by date
+          forecastedResultsWithTime.sort((a, b) => new Date(a.time).getTime() - new Date(b.time).getTime());
 
           console.log('Sorted Forecasted Results:', forecastedResultsWithTime);
           console.log('MAPE:', mape);
 
-          // Assuming you need to process the forecastedResultsWithTime further
           // Extracting time and values for further processing or charting
           this.forecastValues = forecastedResultsWithTime.map(item => item.Label_Length_AVE);
           this.forecastDates = forecastedResultsWithTime.map(item => item.time);
@@ -114,7 +94,7 @@ export class MainDashboardComponent implements OnInit {
           this.combinedValues = [...this.realValues, ...this.forecastValues];
           this.combinedDates = [...this.realDates, ...this.forecastDates];
 
-          this.monteCarloChart();
+          this.updateCharts();
         },
         error: (error) => {
           console.error('Error fetching forecast data', error);
@@ -124,19 +104,27 @@ export class MainDashboardComponent implements OnInit {
         }
       });
 
-
       resolve();
     });
 
     await this.loaddata;
   }
 
+  updateCharts() {
+    this.realValueChart();
+    this.monteCarloChart();
+  }
+
   realValueChart() {
     this.dataSet = {
       series: [
         {
-          name: "Desktops",
+          name: "Real Values",
           data: this.realValues
+        },
+        {
+          name: "Forecasted Values",
+          data: this.forecastValues.slice(0, this.realValues.length) // Match length with real values
         }
       ],
       chart: {
@@ -146,7 +134,7 @@ export class MainDashboardComponent implements OnInit {
           enabled: false
         }
       },
-      colors: ['#40A2D8'],
+      colors: ['#40A2D8', '#f24333'],
       dataLabels: {
         enabled: false
       },
@@ -154,7 +142,7 @@ export class MainDashboardComponent implements OnInit {
         curve: "straight"
       },
       title: {
-        text: "Product Trends by Month",
+        text: "Real and Forecasted Values",
         align: "left"
       },
       grid: {
@@ -164,7 +152,7 @@ export class MainDashboardComponent implements OnInit {
         }
       },
       xaxis: {
-        categories: this.realTimes
+        categories: this.realDates // Use real dates for x-axis
       }
     };
   }
@@ -173,7 +161,7 @@ export class MainDashboardComponent implements OnInit {
     this.monteCarlo = {
       series: [
         {
-          name: "Desktops",
+          name: "Forecasted Values",
           data: this.forecastValues
         }
       ],
@@ -192,7 +180,7 @@ export class MainDashboardComponent implements OnInit {
         curve: "straight"
       },
       title: {
-        text: "Product Trends by Month",
+        text: "Forecasted Values",
         align: "left"
       },
       grid: {
@@ -202,7 +190,7 @@ export class MainDashboardComponent implements OnInit {
         }
       },
       xaxis: {
-        categories: this.combinedDates
+        categories: this.forecastDates
       }
     };
   }
