@@ -25,6 +25,13 @@ export class MainDashboardComponent implements OnInit {
   realDates: string[] = [];
   combinedValues: number[] = [];
   combinedDates: string[] = [];
+
+  forecastValuesA: number[] = [];
+  forecastDatesA: string[] = [];
+  realValuesA: number[] = [];
+  realDatesA: string[] = [];
+  combinedValuesA: number[] = [];
+  combinedDatesA: string[] = [];
   mape: number | undefined;
 
   showSuccessAlert: boolean = true;
@@ -104,6 +111,41 @@ export class MainDashboardComponent implements OnInit {
         }
       });
 
+      this.service.getArimaTest().subscribe({
+        next: (data: ForecastResponse) => {
+          console.log(data);
+
+          // Access forecastedResultsWithTime from the response data
+          const forecastedResultsWithTime = data.forecastedResultsWithTime;
+          const mape = data.mape;
+
+          // Sort the forecastedResultsWithTime array by date
+          forecastedResultsWithTime.sort((a, b) => new Date(a.time).getTime() - new Date(b.time).getTime());
+
+          console.log('Sorted Forecasted Results:', forecastedResultsWithTime);
+          console.log('MAPE:', mape);
+
+          // Extracting time and values for further processing or charting
+          this.forecastValuesA = forecastedResultsWithTime.map(item => item.Label_Length_AVE);
+          this.forecastDatesA = forecastedResultsWithTime.map(item => item.time);
+
+          console.log('Forecast Values:', this.forecastValuesA);
+          console.log('Forecast Dates:', this.forecastDatesA);
+
+          // Combine forecasted values with historical values if needed
+          this.combinedValuesA = [...this.realValuesA, ...this.forecastValuesA];
+          this.combinedDatesA = [...this.realDatesA, ...this.forecastDatesA];
+
+          this.updateCharts();
+        },
+        error: (error) => {
+          console.error('Error fetching forecast data', error);
+        },
+        complete: () => {
+          this.spinner.hide();
+        }
+      });
+
       resolve();
     });
 
@@ -119,12 +161,16 @@ export class MainDashboardComponent implements OnInit {
     this.dataSet = {
       series: [
         {
-          name: "Real Values",
+          name: "Real Data",
           data: this.realValues
         },
         {
-          name: "Forecasted Values",
-          data: this.forecastValues.slice(0, this.realValues.length) // Match length with real values
+          name: "Monte Carlo",
+          data: this.forecastValues.slice(0, this.realValues.length)
+        },
+        {
+          name: "Arima",
+          data: this.forecastValuesA.slice(0, this.realValues.length)
         }
       ],
       chart: {
@@ -134,7 +180,7 @@ export class MainDashboardComponent implements OnInit {
           enabled: false
         }
       },
-      colors: ['#40A2D8', '#f24333'],
+      colors: ['#40A2D8', '#f24333', '#57cc99'],
       dataLabels: {
         enabled: false
       },
