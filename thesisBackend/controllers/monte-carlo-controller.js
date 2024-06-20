@@ -31,7 +31,7 @@ const monteCarlo = async (req, res) => {
             },
             group: [Sequelize.literal('interval_time')],
             order: [[Sequelize.literal('interval_time'), 'DESC']],
-            limit: 40 // Fetch an additional 10 data points for comparison
+            limit: 40 // Fetch 40 data points
         });
 
         // Format the fetched data
@@ -40,7 +40,7 @@ const monteCarlo = async (req, res) => {
             Label_Length_AVE: parseFloat(item.dataValues.Label_Length_AVE)
         })).reverse(); // Reverse to get the data in chronological order
 
-        // Use the last 30 data points for simulation
+        // Use the first 30 data points for simulation
         const simulationBaseData = historicalValues.slice(0, 30);
 
         const numberOfSimulations = 1000;
@@ -84,7 +84,7 @@ const monteCarlo = async (req, res) => {
         }));
 
         // Calculate MAPE using the last 10 historical values for comparison
-        const actualValuesForComparison = historicalValues.slice(30);
+        const actualValuesForComparison = historicalValues.slice(30, 40);
         const mape = actualValuesForComparison.reduce((totalError, historicalValue, index) => {
             const forecastValue = forecastedResultsWithTime[index]?.Label_Length_AVE;
             if (forecastValue !== undefined) {
@@ -92,7 +92,7 @@ const monteCarlo = async (req, res) => {
                 return totalError + error;
             }
             return totalError;
-        }, 0) / 10 * 100;
+        }, 0) / actualValuesForComparison.length * 100;
 
         console.log('Monte Carlo Forecast:', forecastedResultsWithTime);
         console.log('Historical values with formatted time:', actualValuesForComparison);
@@ -105,6 +105,7 @@ const monteCarlo = async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 };
+
 
 const index = async (req, res) => {
     try {

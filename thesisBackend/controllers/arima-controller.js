@@ -32,7 +32,7 @@ const arimaForecast = async (req, res) => {
             },
             group: [Sequelize.literal('interval_time')],
             order: [[Sequelize.literal('interval_time'), 'DESC']],
-            limit: 40 // Fetch an additional 10 data points for comparison
+            limit: 40 // Fetch 40 data points
         });
 
         // Log the fetched data
@@ -44,7 +44,7 @@ const arimaForecast = async (req, res) => {
             Label_Length_AVE: Math.round(parseFloat(item.dataValues.Label_Length_AVE)) // Round to the nearest whole number
         })).reverse(); // Reverse to get the data in chronological order
 
-        // Use the last 30 data points for ARIMA
+        // Use the first 30 data points for ARIMA
         const simulationBaseData = historicalValues.slice(0, 30).map(item => item.Label_Length_AVE);
 
         // Initialize arrays to store forecasted values and times
@@ -57,7 +57,7 @@ const arimaForecast = async (req, res) => {
             forecastedValues.push(pred[0]);
 
             // Get the last historical time and generate time for the forecast
-            const lastHistoricalTime = new Date(historicalValues[historicalValues.length - 1].time);
+            const lastHistoricalTime = new Date(historicalValues[simulationBaseData.length - 1].time);
             const forecastTime = new Date(lastHistoricalTime.getTime() + i * 10 * 60 * 1000);
             forecastTimes.push(formatTime(forecastTime));
 
@@ -72,7 +72,7 @@ const arimaForecast = async (req, res) => {
         }));
 
         // Calculate MAPE using the last 10 historical values for comparison
-        const actualValuesForComparison = historicalValues.slice(30);
+        const actualValuesForComparison = historicalValues.slice(30, 40);
         const mape = actualValuesForComparison.reduce((totalError, historicalValue, index) => {
             const forecastValue = forecastedResultsWithTime[index]?.Label_Length_AVE;
             if (forecastValue !== undefined) {
@@ -80,7 +80,7 @@ const arimaForecast = async (req, res) => {
                 return totalError + error;
             }
             return totalError;
-        }, 0) / 10 * 100;
+        }, 0) / actualValuesForComparison.length * 100;
 
         console.log('ARIMA Forecast:', forecastedResultsWithTime);
         console.log('Historical values with formatted time:', actualValuesForComparison);
@@ -93,6 +93,7 @@ const arimaForecast = async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 };
+
 
 
 

@@ -133,8 +133,8 @@ export class MainDashboardComponent implements OnInit {
           console.log('Forecast Dates:', this.forecastDatesA);
 
           // Combine forecasted values with historical values if needed
-          this.combinedValuesA = [...this.realValuesA, ...this.forecastValuesA];
-          this.combinedDatesA = [...this.realDatesA, ...this.forecastDatesA];
+          this.combinedValuesA = [...this.realValues, ...this.forecastValuesA];
+          this.combinedDatesA = [...this.realDates, ...this.forecastDatesA];
 
           this.updateCharts();
         },
@@ -166,11 +166,11 @@ export class MainDashboardComponent implements OnInit {
         },
         {
           name: "Monte Carlo",
-          data: this.forecastValues.slice(0, this.realValues.length)
+          data: [...Array(this.realValues.length - 10).fill(null), ...this.forecastValues] // Pad with null values
         },
         {
           name: "Arima",
-          data: this.forecastValuesA.slice(0, this.realValues.length)
+          data: [...Array(this.realValues.length - 10).fill(null), ...this.forecastValuesA] // Pad with null values
         }
       ],
       chart: {
@@ -198,7 +198,7 @@ export class MainDashboardComponent implements OnInit {
         }
       },
       xaxis: {
-        categories: this.realDates // Use real dates for x-axis
+        categories: this.combinedDates // Use combined dates for x-axis
       }
     };
   }
@@ -208,7 +208,7 @@ export class MainDashboardComponent implements OnInit {
       series: [
         {
           name: "Forecasted Values",
-          data: this.forecastValues
+          data: [...Array(this.realValues.length - 10).fill(null), ...this.forecastValues] // Pad with null values
         }
       ],
       chart: {
@@ -236,7 +236,7 @@ export class MainDashboardComponent implements OnInit {
         }
       },
       xaxis: {
-        categories: this.forecastDates
+        categories: this.combinedDates
       }
     };
   }
