@@ -10,6 +10,7 @@ var usersRouter = require('./routes/users');
 var dataRouter = require('./routes/data');
 var arimaRouter = require('./routes/arima');
 var moncarRouter = require('./routes/monte-carlo');
+var importRouter = require('./routes/import');
 
 var app = express();
 
@@ -38,6 +39,7 @@ app.use('/users', usersRouter);
 app.use('/data', dataRouter);
 app.use('/arima', arimaRouter);
 app.use('/montecarlo', moncarRouter);
+app.use('/import', importRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
