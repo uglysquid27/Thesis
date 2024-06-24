@@ -18,6 +18,8 @@
     "@angular/platform-browser": "^16.2.0",
     "@angular/platform-browser-dynamic": "^16.2.0",
     "@angular/router": "^16.2.0",
+    "@ngneat/overview": "^6.0.0",
+    "@ngxpert/hot-toast": "^3.0.0",
     "apexcharts": "^3.49.1",
     "chart.js": "^4.4.3",
     "ng-apexcharts": "^1.10.0",

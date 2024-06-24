@@ -53,13 +53,28 @@ const importFromCSV = async (filePath) => {
             .on('data', (data) => results.push(data))
             .on('end', async () => {
                 try {
-                    // Map the CSV data to match the database model
                     const formattedData = results.map(row => ({
-                        time: new Date(row.time), // Adjust based on your CSV format
-                        Label_Length_AVE: parseFloat(row.Label_Length_AVE)
+                        epochtime: parseInt(row.epochtime),
+                        time: new Date(row.time),
+                        plc_time: new Date(row.plc_time),
+                        ms: row.ms ? parseInt(row.ms) : null,
+                        modify: row.modify ? parseInt(row.modify) : null,
+                        lotno1: row.lotno1,
+                        prod_order1: row.prod_order1,
+                        Label_Length_AVE: parseFloat(row.Label_Length_AVE),
+                        Label_Length_PV: parseFloat(row.Label_Length_PV),
+                        Label_Length_SV: parseFloat(row.Label_Length_SV),
+                        Temp_G_Roller_Body_PV: parseFloat(row.Temp_G_Roller_Body_PV),
+                        Temp_Glue_Bar_PV: parseFloat(row.Temp_Glue_Bar_PV),
+                        Temp_Glue_PV: parseFloat(row.Temp_Glue_PV),
+                        Temp_Glue_Scrapper_PV: parseFloat(row.Temp_Glue_Scrapper_PV),
+                        Temp_Glue_Tank_PV: parseFloat(row.Temp_Glue_Tank_PV),
+                        Temp_Glue_Roller_PV: parseFloat(row.Temp_Glue_Roller_PV),
+                        Speed_Label: parseFloat(row.Speed_Label),
+                        bpd_Lower_pressure_Min: parseFloat(row.bpd_Lower_pressure_Min),
+                        bpd_Upper_pressure_Max: parseFloat(row.bpd_Upper_pressure_Max)
                     }));
 
-                    // Bulk insert into the database
                     await LabelTab.bulkCreate(formattedData);
                     resolve({ message: 'Data imported successfully' });
                 } catch (error) {
