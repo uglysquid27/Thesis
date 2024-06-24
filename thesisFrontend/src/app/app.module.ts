@@ -9,13 +9,15 @@ import { AppComponent } from './app.component';
 import { MainDashboardComponent } from './main-dashboard/main-dashboard.component';
 import { SidebarComponent } from './layout/sidebar/sidebar.component';
 import { NavbarComponent } from './layout/navbar/navbar.component';
+import { ImportComponent } from './import/import.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     MainDashboardComponent,
     SidebarComponent,
-    NavbarComponent
+    NavbarComponent,
+    ImportComponent
   ],
   imports: [
     BrowserModule,

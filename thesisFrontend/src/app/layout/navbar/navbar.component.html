@@ -1,18 +1,31 @@
-<div data-aos="fade-down" data-aos-duration="1500" class="absolute left-28 right-4" style="width: calc(100% - 8rem);">
+<div data-aos="fade-down" data-aos-duration="1500" class="absolute left-28 right-4 pt-10" style="width: calc(100% - 8rem);">
   <nav class="px-1 w-full relative flex flex-col min-w-0 break-words">
     <div class="flex bg-gray-100 items-center justify-between w-full py-3 mx-auto shadow-soft-lg rounded-2xl bg-clip-border border-r shadow-lg">
-      <div class="px-10" *ngIf="router.url === '/'">
+      <div class="px-10" *ngIf="router.url === '/home'">
         <nav>
           <!-- breadcrumb -->
           <ol class="flex flex-wrap pt-1 bg-transparent rounded-lg">
             <li class="leading-normal text-sm">
-              <a class="opacity-50 text-slate-700" routerLink="/">Pages</a>
+              <a class="opacity-50 text-slate-700" routerLink="/home">Pages</a>
             </li>
-            <li class="text-sm pl-2 capitalize leading-normal text-slate-700 before:float-left before:pr-2 before:text-gray-600 before:content-['/']" aria-current="page">Dashboard</li>
+            <li class="text-sm pl-2 capitalize leading-normal text-slate-700 before:float-left before:pr-2 before:text-gray-600 before:content-['/']" aria-current="page">Home</li>
           </ol>
-          <h6 class="font-bold capitalize">Dashboard</h6>
+          <h6 class="font-bold capitalize">Home Page</h6>
         </nav>
       </div>
+      <div class="px-10" *ngIf="router.url === '/import'">
+        <nav>
+          <!-- breadcrumb -->
+          <ol class="flex flex-wrap pt-1 bg-transparent rounded-lg">
+            <li class="leading-normal text-sm">
+              <a class="opacity-50 text-slate-700" routerLink="/home">Pages</a>
+            </li>
+            <li class="text-sm pl-2 capitalize leading-normal text-slate-700 before:float-left before:pr-2 before:text-gray-600 before:content-['/']" aria-current="page">Import</li>
+          </ol>
+          <h6 class="font-bold capitalize">Import Page</h6>
+        </nav>
+      </div>
+      
       <div class="flex items-start mt-2 grow sm:mt-0 sm:mr-6 md:mr-0 lg:flex lg:basis-auto">
         <div class="flex items-start md:ml-auto md:pr-4">
           <div class="relative flex flex-wrap items-stretch w-full transition-all rounded-lg ease-soft">
