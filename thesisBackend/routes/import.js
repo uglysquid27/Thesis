@@ -1,7 +1,7 @@
 const express = require('express');
 const multer = require('multer');
 const path = require('path');
-const { importCSV, index } = require('./controllers/yourController'); 
+const { importCSV, index } = require('./../controllers/import-controller'); 
 const app = express();
 const upload = multer({ dest: 'uploads/' });
 
