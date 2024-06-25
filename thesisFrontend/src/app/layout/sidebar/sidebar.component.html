@@ -20,6 +20,21 @@
         </li>
         <li>
           <a [ngClass]="
+            router.url == '/detail' 
+              ? 'text-gray-100 mx-4 bg-gradient-to-br from-[#87CEFA] via-[#1E90FF] to-[#00BFFF] group-hover:from-[#00BFFF] group-hover:via-[#1E90FF] group-hover:to-[#87CEFA] rounded-xl' 
+              : 'text-gray-600 hover:text-blue-400 hover:bg-gray-100 pl-4 duration-200'
+            " 
+            routerLink="/detail" 
+            class="relative flex items-center py-3 space-x-4 group">
+            <span class="inline-flex items-center justify-center ml-3.5 relative">
+                <svg xmlns="http://www.w3.org/2000/svg" id="Layer_1" data-name="Layer 1" viewBox="0 0 1024 1024" width="20" height="20" >
+                  <path class="fill-current " fill-rule="evenodd" d="M143.04 839.552c43.584 0 79.104-35.52 79.104-79.104v-448a79.168 79.168 0 0 0-158.08 0l-0.064 448c0 43.584 35.456 79.104 79.04 79.104z m-26.368-527.104a26.368 26.368 0 0 1 52.736 0v448a26.368 26.368 0 0 1-52.736 0v-448z m263.552 527.104c43.584 0 79.04-35.52 79.04-79.104V523.264c0-43.52-35.456-79.04-79.04-79.04s-79.04 35.456-79.04 79.04v237.184c0 43.584 35.456 79.104 79.04 79.104zM353.92 523.264a26.368 26.368 0 0 1 52.736 0v237.184a26.368 26.368 0 0 1-52.736 0V523.264z m500.736 316.288c43.584 0 79.04-35.52 79.04-79.104v-158.08c0-43.584-35.456-79.104-79.04-79.104s-79.04 35.52-79.04 79.104v158.08c0 43.584 35.456 79.104 79.04 79.104z m-26.368-237.184a26.368 26.368 0 0 1 52.736 0v158.08a26.368 26.368 0 0 1-52.736 0v-158.08z m-210.816 237.184c43.584 0 79.04-35.52 79.04-79.104V207.04c0-43.52-35.456-79.04-79.04-79.04s-79.04 35.456-79.04 79.04v553.408c0 43.584 35.456 79.104 79.04 79.104z m-26.368-632.512a26.368 26.368 0 0 1 52.736 0v553.408a26.368 26.368 0 0 1-52.736 0V207.04zM64 892.224h896v52.736H64v-52.736z" fill="#000000" />
+                </svg>
+            </span>
+          </a>
+        </li>
+        <li>
+          <a [ngClass]="
             router.url == '/import'
               ? 'text-gray-100 mx-4 bg-gradient-to-br from-[#87CEFA] via-[#1E90FF] to-[#00BFFF] group-hover:from-[#00BFFF] group-hover:via-[#1E90FF] group-hover:to-[#87CEFA] rounded-xl'
               : 'text-gray-600 hover:text-blue-400 hover:bg-gray-100 pl-4 duration-200'

@@ -13,6 +13,18 @@
           <h6 class="font-bold capitalize">Home Page</h6>
         </nav>
       </div>
+      <div class="px-10" *ngIf="router.url === '/detail'">
+        <nav>
+          <!-- breadcrumb -->
+          <ol class="flex flex-wrap pt-1 bg-transparent rounded-lg">
+            <li class="leading-normal text-sm">
+              <a class="opacity-50 text-slate-700" routerLink="/home">Pages</a>
+            </li>
+            <li class="text-sm pl-2 capitalize leading-normal text-slate-700 before:float-left before:pr-2 before:text-gray-600 before:content-['/']" aria-current="page">Detail</li>
+          </ol>
+          <h6 class="font-bold capitalize">Detail Page</h6>
+        </nav>
+      </div>
       <div class="px-10" *ngIf="router.url === '/import'">
         <nav>
           <!-- breadcrumb -->

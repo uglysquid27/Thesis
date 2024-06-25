@@ -10,6 +10,7 @@ import { MainDashboardComponent } from './main-dashboard/main-dashboard.componen
 import { SidebarComponent } from './layout/sidebar/sidebar.component';
 import { NavbarComponent } from './layout/navbar/navbar.component';
 import { ImportComponent } from './import/import.component';
+import { DetailComponent } from './detail/detail.component';
 
 @NgModule({
   declarations: [
@@ -17,7 +18,8 @@ import { ImportComponent } from './import/import.component';
     MainDashboardComponent,
     SidebarComponent,
     NavbarComponent,
-    ImportComponent
+    ImportComponent,
+    DetailComponent
   ],
   imports: [
     BrowserModule,
