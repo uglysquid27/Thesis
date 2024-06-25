@@ -1,7 +1,10 @@
 const express = require('express');
 const multer = require('multer');
 const path = require('path');
+const fs = require('fs');
 const { importCSV, index } = require('./../controllers/import-controller'); 
+const fetchingdataController = require("../controllers/fetchingdata-controller");
+
 const app = express();
 const router = express.Router();
 const upload = multer({ dest: 'uploads/' });
