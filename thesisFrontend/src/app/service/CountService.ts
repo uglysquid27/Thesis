@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { UrlHandlingStrategy } from '@angular/router';
 import { environment } from '../../environments/environments';
-import { catchError } from 'rxjs';
+import { Observable, catchError } from 'rxjs';
 
 var api = environment.baseUrlApi;
 
@@ -30,5 +30,14 @@ export class CountService {
   }
   getMonteCarloTest() {
     return this.httpClient.get<ForecastResponse>(api + 'montecarlo/' + 'montecarlocalc');
+  }
+  uploadFile(file: File): Observable<any> {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const headers = new HttpHeaders();
+    headers.append('Accept', 'application/json');
+
+    return this.httpClient.post(api + 'upload/', formData, { headers });
   }
 }
