@@ -17,6 +17,9 @@ const formatTime = (timeString) => {
 
 const monteCarlo = async (req, res) => {
     try {
+        // Object to store intermediate results
+        const steps = {};
+
         // Fetch historical data with intervals rounded to 10 minutes
         const historicalData = await LabelTab.findAll({
             attributes: [
@@ -34,14 +37,20 @@ const monteCarlo = async (req, res) => {
             limit: 40 // Fetch 40 data points
         });
 
+        steps.historicalData = historicalData; // Store historical data step
+
         // Format the fetched data
         const historicalValues = historicalData.map(item => ({
             time: formatTime(item.dataValues.interval_time),
             Label_Length_AVE: parseFloat(item.dataValues.Label_Length_AVE)
         })).reverse(); // Reverse to get the data in chronological order
 
+        steps.formattedData = historicalValues; // Store formatted data step
+
         // Use the first 30 data points for simulation
         const simulationBaseData = historicalValues.slice(0, 30);
+
+        steps.simulationBaseData = simulationBaseData; // Store base data for simulation
 
         const numberOfSimulations = 1000;
 
@@ -55,6 +64,8 @@ const monteCarlo = async (req, res) => {
             });
         });
 
+        steps.simulations = simulations; // Store simulations
+
         // Aggregate results by time intervals
         const forecastResults = simulations.reduce((acc, curr) => {
             curr.forEach((dataPoint, index) => {
@@ -63,11 +74,15 @@ const monteCarlo = async (req, res) => {
             return acc;
         }, []);
 
+        steps.forecastResults = forecastResults; // Store forecast results
+
         // Calculate the average forecasted value for each interval
         const forecastedAverages = forecastResults.map(simulation => {
             const sum = simulation.reduce((total, dataPoint) => total + dataPoint.Label_Length_AVE, 0);
             return sum / simulation.length;
         });
+
+        steps.forecastedAverages = forecastedAverages; // Store forecasted averages
 
         // Get the last historical time and generate times for the forecast
         const lastHistoricalTime = new Date(simulationBaseData[simulationBaseData.length - 1].time);
@@ -77,11 +92,15 @@ const monteCarlo = async (req, res) => {
             forecastTimes.push(formatTime(forecastTime));
         }
 
+        steps.forecastTimes = forecastTimes; // Store forecast times
+
         // Combine forecasted values with their corresponding times
         const forecastedResultsWithTime = forecastedAverages.slice(0, 10).map((value, index) => ({
             time: forecastTimes[index],
             Label_Length_AVE: value
         }));
+
+        steps.forecastedResultsWithTime = forecastedResultsWithTime; // Store final forecasted results with time
 
         // Calculate MAPE using the last 10 historical values for comparison
         const actualValuesForComparison = historicalValues.slice(30, 40);
@@ -94,18 +113,20 @@ const monteCarlo = async (req, res) => {
             return totalError;
         }, 0) / actualValuesForComparison.length * 100;
 
+        steps.mape = mape; // Store MAPE
+
         console.log('Monte Carlo Forecast:', forecastedResultsWithTime);
         console.log('Historical values with formatted time:', actualValuesForComparison);
         console.log('MAPE:', mape);
+        console.log('Steps:', steps);
 
-        // Send the JSON response
-        res.json({ forecastedResultsWithTime, mape });
+        // Send the JSON response including all steps
+        res.json({ forecastedResultsWithTime, mape, steps });
     } catch (error) {
         console.error('Error in Monte Carlo Forecasting:', error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 };
-
 
 const index = async (req, res) => {
     try {
