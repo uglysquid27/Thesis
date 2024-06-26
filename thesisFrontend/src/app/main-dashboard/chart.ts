@@ -29,4 +29,5 @@ export type ChartOptions = {
 };
 
 export type monteCarlo = ChartOptions;
+export type monteCarloDetail = ChartOptions;
 export type dataSet = ChartOptions;

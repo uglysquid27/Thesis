@@ -28,5 +28,7 @@ export type ChartOptions = {
   grid: ApexGrid; // Add the grid type here
 };
 
+export type monteCarloDetail = ChartOptions;
+export type arimaDetail = ChartOptions;
 export type monteCarlo = ChartOptions;
 export type dataSet = ChartOptions;

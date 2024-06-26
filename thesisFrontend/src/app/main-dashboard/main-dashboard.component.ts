@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CountService } from '../service/CountService';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { monteCarlo, dataSet } from './chart';
+import { monteCarlo, dataSet, monteCarloDetail } from './chart';
 
 interface ForecastResponse {
   forecastedResultsWithTime: Array<{ time: string, Label_Length_AVE: number }>;
@@ -15,6 +15,7 @@ interface ForecastResponse {
 })
 export class MainDashboardComponent implements OnInit {
   public monteCarlo: Partial<monteCarlo> | any;
+  public monteCarloDetail: Partial<monteCarloDetail> | any;
   public dataSet: Partial<dataSet> | any;
   public resolved: boolean = false;
   public loaddata: any;

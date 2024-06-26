@@ -9,10 +9,10 @@
                     <h5 class="text-center font-bold text-2xl">ARIMA</h5>
                   </div>
                   <div class="flex-auto p-6">
-                    <apx-chart [series]="dataSet.series" [chart]="dataSet.chart" [dataLabels]="dataSet.dataLabels"
-                      [plotOptions]="dataSet.plotOptions" [yaxis]="dataSet.yaxis" [legend]="dataSet.legend"
-                      [fill]="dataSet.fill" [stroke]="dataSet.stroke" [tooltip]="dataSet.tooltip" [xaxis]="dataSet.xaxis"
-                      [colors]="dataSet.colors"></apx-chart>
+                    <apx-chart [series]="arimaDetail.series" [chart]="arimaDetail.chart" [dataLabels]="arimaDetail.dataLabels"
+                      [plotOptions]="arimaDetail.plotOptions" [yaxis]="arimaDetail.yaxis" [legend]="arimaDetail.legend"
+                      [fill]="arimaDetail.fill" [stroke]="arimaDetail.stroke" [tooltip]="arimaDetail.tooltip" [xaxis]="arimaDetail.xaxis"
+                      [colors]="arimaDetail.colors"></apx-chart>
                   </div>
                 </div>
               </div>
@@ -23,10 +23,10 @@
                     <h5 class="text-center font-bold text-2xl">MONTE CARLO</h5>
                   </div>
                   <div class="flex-auto p-6">
-                    <apx-chart [series]="monteCarlo.series" [chart]="monteCarlo.chart" [dataLabels]="monteCarlo.dataLabels"
-                      [plotOptions]="monteCarlo.plotOptions" [yaxis]="monteCarlo.yaxis" [legend]="monteCarlo.legend"
-                      [fill]="monteCarlo.fill" [stroke]="monteCarlo.stroke" [tooltip]="monteCarlo.tooltip" [xaxis]="monteCarlo.xaxis"
-                      [colors]="monteCarlo.colors"></apx-chart>
+                    <apx-chart [series]="monteCarloDetail.series" [chart]="monteCarloDetail.chart" [dataLabels]="monteCarloDetail.dataLabels"
+                      [plotOptions]="monteCarloDetail.plotOptions" [yaxis]="monteCarloDetail.yaxis" [legend]="monteCarloDetail.legend"
+                      [fill]="monteCarloDetail.fill" [stroke]="monteCarloDetail.stroke" [tooltip]="monteCarloDetail.tooltip" [xaxis]="monteCarloDetail.xaxis"
+                      [colors]="monteCarloDetail.colors"></apx-chart>
                   </div>
                 </div>
               </div>
@@ -36,9 +36,9 @@
             <table class="min-w-full bg-white">
               <thead class="bg-gray-800 text-white shadow-soft-lg rounded-xl bg-clip-border border-r shadow-lg">
                 <tr>
-                  <th class="w-1/3 py-2 px-4">Name</th>
-                  <th class="w-1/3 py-2 px-4">Age</th>
-                  <th class="w-1/3 py-2 px-4">Occupation</th>
+                  <th class="w-1/3 py-2 px-4">Real Value</th>
+                  <th class="w-1/3 py-2 px-4">Forecast</th>
+                  <th class="w-1/3 py-2 px-4">Error %</th>
                 </tr>
               </thead>
               <tbody>
@@ -55,9 +55,9 @@
             <table class="min-w-full bg-white">
               <thead class="bg-gray-800 text-white shadow-soft-lg rounded-xl bg-clip-border border-r shadow-lg">
                 <tr>
-                  <th class="w-1/3 py-2 px-4">Name</th>
-                  <th class="w-1/3 py-2 px-4">Age</th>
-                  <th class="w-1/3 py-2 px-4">Occupation</th>
+                  <th class="w-1/3 py-2 px-4">Real Value</th>
+                  <th class="w-1/3 py-2 px-4">Forecast</th>
+                  <th class="w-1/3 py-2 px-4">Error %</th>
                 </tr>
               </thead>
               <tbody>

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CountService } from '../service/CountService';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { monteCarlo, dataSet } from './chart';
+import { monteCarlo, dataSet, monteCarloDetail, arimaDetail } from './chart';
 
 interface ForecastResponse {
   forecastedResultsWithTime: Array<{ time: string, Label_Length_AVE: number }>;
@@ -15,6 +15,8 @@ interface ForecastResponse {
 })
 export class DetailComponent implements OnInit {
   public monteCarlo: Partial<monteCarlo> | any;
+  public monteCarloDetail: Partial<monteCarloDetail> | any;
+  public arimaDetail: Partial<arimaDetail> | any;
   public dataSet: Partial<dataSet> | any;
   public resolved: boolean = false;
   public loaddata: any;
@@ -102,6 +104,7 @@ export class DetailComponent implements OnInit {
           this.combinedDates = [...this.realDates, ...this.forecastDates];
 
           this.updateCharts();
+          this.monteCarloChartDetail();
         },
         error: (error) => {
           console.error('Error fetching forecast data', error);
@@ -137,6 +140,7 @@ export class DetailComponent implements OnInit {
           this.combinedDatesA = [...this.realDates, ...this.forecastDatesA];
 
           this.updateCharts();
+          this.ArimaChartDetail();
         },
         error: (error) => {
           console.error('Error fetching forecast data', error);
@@ -238,6 +242,82 @@ export class DetailComponent implements OnInit {
       xaxis: {
         categories: this.combinedDates
       }
+    };
+  }
+
+  monteCarloChartDetail() {
+    this.monteCarloDetail = {
+       series: [
+        {
+          name: "Forecasted Values",
+          data: this.forecastValues
+        }
+      ],
+      chart: {
+        height: 550,
+        type: "line",
+        zoom: {
+          enabled: false
+        }
+      },
+      colors: ['#f24333'],
+      dataLabels: {
+        enabled: false
+      },
+      stroke: {
+        curve: "straight"
+      },
+      title: {
+        text: "Forecasted Values",
+        align: "left"
+      },
+      grid: {
+        row: {
+          colors: ["#254336", "transparent"],
+          opacity: 0.5
+        }
+      },
+      xaxis: {
+        categories: this.forecastDates
+      }
+    };
+  }
+
+  ArimaChartDetail() {
+    this.arimaDetail = {
+       series: [
+        {
+          name: "Forecasted Values",
+          data: this.forecastValuesA
+        }
+      ],
+      chart: {
+        height: 550,
+        type: "line",
+        zoom: {
+          enabled: false
+        }
+      },
+      colors: ['#57cc99'],
+      dataLabels: {
+        enabled: false
+      },
+      stroke: {
+        curve: "straight"
+      },
+      title: {
+        text: "Forecasted Values",
+        align: "left"
+      },
+      grid: {
+        row: {
+          colors: ["#57cc99", "transparent"],
+          opacity: 0.5
+        }
+      },
+      xaxis: {
+        categories: this.forecastDatesA,
+      },
     };
   }
 }
