@@ -6,6 +6,7 @@ import { monteCarlo, dataSet, monteCarloDetail, arimaDetail } from './chart';
 interface ForecastResponse {
   forecastedResultsWithTime: Array<{ time: string, Label_Length_AVE: number }>;
   mape: number;
+  steps: any;
 }
 
 @Component({
@@ -35,6 +36,7 @@ export class DetailComponent implements OnInit {
   combinedValuesA: number[] = [];
   combinedDatesA: string[] = [];
   mape: number | undefined;
+  steps: any;
 
   showSuccessAlert: boolean = true;
   deskripsi: any = 'Loading..';
@@ -85,6 +87,7 @@ export class DetailComponent implements OnInit {
           // Access forecastedResultsWithTime from the response data
           const forecastedResultsWithTime = data.forecastedResultsWithTime;
           const mape = data.mape;
+          this.steps = data.steps;
 
           // Sort the forecastedResultsWithTime array by date
           forecastedResultsWithTime.sort((a, b) => new Date(a.time).getTime() - new Date(b.time).getTime());

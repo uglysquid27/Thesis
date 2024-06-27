@@ -34,7 +34,7 @@
         <thead class="bg-gray-800 text-white shadow-soft-lg rounded-xl bg-clip-border border-r shadow-lg">
           <tr>
             <th class="w-1/3 py-2 px-4">Real Value</th>
-            <th class="w-1/3 py-2 px-4">Forecast</th>
+            <th class="w-1/3 py-2 px-4"> ARIMA Forecast</th>
             <th class="w-1/3 py-2 px-4">Error %</th>
           </tr>
         </thead>
@@ -45,7 +45,7 @@
             <td class="py-2 px-4" *ngFor="let forecastValue of forecastValuesA; let j = index" [hidden]="i !== j">{{ getErrorPercentage(realValue, forecastValue) | number: '1.2-2' }}%</td>
           </tr>
           <tr class="bg-gray-200">
-            <td class="py-2 px-4" colspan="3">MAPE: {{ mapeA | number: '1.2-2' }}%</td>
+            <td class="py-2 px-4" colspan="3">ARIMA MAPE: {{ mapeA | number: '1.2-2' }}%</td>
           </tr>
         </tbody>
       </table>
@@ -56,7 +56,7 @@
         <thead class="bg-gray-800 text-white shadow-soft-lg rounded-xl bg-clip-border border-r shadow-lg">
           <tr>
             <th class="w-1/3 py-2 px-4">Real Value</th>
-            <th class="w-1/3 py-2 px-4">Forecast</th>
+            <th class="w-1/3 py-2 px-4">Monte Carlo Forecast</th>
             <th class="w-1/3 py-2 px-4">Error %</th>
           </tr>
         </thead>
@@ -67,7 +67,7 @@
             <td class="py-2 px-4" *ngFor="let forecastValue of forecastValues; let j = index" [hidden]="i !== j">{{ getErrorPercentage(realValue, forecastValue) | number: '1.2-2' }}%</td>
           </tr>
           <tr class="bg-gray-200">
-            <td class="py-2 px-4" colspan="3">MAPE: {{ mapeMc | number: '1.2-2' }}%</td>
+            <td class="py-2 px-4" colspan="3">Monte Carlo MAPE: {{ mapeMc | number: '1.2-2' }}%</td>
           </tr>
         </tbody>
       </table>

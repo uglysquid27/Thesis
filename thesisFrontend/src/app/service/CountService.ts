@@ -9,6 +9,7 @@ var api = environment.baseUrlApi;
 interface ForecastResponse {
   forecastedResultsWithTime: Array<{ time: string, Label_Length_AVE: number }>;
   mape: number;
+  steps: any;
 }
 
 @Injectable({
