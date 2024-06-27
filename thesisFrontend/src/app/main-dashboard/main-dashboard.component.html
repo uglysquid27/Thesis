@@ -28,4 +28,50 @@
       </div>
     </div>
   </div>
+  <div class="grid grid-cols-2">
+    <div class="overflow-x-auto w-full px-1 p-4">
+      <table class="min-w-full bg-white">
+        <thead class="bg-gray-800 text-white shadow-soft-lg rounded-xl bg-clip-border border-r shadow-lg">
+          <tr>
+            <th class="w-1/3 py-2 px-4">Real Value</th>
+            <th class="w-1/3 py-2 px-4">Forecast</th>
+            <th class="w-1/3 py-2 px-4">Error %</th>
+          </tr>
+        </thead>
+        <tbody class="text-center">
+          <tr *ngFor="let realValue of lastRealValues; let i = index" class="bg-gray-100 border-b shadow-soft-lg rounded-xl bg-clip-border border-r shadow-lg">
+            <td class="py-2 px-4">{{ realValue }}</td>
+            <td class="py-2 px-4" *ngFor="let forecastValue of forecastValuesA; let j = index" [hidden]="i !== j">{{ forecastValue }}</td>
+            <td class="py-2 px-4" *ngFor="let forecastValue of forecastValuesA; let j = index" [hidden]="i !== j">{{ getErrorPercentage(realValue, forecastValue) | number: '1.2-2' }}%</td>
+          </tr>
+          <tr class="bg-gray-200">
+            <td class="py-2 px-4" colspan="3">MAPE: {{ mapeA | number: '1.2-2' }}%</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  
+    <div class="overflow-x-auto w-full px-1 p-4">
+      <table class="min-w-full bg-white">
+        <thead class="bg-gray-800 text-white shadow-soft-lg rounded-xl bg-clip-border border-r shadow-lg">
+          <tr>
+            <th class="w-1/3 py-2 px-4">Real Value</th>
+            <th class="w-1/3 py-2 px-4">Forecast</th>
+            <th class="w-1/3 py-2 px-4">Error %</th>
+          </tr>
+        </thead>
+        <tbody class="text-center">
+          <tr *ngFor="let realValue of lastRealValues; let i = index" class="bg-gray-100 border-b shadow-soft-lg rounded-xl bg-clip-border border-r shadow-lg">
+            <td class="py-2 px-4">{{ realValue }}</td>
+            <td class="py-2 px-4" *ngFor="let forecastValue of forecastValues; let j = index" [hidden]="i !== j">{{ forecastValue }}</td>
+            <td class="py-2 px-4" *ngFor="let forecastValue of forecastValues; let j = index" [hidden]="i !== j">{{ getErrorPercentage(realValue, forecastValue) | number: '1.2-2' }}%</td>
+          </tr>
+          <tr class="bg-gray-200">
+            <td class="py-2 px-4" colspan="3">MAPE: {{ mapeMc | number: '1.2-2' }}%</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  
 </div>

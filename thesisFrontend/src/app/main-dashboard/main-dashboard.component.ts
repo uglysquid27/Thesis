@@ -23,6 +23,7 @@ export class MainDashboardComponent implements OnInit {
   forecastValues: number[] = [];
   forecastDates: string[] = [];
   realValues: number[] = [];
+  lastRealValues: number[] = [];
   realDates: string[] = [];
   combinedValues: number[] = [];
   combinedDates: string[] = [];
@@ -42,6 +43,29 @@ export class MainDashboardComponent implements OnInit {
 
   closeSuccessAlert() {
     this.showSuccessAlert = false;
+  }
+
+  getErrorPercentage(realValue: number, forecastValue: number): number {
+    return Math.abs((realValue - forecastValue) / realValue) * 100;
+  }
+
+  calculateMAPE(realValues: number[], forecastValues: number[]): number {
+    if (realValues.length !== forecastValues.length) {
+      return NaN; 
+    }
+    let totalError = 0;
+    for (let i = 0; i < realValues.length; i++) {
+      totalError += Math.abs((realValues[i] - forecastValues[i]) / realValues[i]);
+    }
+    return (totalError / realValues.length) * 100;
+  }
+
+  get mapeMc(): number {
+    return this.calculateMAPE(this.lastRealValues, this.forecastValues);
+  }
+
+  get mapeA(): number {
+    return this.calculateMAPE(this.lastRealValues, this.forecastValuesA);
   }
 
   async ngOnInit(): Promise<void> {
@@ -70,7 +94,7 @@ export class MainDashboardComponent implements OnInit {
             this.realValues.push(item.Label_Length_AVE);
           }
         });
-
+        this.lastRealValues = this.realValues.slice(-10);
         console.log(this.realValues);
         console.log(this.realDates);
 
