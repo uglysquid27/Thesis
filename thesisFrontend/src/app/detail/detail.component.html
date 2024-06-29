@@ -282,29 +282,47 @@
                   </div>
           
                   <!-- Step 5: Aggregate Results by Time Intervals -->
-                  <div class="mb-6">
-                    <h6 class="font-semibold mb-2">Step 5: Aggregate Results by Time Intervals</h6>
-                    <table class="min-w-full bg-white border-gray-200 shadow-lg rounded-xl">
-                      <thead class="bg-gray-800 text-white">
-                        <tr>
-                          <th class="py-2 px-4">Interval Index</th>
-                          <th class="py-2 px-4">Time</th>
-                          <th class="py-2 px-4">Label Length AVE</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <ng-container *ngFor="let interval of getFirstFiveItems(steps.forecastResults); let i = index">
-                          <tr *ngFor="let dataPoint of interval; let j = index">
-                            <ng-container *ngIf="j === 0">
-                              <td class="py-2 px-4" [attr.rowspan]="interval.length">{{ i + 1 }}</td>
-                            </ng-container>
-                            <td class="py-2 px-4">{{ dataPoint.time }}</td>
-                            <td class="py-2 px-4">{{ dataPoint.Label_Length_AVE }}</td>
-                          </tr>
-                        </ng-container>
-                      </tbody>
-                    </table>
-                  </div>
+                 <div class="mb-6">
+          <h6 class="font-semibold mb-2">Step 5: Aggregate Results by Time Intervals</h6>
+          <div class="max-h-96 overflow-y-auto">
+            <table class="min-w-full bg-white border-gray-200 shadow-lg rounded-xl">
+              <thead class="bg-gray-800 text-white">
+                <tr>
+                  <th class="py-2 px-4">Interval Index</th>
+                  <th class="py-2 px-4">Time</th>
+                  <th class="py-2 px-4">Label Length AVE</th>
+                </tr>
+              </thead>
+              <tbody>
+                <ng-container *ngFor="let interval of getPaginatedItems(steps.forecastResults, currentIntervalPage, itemsPerIntervalPage); let i = index">
+                  <tr *ngFor="let dataPoint of interval; let j = index">
+                    <ng-container *ngIf="j === 0">
+                      <td class="py-2 px-4" [attr.rowspan]="interval.length">{{ (currentIntervalPage - 1) * itemsPerIntervalPage + i + 1 }}</td>
+                    </ng-container>
+                    <td class="py-2 px-4">{{ dataPoint.time }}</td>
+                    <td class="py-2 px-4">{{ dataPoint.Label_Length_AVE }}</td>
+                  </tr>
+                </ng-container>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Scrollable Pagination controls -->
+          <div class="overflow-x-auto mt-4">
+            <div class="flex justify-center w-full">
+              <button (click)="changeIntervalPage(currentIntervalPage - 1)" [disabled]="currentIntervalPage === 1" class="px-4 py-2 mx-1 bg-gray-800 text-white rounded">Previous</button>
+              <div class="flex overflow-x-auto">
+                <button *ngFor="let page of [].constructor(getTotalPages(steps.forecastResults)); let i = index"
+                        (click)="changeIntervalPage(i + 1)"
+                        [class.bg-gray-600]="currentIntervalPage === i + 1"
+                        class="px-4 py-2 mx-1 bg-gray-800 text-white rounded">
+                  {{ i + 1 }}
+                </button>
+              </div>
+              <button (click)="changeIntervalPage(currentIntervalPage + 1)" [disabled]="currentIntervalPage === getTotalPages(steps.forecastResults)" class="px-4 py-2 mx-1 bg-gray-800 text-white rounded">Next</button>
+            </div>
+          </div>
+        </div>
           
                   <!-- Step 6: Calculate Forecasted Averages -->
                   <div class="mb-6">

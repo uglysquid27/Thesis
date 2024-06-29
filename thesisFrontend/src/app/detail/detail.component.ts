@@ -38,6 +38,13 @@ export class DetailComponent implements OnInit {
     return Math.ceil(data.length / this.itemsPerPage);
   }
 
+  currentIntervalPage = 1;
+itemsPerIntervalPage = 5;
+
+changeIntervalPage(page: number) {
+  this.currentIntervalPage = page;
+}
+
   forecastValues: number[] = [];
   forecastDates: string[] = [];
   realValues: number[] = [];
