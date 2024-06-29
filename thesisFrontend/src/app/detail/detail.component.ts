@@ -40,11 +40,16 @@ export class DetailComponent implements OnInit {
 
   showSuccessAlert: boolean = true;
   deskripsi: any = 'Loading..';
+i: any;
 
   constructor(private service: CountService, private spinner: NgxSpinnerService) { }
 
   closeSuccessAlert() {
     this.showSuccessAlert = false;
+  }
+
+  getFirstFiveItems(data: any[]): any[] {
+    return data.slice(0, 5);
   }
 
   async ngOnInit(): Promise<void> {

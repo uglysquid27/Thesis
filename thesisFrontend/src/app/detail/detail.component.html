@@ -34,186 +34,287 @@
       </div>
       <div class="grid grid-cols-2">
         <div class="overflow-x-auto w-full px-1 p-4">
-          <table class="min-w-full bg-white">
-            <thead class="bg-gray-800 text-white shadow-soft-lg rounded-xl bg-clip-border border-r shadow-lg">
-              <tr>
-                <th class="w-1/3 py-2 px-4">Real Value</th>
-                <th class="w-1/3 py-2 px-4">Forecast</th>
-                <th class="w-1/3 py-2 px-4">Error %</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr class="bg-gray-100 border-b shadow-soft-lg rounded-xl bg-clip-border border-r shadow-lg">
-                <td class="py-2 px-4"> person.name </td>
-                <td class="py-2 px-4"> person.age </td>
-                <td class="py-2 px-4"> person.occupation </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <div class="overflow-x-auto w-full px-1 p-4">
-          <table class="min-w-full bg-white">
-            <thead class="bg-gray-800 text-white shadow-soft-lg rounded-xl bg-clip-border border-r shadow-lg">
-              <tr>
-                <th class="w-1/3 py-2 px-4">Real Value</th>
-                <th class="w-1/3 py-2 px-4">Forecast</th>
-                <th class="w-1/3 py-2 px-4">Error %</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr class="bg-gray-100 border-b shadow-soft-lg rounded-xl bg-clip-border border-r shadow-lg">
-                <td class="py-2 px-4"> person.name </td>
-                <td class="py-2 px-4"> person.age </td>
-                <td class="py-2 px-4"> person.occupation </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-      </div>
-
-      <div class="w-full px-1 p-4">
-        <div
-          class="py-4 relative flex flex-col mb-2 min-w-0 break-words bg-gray-100 shadow-soft-lg rounded-xl bg-clip-border border-r shadow-lg">
-          <div class="flex-auto p-4">
-            <h5 class="text-center font-bold text-2xl">Monte Carlo Simulation Steps</h5>
-          </div>
-          <div class="flex-auto p-6">
-            <div *ngIf="steps">
-              <!-- Step 1: Fetch Historical Data -->
-              <div class="mb-6">
-                <h6 class="font-semibold mb-2">Step 1: Fetch Historical Data</h6>
-                <table class="min-w-full bg-white border-gray-200 shadow-lg rounded-xl">
-                  <thead class="bg-gray-800 text-white">
-                    <tr>
-                      <th class="py-2 px-4">Interval Time</th>
-                      <th class="py-2 px-4">Label Length AVE</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr *ngFor="let item of steps.historicalData">
-                      <td class="py-2 px-4">{{ item.interval_time }}</td>
-                      <td class="py-2 px-4">{{ item.Label_Length_AVE }}</td>
-                    </tr>
-                  </tbody>
-                </table>
+          <div class="w-full px-1 p-4">
+            <div
+              class="py-4 relative flex flex-col mb-2 min-w-0 break-words bg-gray-100 shadow-soft-lg rounded-xl bg-clip-border border-r shadow-lg">
+              <div class="flex-auto p-4">
+                <h5 class="text-center font-bold text-2xl">ARIMA Simulation Steps</h5>
               </div>
+              <div class="flex-auto p-6">
+                <div *ngIf="steps">
+                  <!-- Step 1: Fetch Historical Data -->
+                  <div class="mb-6">
+                    <h6 class="font-semibold mb-2">Step 1: Fetch Historical Data</h6>
+                    <table class="min-w-full bg-white border-gray-200 shadow-lg rounded-xl">
+                      <thead class="bg-gray-800 text-white">
+                        <tr>
+                          <th class="py-2 px-4">Interval Time</th>
+                          <th class="py-2 px-4">Label Length AVE</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let item of steps.historicalData">
+                          <td class="py-2 px-4">{{ item.interval_time }}</td>
+                          <td class="py-2 px-4">{{ item.Label_Length_AVE }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
 
-              <!-- Step 2: Format the Fetched Data -->
-              <div class="mb-6">
-                <h6 class="font-semibold mb-2">Step 2: Format the Fetched Data</h6>
-                <table class="min-w-full bg-white border-gray-200 shadow-lg rounded-xl">
-                  <thead class="bg-gray-800 text-white">
-                    <tr>
-                      <th class="py-2 px-4">Time</th>
-                      <th class="py-2 px-4">Label Length AVE</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr *ngFor="let item of steps.formattedData">
-                      <td class="py-2 px-4">{{ item.time }}</td>
-                      <td class="py-2 px-4">{{ item.Label_Length_AVE }}</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
+                  <!-- Step 2: Format the Fetched Data -->
+                  <div class="mb-6">
+                    <h6 class="font-semibold mb-2">Step 2: Format the Fetched Data</h6>
+                    <table class="min-w-full bg-white border-gray-200 shadow-lg rounded-xl">
+                      <thead class="bg-gray-800 text-white">
+                        <tr>
+                          <th class="py-2 px-4">Time</th>
+                          <th class="py-2 px-4">Label Length AVE</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let item of steps.formattedData">
+                          <td class="py-2 px-4">{{ item.time }}</td>
+                          <td class="py-2 px-4">{{ item.Label_Length_AVE }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
 
-              <!-- Step 3: Use the First 30 Data Points for Simulation -->
-              <div class="mb-6">
-                <h6 class="font-semibold mb-2">Step 3: Use the First 30 Data Points for Simulation</h6>
-                <table class="min-w-full bg-white border-gray-200 shadow-lg rounded-xl">
-                  <thead class="bg-gray-800 text-white">
-                    <tr>
-                      <th class="py-2 px-4">Time</th>
-                      <th class="py-2 px-4">Label Length AVE</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr *ngFor="let dataPoint of steps.simulationBaseData">
-                      <td class="py-2 px-4">{{ dataPoint.time }}</td>
-                      <td class="py-2 px-4">{{ dataPoint.Label_Length_AVE }}</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
+                  <!-- Step 3: Use the First 30 Data Points for Simulation -->
+                  <div class="mb-6">
+                    <h6 class="font-semibold mb-2">Step 3: Use the First 30 Data Points for Simulation</h6>
+                    <table class="min-w-full bg-white border-gray-200 shadow-lg rounded-xl">
+                      <thead class="bg-gray-800 text-white">
+                        <tr>
+                          <th class="py-2 px-4">Time</th>
+                          <th class="py-2 px-4">Label Length AVE</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let dataPoint of steps.simulationBaseData">
+                          <td class="py-2 px-4">{{ dataPoint.time }}</td>
+                          <td class="py-2 px-4">{{ dataPoint.Label_Length_AVE }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
 
-              <!-- Step 4: Generate Simulations -->
-              <div class="mb-6">
-                <h6 class="font-semibold mb-2">Step 4: Generate Simulations</h6>
-                <table class="min-w-full bg-white border-gray-200 shadow-lg rounded-xl">
-                  <thead class="bg-gray-800 text-white">
-                    <tr>
-                      <th class="py-2 px-4">Simulation Index</th>
-                      <th class="py-2 px-4">Time</th>
-                      <th class="py-2 px-4">Label Length AVE</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <ng-container *ngFor="let simulation of steps.simulations; let i = index">
-                      <tr *ngFor="let dataPoint of simulation; let j = index">
-                        <ng-container *ngIf="j === 0">
-                          <td class="py-2 px-4" [attr.rowspan]="simulation.length">{{ i + 1 }}</td>
+                  <!-- Step 4: Generate Simulations -->
+                  <div class="mb-6">
+                    <h6 class="font-semibold mb-2">Step 4: Generate Simulations</h6>
+                    <table class="min-w-full bg-white border-gray-200 shadow-lg rounded-xl">
+                      <thead class="bg-gray-800 text-white">
+                        <tr>
+                          <th class="py-2 px-4">Simulation Index</th>
+                          <th class="py-2 px-4">Time</th>
+                          <th class="py-2 px-4">Label Length AVE</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <ng-container *ngFor="let simulation of steps.simulations; let i = index">
+                          <tr *ngFor="let dataPoint of simulation; let j = index">
+                            <ng-container *ngIf="j === 0">
+                              <td class="py-2 px-4" [attr.rowspan]="simulation.length">{{ i + 1 }}</td>
+                            </ng-container>
+                            <td class="py-2 px-4">{{ dataPoint.time }}</td>
+                            <td class="py-2 px-4">{{ dataPoint.Label_Length_AVE }}</td>
+                          </tr>
                         </ng-container>
-                        <td class="py-2 px-4">{{ dataPoint.time }}</td>
-                        <td class="py-2 px-4">{{ dataPoint.Label_Length_AVE }}</td>
-                      </tr>
-                    </ng-container>
-                  </tbody>
-                </table>
-              </div>
+                      </tbody>
+                    </table>
+                  </div>
 
-              <!-- Step 5: Aggregate Results by Time Intervals -->
-              <div class="mb-6">
-                <h6 class="font-semibold mb-2">Step 5: Aggregate Results by Time Intervals</h6>
-                <table class="min-w-full bg-white border-gray-200 shadow-lg rounded-xl">
-                  <thead class="bg-gray-800 text-white">
-                    <tr>
-                      <th class="py-2 px-4">Interval Index</th>
-                      <th class="py-2 px-4">Time</th>
-                      <th class="py-2 px-4">Label Length AVE</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <ng-container *ngFor="let interval of steps.forecastResults; let i = index">
-                      <tr *ngFor="let dataPoint of interval; let j = index">
-                        <ng-container *ngIf="j === 0">
-                          <td class="py-2 px-4" [attr.rowspan]="interval.length">{{ i + 1 }}</td>
+                  <!-- Step 5: Aggregate Results by Time Intervals -->
+                  <div class="mb-6">
+                    <h6 class="font-semibold mb-2">Step 5: Aggregate Results by Time Intervals</h6>
+                    <table class="min-w-full bg-white border-gray-200 shadow-lg rounded-xl">
+                      <thead class="bg-gray-800 text-white">
+                        <tr>
+                          <th class="py-2 px-4">Interval Index</th>
+                          <th class="py-2 px-4">Time</th>
+                          <th class="py-2 px-4">Label Length AVE</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <ng-container *ngFor="let interval of steps.forecastResults; let i = index">
+                          <tr *ngFor="let dataPoint of interval; let j = index">
+                            <ng-container *ngIf="j === 0">
+                              <td class="py-2 px-4" [attr.rowspan]="interval.length">{{ i + 1 }}</td>
+                            </ng-container>
+                            <td class="py-2 px-4">{{ dataPoint.time }}</td>
+                            <td class="py-2 px-4">{{ dataPoint.Label_Length_AVE }}</td>
+                          </tr>
                         </ng-container>
-                        <td class="py-2 px-4">{{ dataPoint.time }}</td>
-                        <td class="py-2 px-4">{{ dataPoint.Label_Length_AVE }}</td>
-                      </tr>
-                    </ng-container>
-                  </tbody>
-                </table>
-              </div>
+                      </tbody>
+                    </table>
+                  </div>
 
-              <!-- Step 6: Calculate Forecasted Averages -->
-              <div class="mb-6">
-                <h6 class="font-semibold mb-2">Step 6: Calculate Forecasted Averages</h6>
-                <table class="min-w-full bg-white border-gray-200 shadow-lg rounded-xl">
-                  <thead class="bg-gray-800 text-white">
-                    <tr>
-                      <th class="py-2 px-4">Interval Index</th>
-                      <th class="py-2 px-4">Forecasted Average</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr *ngFor="let average of steps.forecastedAverages; let i = index">
-                      <td class="py-2 px-4">{{ i + 1 }}</td>
-                      <td class="py-2 px-4">{{ average }}</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
- 
+                  <!-- Step 6: Calculate Forecasted Averages -->
+                  <div class="mb-6">
+                    <h6 class="font-semibold mb-2">Step 6: Calculate Forecasted Averages</h6>
+                    <table class="min-w-full bg-white border-gray-200 shadow-lg rounded-xl">
+                      <thead class="bg-gray-800 text-white">
+                        <tr>
+                          <th class="py-2 px-4">Interval Index</th>
+                          <th class="py-2 px-4">Forecasted Average</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let average of steps.forecastedAverages; let i = index">
+                          <td class="py-2 px-4">{{ i + 1 }}</td>
+                          <td class="py-2 px-4">{{ average }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
 
+
+                </div>
+              </div>
             </div>
           </div>
         </div>
+        <div class="overflow-x-auto w-full px-1 p-4">
+          <div class="w-full px-1 p-4">
+            <div class="py-4 relative flex flex-col mb-2 min-w-0 break-words bg-gray-100 shadow-soft-lg rounded-xl bg-clip-border border-r shadow-lg">
+              <div class="flex-auto p-4">
+                <h5 class="text-center font-bold text-2xl">Monte Carlo Simulation Steps</h5>
+              </div>
+              <div class="flex-auto p-6">
+                <div *ngIf="steps">
+                  <!-- Step 1: Fetch Historical Data -->
+                  <div class="mb-6">
+                    <h6 class="font-semibold mb-2">Step 1: Fetch Historical Data</h6>
+                    <table class="min-w-full bg-white border-gray-200 shadow-lg rounded-xl">
+                      <thead class="bg-gray-800 text-white">
+                        <tr>
+                          <th class="py-2 px-4">Interval Time</th>
+                          <th class="py-2 px-4">Label Length AVE</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let item of getFirstFiveItems(steps.historicalData)">
+                          <td class="py-2 px-4">{{ item.interval_time }}</td>
+                          <td class="py-2 px-4">{{ item.Label_Length_AVE }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+          
+                  <!-- Step 2: Format the Fetched Data -->
+                  <div class="mb-6">
+                    <h6 class="font-semibold mb-2">Step 2: Format the Fetched Data</h6>
+                    <table class="min-w-full bg-white border-gray-200 shadow-lg rounded-xl">
+                      <thead class="bg-gray-800 text-white">
+                        <tr>
+                          <th class="py-2 px-4">Time</th>
+                          <th class="py-2 px-4">Label Length AVE</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let item of getFirstFiveItems(steps.formattedData)">
+                          <td class="py-2 px-4">{{ item.time }}</td>
+                          <td class="py-2 px-4">{{ item.Label_Length_AVE }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+          
+                  <!-- Step 3: Use the First 30 Data Points for Simulation -->
+                  <div class="mb-6">
+                    <h6 class="font-semibold mb-2">Step 3: Use the First 30 Data Points for Simulation</h6>
+                    <table class="min-w-full bg-white border-gray-200 shadow-lg rounded-xl">
+                      <thead class="bg-gray-800 text-white">
+                        <tr>
+                          <th class="py-2 px-4">Time</th>
+                          <th class="py-2 px-4">Label Length AVE</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let dataPoint of getFirstFiveItems(steps.simulationBaseData)">
+                          <td class="py-2 px-4">{{ dataPoint.time }}</td>
+                          <td class="py-2 px-4">{{ dataPoint.Label_Length_AVE }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+          
+                  <!-- Step 4: Generate Simulations -->
+                  <div class="mb-6">
+                    <h6 class="font-semibold mb-2">Step 4: Generate Simulations</h6>
+                    <table class="min-w-full bg-white border-gray-200 shadow-lg rounded-xl">
+                      <thead class="bg-gray-800 text-white">
+                        <tr>
+                          <th class="py-2 px-4">Simulation Index</th>
+                          <th class="py-2 px-4">Time</th>
+                          <th class="py-2 px-4">Label Length AVE</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <ng-container *ngFor="let simulation of getFirstFiveItems(steps.simulations); let i = index">
+                          <tr *ngFor="let dataPoint of simulation; let j = index">
+                            <ng-container *ngIf="j === 0">
+                              <td class="py-2 px-4" [attr.rowspan]="simulation.length">{{ i + 1 }}</td>
+                            </ng-container>
+                            <td class="py-2 px-4">{{ dataPoint.time }}</td>
+                            <td class="py-2 px-4">{{ dataPoint.Label_Length_AVE }}</td>
+                          </tr>
+                        </ng-container>
+                      </tbody>
+                    </table>
+                  </div>
+          
+                  <!-- Step 5: Aggregate Results by Time Intervals -->
+                  <div class="mb-6">
+                    <h6 class="font-semibold mb-2">Step 5: Aggregate Results by Time Intervals</h6>
+                    <table class="min-w-full bg-white border-gray-200 shadow-lg rounded-xl">
+                      <thead class="bg-gray-800 text-white">
+                        <tr>
+                          <th class="py-2 px-4">Interval Index</th>
+                          <th class="py-2 px-4">Time</th>
+                          <th class="py-2 px-4">Label Length AVE</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <ng-container *ngFor="let interval of getFirstFiveItems(steps.forecastResults); let i = index">
+                          <tr *ngFor="let dataPoint of interval; let j = index">
+                            <ng-container *ngIf="j === 0">
+                              <td class="py-2 px-4" [attr.rowspan]="interval.length">{{ i + 1 }}</td>
+                            </ng-container>
+                            <td class="py-2 px-4">{{ dataPoint.time }}</td>
+                            <td class="py-2 px-4">{{ dataPoint.Label_Length_AVE }}</td>
+                          </tr>
+                        </ng-container>
+                      </tbody>
+                    </table>
+                  </div>
+          
+                  <!-- Step 6: Calculate Forecasted Averages -->
+                  <div class="mb-6">
+                    <h6 class="font-semibold mb-2">Step 6: Calculate Forecasted Averages</h6>
+                    <table class="min-w-full bg-white border-gray-200 shadow-lg rounded-xl">
+                      <thead class="bg-gray-800 text-white">
+                        <tr>
+                          <th class="py-2 px-4">Interval Index</th>
+                          <th class="py-2 px-4">Forecasted Average</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let average of getFirstFiveItems(steps.forecastedAverages); let i = index">
+                          <td class="py-2 px-4">{{ i + 1 }}</td>
+                          <td class="py-2 px-4">{{ average }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+
+        </div>
       </div>
-
-
     </div>
   </div>
 </div>
