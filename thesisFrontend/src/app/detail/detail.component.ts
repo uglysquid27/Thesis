@@ -22,6 +22,22 @@ export class DetailComponent implements OnInit {
   public resolved: boolean = false;
   public loaddata: any;
 
+  currentPage: number = 1;
+  itemsPerPage: number = 5;
+
+  getPaginatedItems(data: any[], page: number, itemsPerPage: number): any[] {
+    const startIndex = (page - 1) * itemsPerPage;
+    return data.slice(startIndex, startIndex + itemsPerPage);
+  }
+
+  changePage(page: number): void {
+    this.currentPage = page;
+  }
+
+  getTotalPages(data: any[]): number {
+    return Math.ceil(data.length / this.itemsPerPage);
+  }
+
   forecastValues: number[] = [];
   forecastDates: string[] = [];
   realValues: number[] = [];
