@@ -8,6 +8,17 @@ interface ForecastResponse {
   mape: number;
 }
 
+interface ForecastResult {
+  time: string;
+  Label_Length_AVE: number;
+}
+
+interface ForecastResponse {
+  forecastedResultsWithTime: ForecastResult[];
+  mape: number;
+  steps: any;
+}
+
 @Component({
   selector: 'app-main-dashboard',
   templateUrl: './main-dashboard.component.html',
@@ -75,7 +86,7 @@ export class MainDashboardComponent implements OnInit {
     this.loaddata = new Promise<void>((resolve, reject) => {
 
       this.service.getDataSet().subscribe(data => {
-        console.log(data);
+        // console.log(data);
 
         const dataArray = Object.values(data);
 
@@ -95,15 +106,15 @@ export class MainDashboardComponent implements OnInit {
           }
         });
         this.lastRealValues = this.realValues.slice(-10);
-        console.log(this.realValues);
-        console.log(this.realDates);
+        // console.log(this.realValues);
+        // console.log(this.realDates);
 
         this.updateCharts();
       });
 
       this.service.getMonteCarloTest().subscribe({
         next: (data: ForecastResponse) => {
-          console.log(data);
+          // console.log(data);
 
           // Access forecastedResultsWithTime from the response data
           const forecastedResultsWithTime = data.forecastedResultsWithTime;
@@ -138,38 +149,38 @@ export class MainDashboardComponent implements OnInit {
 
       this.service.getArimaTest().subscribe({
         next: (data: ForecastResponse) => {
-          console.log(data);
-
-          // Access forecastedResultsWithTime from the response data
-          const forecastedResultsWithTime = data.forecastedResultsWithTime;
-          const mape = data.mape;
-
-          // Sort the forecastedResultsWithTime array by date
-          forecastedResultsWithTime.sort((a, b) => new Date(a.time).getTime() - new Date(b.time).getTime());
-
-          console.log('Sorted Forecasted Results:', forecastedResultsWithTime);
-          console.log('MAPE:', mape);
-
-          // Extracting time and values for further processing or charting
-          this.forecastValuesA = forecastedResultsWithTime.map(item => item.Label_Length_AVE);
-          this.forecastDatesA = forecastedResultsWithTime.map(item => item.time);
-
-          console.log('Forecast Values:', this.forecastValuesA);
-          console.log('Forecast Dates:', this.forecastDatesA);
-
-          // Combine forecasted values with historical values if needed
-          this.combinedValuesA = [...this.realValues, ...this.forecastValuesA];
-          this.combinedDatesA = [...this.realDates, ...this.forecastDatesA];
-
-          this.updateCharts();
+            console.log(data);
+    
+            // Access forecastedResultsWithTime from the response data
+            const forecastedResultsWithTime = data.forecastedResultsWithTime;
+            const mape = data.mape;
+    
+            // Sort the forecastedResultsWithTime array by date
+            forecastedResultsWithTime.sort((a, b) => new Date(a.time).getTime() - new Date(b.time).getTime());
+    
+            // console.log('Sorted Forecasted Results:', forecastedResultsWithTime);
+            // console.log('MAPE:', mape);
+    
+            // Extracting time and values for further processing or charting
+            this.forecastValuesA = forecastedResultsWithTime.map(item => item.Label_Length_AVE);
+            this.forecastDatesA = forecastedResultsWithTime.map(item => item.time);
+    
+            // console.log('Forecast Values:', this.forecastValuesA);
+            // console.log('Forecast Dates:', this.forecastDatesA);
+    
+            // Combine forecasted values with historical values if needed
+            this.combinedValuesA = [...this.realValues, ...this.forecastValuesA];
+            this.combinedDatesA = [...this.realDates, ...this.forecastDatesA];
+    
+            this.updateCharts();
         },
         error: (error) => {
-          console.error('Error fetching forecast data', error);
+            console.error('Error fetching forecast data', error);
         },
         complete: () => {
-          this.spinner.hide();
+            this.spinner.hide();
         }
-      });
+    });    
 
       resolve();
     });

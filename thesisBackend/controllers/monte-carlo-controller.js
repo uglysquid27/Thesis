@@ -115,6 +115,15 @@ const monteCarlo = async (req, res) => {
 
         steps.mape = mape; // Store MAPE
 
+        // Define aggregatedResults for the frontend
+        const aggregatedResults = forecastedResultsWithTime.map((item, index) => ({
+            interval_index: index,
+            time: item.time,
+            Label_Length_AVE: item.Label_Length_AVE
+        }));
+
+        steps.aggregatedResults = aggregatedResults; // Store aggregated results
+
         console.log('Monte Carlo Forecast:', forecastedResultsWithTime);
         console.log('Historical values with formatted time:', actualValuesForComparison);
         console.log('MAPE:', mape);

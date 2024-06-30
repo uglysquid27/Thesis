@@ -4,9 +4,18 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { monteCarlo, dataSet, monteCarloDetail, arimaDetail } from './chart';
 
 interface ForecastResponse {
-  forecastedResultsWithTime: Array<{ time: string, Label_Length_AVE: number }>;
+  forecastedResultsWithTime: { time: string, Label_Length_AVE: number }[];
   mape: number;
-  steps: any;
+  steps: {
+    historicalData: any[];
+    formattedData: any[];
+    simulationBaseData: any[];
+    simulations: any[][];
+    forecastResults: any[][];
+    forecastedAverages: number[];
+    forecastTimes: string[];
+    aggregatedResults: Array<{ interval_index: number, time: string, Label_Length_AVE: number }>;
+  };
 }
 
 @Component({
@@ -25,25 +34,70 @@ export class DetailComponent implements OnInit {
   currentPage: number = 1;
   itemsPerPage: number = 5;
 
-  getPaginatedItems(data: any[], page: number, itemsPerPage: number): any[] {
-    const startIndex = (page - 1) * itemsPerPage;
-    return data.slice(startIndex, startIndex + itemsPerPage);
+  getMonteCarloSteps() {
+    console.log("Fetching Monte Carlo steps data...");
+  
+    this.service.getMonteCarloTest().subscribe({
+      next: (data: ForecastResponse) => {
+        console.log("Received data:", data);
+  
+        if (data.steps) {
+          console.log("data.steps:", data.steps);
+  
+          if (Array.isArray(data.steps.aggregatedResults)) {
+            this.monteCarloSteps = data.steps;
+            console.log("Aggregated results:", this.monteCarloSteps.aggregatedResults);
+            this.monteCarloChartDetail();
+          } else {
+            console.error('data.steps.aggregatedResults is undefined or not an array');
+          }
+        } else {
+          console.error('data.steps is undefined or not an object');
+        }
+      },
+      error: (error) => {
+        console.error('Error fetching forecast data', error);
+      },
+      complete: () => {
+        this.spinner.hide();
+      }
+    });
+  }
+  
+
+  getFirstFiveItems(data: any[]): any[] {
+    console.log("Input to getFirstFiveItems:", data);
+
+    if (Array.isArray(data)) {
+      return data.slice(0, 5);
+    } else {
+      console.error('Invalid data: Expected an array');
+      return [];
+    }
   }
 
-  changePage(page: number): void {
+getPaginatedItems(data: any[], page: number, itemsPerPage: number): any[] {
+  const startIndex = (page - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  return data.slice(startIndex, endIndex);
+}
+
+getTotalPages(data: any[]): number {
+  return Math.ceil(data.length / this.itemsPerPage);
+}
+
+changePage(page: number): void {
+  if (page > 0 && page <= this.getTotalPages(this.arimaSteps.simulations)) {
     this.currentPage = page;
   }
-
-  getTotalPages(data: any[]): number {
-    return Math.ceil(data.length / this.itemsPerPage);
-  }
+}
 
   currentIntervalPage = 1;
-itemsPerIntervalPage = 5;
+  itemsPerIntervalPage = 5;
 
-changeIntervalPage(page: number) {
-  this.currentIntervalPage = page;
-}
+  changeIntervalPage(page: number) {
+    this.currentIntervalPage = page;
+  }
 
   forecastValues: number[] = [];
   forecastDates: string[] = [];
@@ -59,54 +113,25 @@ changeIntervalPage(page: number) {
   combinedValuesA: number[] = [];
   combinedDatesA: string[] = [];
   mape: number | undefined;
-  steps: any;
+  monteCarloSteps: any;
+  arimaSteps: any;
 
   showSuccessAlert: boolean = true;
   deskripsi: any = 'Loading..';
-i: any;
+  i: any;
 
   constructor(private service: CountService, private spinner: NgxSpinnerService) { }
 
   closeSuccessAlert() {
     this.showSuccessAlert = false;
-  }
-
-  getFirstFiveItems(data: any[]): any[] {
-    return data.slice(0, 5);
-  }
+  }  
 
   async ngOnInit(): Promise<void> {
+
     window.scrollTo(0, 0);
     this.spinner.show();
 
     this.loaddata = new Promise<void>((resolve, reject) => {
-
-      this.service.getDataSet().subscribe(data => {
-        console.log(data);
-
-        const dataArray = Object.values(data);
-
-        dataArray.sort((a, b) => {
-          const dateA = new Date(a.time.split('/').reverse().join('-')).getTime();
-          const dateB = new Date(b.time.split('/').reverse().join('-')).getTime();
-          return dateA - dateB;
-        });
-
-        this.realDates = [];
-        this.realValues = [];
- 
-        dataArray.forEach(item => {
-          if (item.time && item.Label_Length_AVE) {
-            this.realDates.push(item.time);
-            this.realValues.push(item.Label_Length_AVE);
-          }
-        });
-
-        console.log(this.realValues);
-        console.log(this.realDates);
-
-        this.updateCharts();
-      });
 
       this.service.getMonteCarloTest().subscribe({
         next: (data: ForecastResponse) => {
@@ -115,8 +140,7 @@ i: any;
           // Access forecastedResultsWithTime from the response data
           const forecastedResultsWithTime = data.forecastedResultsWithTime;
           const mape = data.mape;
-          this.steps = data.steps;
-
+          
           // Sort the forecastedResultsWithTime array by date
           forecastedResultsWithTime.sort((a, b) => new Date(a.time).getTime() - new Date(b.time).getTime());
 
@@ -134,7 +158,6 @@ i: any;
           this.combinedValues = [...this.realValues, ...this.forecastValues];
           this.combinedDates = [...this.realDates, ...this.forecastDates];
 
-          this.updateCharts();
           this.monteCarloChartDetail();
         },
         error: (error) => {
@@ -145,6 +168,7 @@ i: any;
         }
       });
 
+
       this.service.getArimaTest().subscribe({
         next: (data: ForecastResponse) => {
           console.log(data);
@@ -152,6 +176,7 @@ i: any;
           // Access forecastedResultsWithTime from the response data
           const forecastedResultsWithTime = data.forecastedResultsWithTime;
           const mape = data.mape;
+          this.arimaSteps = data.steps;
 
           // Sort the forecastedResultsWithTime array by date
           forecastedResultsWithTime.sort((a, b) => new Date(a.time).getTime() - new Date(b.time).getTime());
@@ -170,7 +195,6 @@ i: any;
           this.combinedValuesA = [...this.realValues, ...this.forecastValuesA];
           this.combinedDatesA = [...this.realDates, ...this.forecastDatesA];
 
-          this.updateCharts();
           this.ArimaChartDetail();
         },
         error: (error) => {
@@ -187,10 +211,6 @@ i: any;
     await this.loaddata;
   }
 
-  updateCharts() {
-    this.realValueChart();
-    this.monteCarloChart();
-  }
 
   realValueChart() {
     this.dataSet = {
@@ -278,7 +298,7 @@ i: any;
 
   monteCarloChartDetail() {
     this.monteCarloDetail = {
-       series: [
+      series: [
         {
           name: "Forecasted Values",
           data: this.forecastValues
@@ -316,7 +336,7 @@ i: any;
 
   ArimaChartDetail() {
     this.arimaDetail = {
-       series: [
+      series: [
         {
           name: "Forecasted Values",
           data: this.forecastValuesA

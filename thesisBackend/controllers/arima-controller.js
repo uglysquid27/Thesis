@@ -18,7 +18,7 @@ const formatTime = (timeString) => {
 
 const arimaForecast = async (req, res) => {
     try {
-        // Fetch historical data with intervals rounded to 10 minutes
+        // Step 1: Fetch historical data with intervals rounded to 10 minutes
         const historicalData = await LabelTab.findAll({
             attributes: [
                 [Sequelize.literal('DATE_FORMAT(FROM_UNIXTIME(UNIX_TIMESTAMP(time) - MOD(UNIX_TIMESTAMP(time), 600)), "%Y-%m-%d %H:%i:00")'), 'interval_time'],
@@ -35,23 +35,23 @@ const arimaForecast = async (req, res) => {
             limit: 40 // Fetch 40 data points
         });
 
-        // Log the fetched data
+        // Step 2: Log the fetched data
         console.log('Fetched Historical Data:', historicalData);
 
-        // Format the fetched data and round to the nearest whole number
+        // Step 3: Format the fetched data and round to the nearest whole number
         const historicalValues = historicalData.map(item => ({
             time: formatTime(item.dataValues.interval_time),
             Label_Length_AVE: Math.round(parseFloat(item.dataValues.Label_Length_AVE)) // Round to the nearest whole number
         })).reverse(); // Reverse to get the data in chronological order
 
-        // Use the first 30 data points for ARIMA
+        // Step 4: Use the first 30 data points for ARIMA
         const simulationBaseData = historicalValues.slice(0, 30).map(item => item.Label_Length_AVE);
 
-        // Initialize arrays to store forecasted values and times
+        // Step 5: Initialize arrays to store forecasted values and times
         const forecastedValues = [];
         const forecastTimes = [];
 
-        // Train the ARIMA model and forecast the next 10 intervals
+        // Step 6: Train the ARIMA model and forecast the next 10 intervals
         for (let i = 1; i <= 10; i++) {
             const [pred, errors] = arima(simulationBaseData, 1, 1, 1, 1); // Forecast one interval
             forecastedValues.push(pred[0]);
@@ -65,13 +65,13 @@ const arimaForecast = async (req, res) => {
             simulationBaseData.push(pred[0]);
         }
 
-        // Combine forecasted values with their corresponding times
+        // Step 7: Combine forecasted values with their corresponding times
         const forecastedResultsWithTime = forecastedValues.map((value, index) => ({
             time: forecastTimes[index],
             Label_Length_AVE: value
         }));
 
-        // Calculate MAPE using the last 10 historical values for comparison
+        // Step 8: Calculate MAPE using the last 10 historical values for comparison
         const actualValuesForComparison = historicalValues.slice(30, 40);
         const mape = actualValuesForComparison.reduce((totalError, historicalValue, index) => {
             const forecastValue = forecastedResultsWithTime[index]?.Label_Length_AVE;
@@ -82,20 +82,29 @@ const arimaForecast = async (req, res) => {
             return totalError;
         }, 0) / actualValuesForComparison.length * 100;
 
+        // Step 9: Log the results
         console.log('ARIMA Forecast:', forecastedResultsWithTime);
         console.log('Historical values with formatted time:', actualValuesForComparison);
         console.log('MAPE:', mape);
 
-        // Send the JSON response
-        res.json({ forecastedResultsWithTime, mape });
+        // Step 10: Send the JSON response with forecasted results and MAPE
+        res.json({
+            forecastedResultsWithTime: forecastedResultsWithTime,
+            mape: mape,
+            steps: {
+                fetchedHistoricalData: historicalData,
+                formattedHistoricalValues: historicalValues,
+                simulationBaseData: simulationBaseData,
+                forecastedValues: forecastedValues,
+                forecastTimes: forecastTimes,
+                actualValuesForComparison: actualValuesForComparison,
+            }
+        });
     } catch (error) {
         console.error('Error in ARIMA Forecasting:', error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 };
-
-
-
 
 const index = async (req, res) => {
     try {
