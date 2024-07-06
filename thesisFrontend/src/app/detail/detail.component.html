@@ -33,6 +33,144 @@
         </div>
       </div>
       <div class="grid grid-cols-2">
+
+        <div class="overflow-x-auto w-full px-1 p-4">
+          <div class="w-full px-1 p-4">
+            <div
+              class="py-4 relative flex flex-col mb-2 min-w-0 break-words bg-gray-100 shadow-soft-lg rounded-xl bg-clip-border border-r shadow-lg">
+              <div class="flex-auto p-4">
+                <h5 (click)="getMonteCarloSteps()" class="text-center font-bold text-2xl">ARIMA Steps</h5>
+              </div>
+              <div class="flex-auto p-6">
+                <div *ngIf="monteCarloSteps">
+                  <!-- Step 1: Fetch Historical Data -->
+                  <div class="mb-6" *ngIf="monteCarloSteps.historicalData && monteCarloSteps.historicalData.length">
+                    <h6 class="font-semibold mb-2">Step 1: Fetch Historical Data</h6>
+                    <table class="min-w-full bg-white border-gray-200 shadow-lg rounded-xl">
+                      <thead class="bg-gray-800 text-white">
+                        <tr>
+                          <th class="py-2 px-4">Interval Time</th>
+                          <th class="py-2 px-4">Label Length AVE</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let item of getFirstFiveItems(monteCarloSteps.historicalData)">
+                          <td class="py-2 px-4">{{ item.interval_time }}</td>
+                          <td class="py-2 px-4">{{ item.Label_Length_AVE }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+
+                  <!-- Step 2: Format the Fetched Data -->
+                  <div class="mb-6">
+                    <h6 class="font-semibold mb-2">Step 2: Format the Fetched Data</h6>
+                    <table class="min-w-full bg-white border-gray-200 shadow-lg rounded-xl">
+                      <thead class="bg-gray-800 text-white">
+                        <tr>
+                          <th class="py-2 px-4">Time</th>
+                          <th class="py-2 px-4">Label Length AVE</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let item of getFirstFiveItems(monteCarloSteps.formattedData)">
+                          <td class="py-2 px-4">{{ item.time }}</td>
+                          <td class="py-2 px-4">{{ item.Label_Length_AVE }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+
+                  <!-- Step 3: Use the First 30 Data Points for Simulation -->
+                  <div class="mb-6">
+                    <h6 class="font-semibold mb-2">Step 3: Use the First 30 Data Points for Simulation</h6>
+                    <table class="min-w-full bg-white border-gray-200 shadow-lg rounded-xl">
+                      <thead class="bg-gray-800 text-white">
+                        <tr>
+                          <th class="py-2 px-4">Time</th>
+                          <th class="py-2 px-4">Label Length AVE</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let dataPoint of getFirstFiveItems(monteCarloSteps.simulationBaseData)">
+                          <td class="py-2 px-4">{{ dataPoint.time }}</td>
+                          <td class="py-2 px-4">{{ dataPoint.Label_Length_AVE }}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+
+                  <!-- Step 4: Generate Simulations -->
+                  <div class="mb-6">
+                    <h6 class="font-semibold mb-2">Step 4: Generate Simulations</h6>
+                    <div class="max-h-96 overflow-y-auto">
+                      <table class="min-w-full bg-white border-gray-200 shadow-lg rounded-xl">
+                        <thead class="bg-gray-800 text-white">
+                          <tr>
+                            <th class="py-2 px-4">Simulation Index</th>
+                            <th class="py-2 px-4">Time</th>
+                            <th class="py-2 px-4">Label Length AVE</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <ng-container *ngFor="let simulation of getPaginatedItems(monteCarloSteps.simulations, currentPage, itemsPerPage); let i = index">
+                            <tr *ngFor="let dataPoint of simulation; let j = index">
+                              <ng-container *ngIf="j === 0">
+                                <td class="py-2 px-4" [attr.rowspan]="simulation.length">{{ (currentPage - 1) * itemsPerPage + i + 1 }}</td>
+                              </ng-container>
+                              <td class="py-2 px-4">{{ dataPoint.time }}</td>
+                              <td class="py-2 px-4">{{ dataPoint.Label_Length_AVE }}</td>
+                            </tr>
+                          </ng-container>
+                        </tbody>
+                      </table>
+                    </div>
+                    <div class="overflow-x-auto mt-4">
+                      <div class="flex justify-center w-full">
+                        <button (click)="changePage(currentPage - 1)" [disabled]="currentPage === 1" class="px-4 py-2 mx-1 bg-gray-800 text-white rounded">Previous</button>
+                        <div class="flex overflow-x-auto">
+                          <button *ngFor="let page of [].constructor(getTotalPages(monteCarloSteps.simulations)); let i = index"
+                                  (click)="changePage(i + 1)"
+                                  [class.bg-gray-600]="currentPage === i + 1"
+                                  class="px-4 py-2 mx-1 bg-gray-800 text-white rounded">
+                            {{ i + 1 }}
+                          </button>
+                        </div>
+                        <button (click)="changePage(currentPage + 1)" [disabled]="currentPage === getTotalPages(monteCarloSteps.simulations)" class="px-4 py-2 mx-1 bg-gray-800 text-white rounded">Next</button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Step 5: Aggregate Results by Time Intervals -->
+                  <div class="mb-6">
+                    <h6 class="font-semibold mb-2">Step 5: Aggregate Results by Time Intervals</h6>
+                    <div class="max-h-96 overflow-y-auto">
+                      <table class="min-w-full bg-white border-gray-200 shadow-lg rounded-xl">
+                        <thead class="bg-gray-800 text-white">
+                          <tr>
+                            <th class="py-2 px-4">Interval Index</th>
+                            <th class="py-2 px-4">Time</th>
+                            <th class="py-2 px-4">Label Length AVE</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let result of getFirstFiveItems(monteCarloSteps.aggregatedResults)">
+                            <td class="py-2 px-4">{{ result.interval_index }}</td>
+                            <td class="py-2 px-4">{{ result.time }}</td>
+                            <td class="py-2 px-4">{{ result.Label_Length_AVE }}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+                <div *ngIf="!monteCarloSteps">
+                  <p class="text-gray-500 text-center">Click to process the data.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
        
         <div class="overflow-x-auto w-full px-1 p-4">
           <div class="w-full px-1 p-4">
@@ -165,7 +303,7 @@
                   </div>
                 </div>
                 <div *ngIf="!monteCarloSteps">
-                  <p class="text-gray-500">No Monte Carlo steps data available.</p>
+                  <p class="text-gray-500 text-center">Click to process the data.</p>
                 </div>
               </div>
             </div>
