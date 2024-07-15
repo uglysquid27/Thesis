@@ -24,7 +24,7 @@ const monteCarlo = async (req, res) => {
         const historicalData = await LabelTab.findAll({
             attributes: [
                 [Sequelize.literal('DATE_FORMAT(FROM_UNIXTIME(UNIX_TIMESTAMP(time) - MOD(UNIX_TIMESTAMP(time), 600)), "%Y-%m-%d %H:%i:00")'), 'interval_time'],
-                [Sequelize.fn('AVG', Sequelize.col('Label_Length_AVE')), 'Label_Length_AVE']
+                [Sequelize.fn('AVG', Sequelize.col('ini')), 'ini']
             ],
             where: {
                 [Op.and]: [
@@ -42,7 +42,7 @@ const monteCarlo = async (req, res) => {
         // Format the fetched data
         const historicalValues = historicalData.map(item => ({
             time: formatTime(item.dataValues.interval_time),
-            Label_Length_AVE: parseFloat(item.dataValues.Label_Length_AVE)
+            Label_Length_AVE: parseFloat(item.dataValues.ini)
         })).reverse(); // Reverse to get the data in chronological order
 
         steps.formattedData = historicalValues; // Store formatted data step
@@ -124,10 +124,10 @@ const monteCarlo = async (req, res) => {
 
         steps.aggregatedResults = aggregatedResults; // Store aggregated results
 
-        console.log('Monte Carlo Forecast:', forecastedResultsWithTime);
-        console.log('Historical values with formatted time:', actualValuesForComparison);
-        console.log('MAPE:', mape);
-        console.log('Steps:', steps);
+        // console.log('Monte Carlo Forecast:', forecastedResultsWithTime);
+        // console.log('Historical values with formatted time:', actualValuesForComparison);
+        // console.log('MAPE:', mape);
+        // console.log('Steps:', steps);
 
         // Send the JSON response including all steps
         res.json({ forecastedResultsWithTime, mape, steps });

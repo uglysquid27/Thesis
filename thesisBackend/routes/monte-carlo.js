@@ -5,4 +5,4 @@ var monteCarloController = require("../controllers/monte-carlo-controller")
 /* GET Monte Carlo Calculation. */
 router.get('/montecarlocalc', monteCarloController.index);
 
-module.exports = router;
+module.exports = router; 

@@ -83,9 +83,9 @@ const arimaForecast = async (req, res) => {
         }, 0) / actualValuesForComparison.length * 100;
 
         // Step 9: Log the results
-        console.log('ARIMA Forecast:', forecastedResultsWithTime);
-        console.log('Historical values with formatted time:', actualValuesForComparison);
-        console.log('MAPE:', mape);
+        // console.log('ARIMA Forecast:', forecastedResultsWithTime);
+        // console.log('Historical values with formatted time:', actualValuesForComparison);
+        // console.log('MAPE:', mape);
 
         // Step 10: Send the JSON response with forecasted results and MAPE
         res.json({

@@ -106,7 +106,7 @@ export class MainDashboardComponent implements OnInit {
           }
         });
         this.lastRealValues = this.realValues.slice(-10);
-        // console.log(this.realValues);
+        console.log(this.realValues);
         // console.log(this.realDates);
 
         this.updateCharts();
