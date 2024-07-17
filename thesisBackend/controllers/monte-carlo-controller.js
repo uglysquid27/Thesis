@@ -33,7 +33,7 @@ const monteCarlo = async (req, res) => {
                 ]
             },
             group: [Sequelize.literal('interval_time')],
-            order: [[Sequelize.literal('interval_time'), 'DESC']],
+            order: [[Sequelize.literal('interval_time'), 'DESC']], 
             limit: 40 // Fetch 40 data points
         });
 
