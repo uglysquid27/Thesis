@@ -2,7 +2,9 @@ var express = require("express");
 var router = express.Router();
 var monteCarloController = require("../controllers/monte-carlo-controller")
 
-/* GET Monte Carlo Calculation. */
-router.get('/montecarlocalc', monteCarloController.index);
+router.post('/montecarlocalc', (req, res) => {
+    const { attributeName } = req.body;
+    monteCarloController.index(req, res, attributeName);
+});
 
 module.exports = router; 

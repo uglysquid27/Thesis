@@ -15,58 +15,56 @@ const formatTime = (timeString) => {
     return `${day}/${month}/${year} ${time}:${min}:${sec}`;
 };
 
-const monteCarlo = async (req, res) => {
+const monteCarlo = async (req, res, attributeName) => {
     try {
-        // Object to store intermediate results
+        if (!attributeName) {
+            return res.status(400).json({ error: 'Table name and attribute name are required' });
+        }
+
+
         const steps = {};
 
-        // Fetch historical data with intervals rounded to 10 minutes
         const historicalData = await LabelTab.findAll({
             attributes: [
-                [Sequelize.literal('DATE_FORMAT(FROM_UNIXTIME(UNIX_TIMESTAMP(time) - MOD(UNIX_TIMESTAMP(time), 600)), "%Y-%m-%d %H:%i:00")'), 'interval_time'],
-                [Sequelize.fn('AVG', Sequelize.col('ini')), 'ini']
+                [Sequelize.literal(`DATE_FORMAT(FROM_UNIXTIME(UNIX_TIMESTAMP(time) - MOD(UNIX_TIMESTAMP(time), 600)), "%Y-%m-%d %H:%i:00")`), 'interval_time'],
+                [Sequelize.fn('AVG', Sequelize.col(attributeName)), attributeName]
             ],
             where: {
                 [Op.and]: [
-                    { Label_Length_AVE: { [Op.ne]: 0 } },
+                    { [attributeName]: { [Op.ne]: 0 } },
                     { time: { [Op.not]: null } }
                 ]
             },
             group: [Sequelize.literal('interval_time')],
-            order: [[Sequelize.literal('interval_time'), 'DESC']], 
-            limit: 40 // Fetch 40 data points
+            order: [[Sequelize.literal('interval_time'), 'DESC']],
+            limit: 40 
         });
 
-        steps.historicalData = historicalData; // Store historical data step
+        steps.historicalData = historicalData;
 
-        // Format the fetched data
         const historicalValues = historicalData.map(item => ({
             time: formatTime(item.dataValues.interval_time),
-            Label_Length_AVE: parseFloat(item.dataValues.ini)
-        })).reverse(); // Reverse to get the data in chronological order
+            value: parseFloat(item.dataValues[attributeName])
+        })).reverse(); 
 
-        steps.formattedData = historicalValues; // Store formatted data step
+        steps.formattedData = historicalValues; 
 
-        // Use the first 30 data points for simulation
         const simulationBaseData = historicalValues.slice(0, 30);
 
-        steps.simulationBaseData = simulationBaseData; // Store base data for simulation
+        steps.simulationBaseData = simulationBaseData; 
 
         const numberOfSimulations = 1000;
 
-        // Generate simulations
         const simulations = Array.from({ length: numberOfSimulations }, () => {
             return simulationBaseData.map(dataPoint => {
-                // Adjust deviation range for more realistic simulation (e.g., -0.1 to 0.1)
                 const deviation = (Math.random() - 0.5) * 0.2;
-                const newValue = dataPoint.Label_Length_AVE * (1 + deviation);
-                return { time: dataPoint.time, Label_Length_AVE: newValue };
+                const newValue = dataPoint.value * (1 + deviation);
+                return { time: dataPoint.time, value: newValue };
             });
         });
 
-        steps.simulations = simulations; // Store simulations
+        steps.simulations = simulations;
 
-        // Aggregate results by time intervals
         const forecastResults = simulations.reduce((acc, curr) => {
             curr.forEach((dataPoint, index) => {
                 acc[index] = acc[index] ? [...acc[index], dataPoint] : [dataPoint];
@@ -74,17 +72,15 @@ const monteCarlo = async (req, res) => {
             return acc;
         }, []);
 
-        steps.forecastResults = forecastResults; // Store forecast results
+        steps.forecastResults = forecastResults; 
 
-        // Calculate the average forecasted value for each interval
         const forecastedAverages = forecastResults.map(simulation => {
-            const sum = simulation.reduce((total, dataPoint) => total + dataPoint.Label_Length_AVE, 0);
+            const sum = simulation.reduce((total, dataPoint) => total + dataPoint.value, 0);
             return sum / simulation.length;
         });
 
-        steps.forecastedAverages = forecastedAverages; // Store forecasted averages
+        steps.forecastedAverages = forecastedAverages; 
 
-        // Get the last historical time and generate times for the forecast
         const lastHistoricalTime = new Date(simulationBaseData[simulationBaseData.length - 1].time);
         const forecastTimes = [];
         for (let i = 1; i <= 10; i++) {
@@ -92,44 +88,40 @@ const monteCarlo = async (req, res) => {
             forecastTimes.push(formatTime(forecastTime));
         }
 
-        steps.forecastTimes = forecastTimes; // Store forecast times
+        steps.forecastTimes = forecastTimes; 
 
-        // Combine forecasted values with their corresponding times
         const forecastedResultsWithTime = forecastedAverages.slice(0, 10).map((value, index) => ({
             time: forecastTimes[index],
-            Label_Length_AVE: value
+            value: value
         }));
 
-        steps.forecastedResultsWithTime = forecastedResultsWithTime; // Store final forecasted results with time
+        steps.forecastedResultsWithTime = forecastedResultsWithTime;
 
-        // Calculate MAPE using the last 10 historical values for comparison
         const actualValuesForComparison = historicalValues.slice(30, 40);
         const mape = actualValuesForComparison.reduce((totalError, historicalValue, index) => {
-            const forecastValue = forecastedResultsWithTime[index]?.Label_Length_AVE;
+            const forecastValue = forecastedResultsWithTime[index]?.value;
             if (forecastValue !== undefined) {
-                const error = Math.abs((historicalValue.Label_Length_AVE - forecastValue) / historicalValue.Label_Length_AVE);
+                const error = Math.abs((historicalValue.value - forecastValue) / historicalValue.value);
                 return totalError + error;
             }
             return totalError;
         }, 0) / actualValuesForComparison.length * 100;
 
-        steps.mape = mape; // Store MAPE
+        steps.mape = mape; 
 
-        // Define aggregatedResults for the frontend
         const aggregatedResults = forecastedResultsWithTime.map((item, index) => ({
             interval_index: index,
             time: item.time,
-            Label_Length_AVE: item.Label_Length_AVE
+            value: item.value
         }));
 
-        steps.aggregatedResults = aggregatedResults; // Store aggregated results
+        steps.aggregatedResults = aggregatedResults; 
 
         // console.log('Monte Carlo Forecast:', forecastedResultsWithTime);
         // console.log('Historical values with formatted time:', actualValuesForComparison);
         // console.log('MAPE:', mape);
         // console.log('Steps:', steps);
 
-        // Send the JSON response including all steps
         res.json({ forecastedResultsWithTime, mape, steps });
     } catch (error) {
         console.error('Error in Monte Carlo Forecasting:', error);
@@ -137,9 +129,9 @@ const monteCarlo = async (req, res) => {
     }
 };
 
-const index = async (req, res) => {
+const index = async (req, res, tableName, attributeName) => {
     try {
-        await monteCarlo(req, res);
+        await monteCarlo(req, res, tableName, attributeName);
     } catch (error) {
         console.error('Error in index route:', error);
         res.status(500).json({ error: 'Internal Server Error' });
