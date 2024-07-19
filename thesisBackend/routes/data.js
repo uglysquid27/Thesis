@@ -6,9 +6,7 @@ var router = express.Router();
 const fetchingdataController = require("../controllers/fetchingdata-controller");
 
 /* GET home page. */
-router.get('/', fetchingdataController.index);
-// router.get('/testing', monteCarloController.montecarlotest);
-
+router.post('/fetch', fetchingdataController.index);
 
 
 module.exports = router;

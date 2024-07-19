@@ -129,9 +129,9 @@ const monteCarlo = async (req, res, attributeName) => {
     }
 };
 
-const index = async (req, res, tableName, attributeName) => {
+const index = async (req, res, attributeName) => {
     try {
-        await monteCarlo(req, res, tableName, attributeName);
+        await monteCarlo(req, res, attributeName);
     } catch (error) {
         console.error('Error in index route:', error);
         res.status(500).json({ error: 'Internal Server Error' });

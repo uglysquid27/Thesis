@@ -4,13 +4,13 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { monteCarlo, dataSet, monteCarloDetail } from './chart';
 
 interface ForecastResponse {
-  forecastedResultsWithTime: Array<{ time: string, Label_Length_AVE: number }>;
+  forecastedResultsWithTime: Array<{ time: string, value: number }>;
   mape: number;
 }
 
 interface ForecastResult {
   time: string;
-  Label_Length_AVE: number;
+  value: number;
 }
 
 interface ForecastResponse {
@@ -79,6 +79,41 @@ export class MainDashboardComponent implements OnInit {
     return this.calculateMAPE(this.lastRealValues, this.forecastValuesA);
   }
 
+  fetchMonteCarloData(attributeName: string) {
+    this.spinner.show();
+
+    this.service.getMonteCarloTest(attributeName).subscribe({
+      next: (data: ForecastResponse) => {
+        console.log(data);
+        
+        const forecastedResultsWithTime = data.forecastedResultsWithTime;
+        const mape = data.mape;
+
+        forecastedResultsWithTime.sort((a, b) => new Date(a.time).getTime() - new Date(b.time).getTime());
+
+        console.log('Sorted Forecasted Results:', forecastedResultsWithTime);
+        console.log('MAPE:', mape);
+
+        this.forecastValues = forecastedResultsWithTime.map(item => item.value);
+        this.forecastDates = forecastedResultsWithTime.map(item => item.time);
+
+        console.log('Forecast Values:', this.forecastValues);
+        console.log('Forecast Dates:', this.forecastDates);
+
+        this.combinedValues = [...this.realValues, ...this.forecastValues];
+        this.combinedDates = [...this.realDates, ...this.forecastDates];
+
+        this.updateCharts();
+      },
+      error: (error) => {
+        console.error('Error fetching forecast data', error);
+      },
+      complete: () => {
+        this.spinner.hide();
+      }
+    });
+  }
+
   async ngOnInit(): Promise<void> {
     window.scrollTo(0, 0);
     this.spinner.show();
@@ -100,9 +135,9 @@ export class MainDashboardComponent implements OnInit {
         this.realValues = [];
  
         dataArray.forEach(item => {
-          if (item.time && item.Label_Length_AVE) {
+          if (item.time && item.value) {
             this.realDates.push(item.time);
-            this.realValues.push(item.Label_Length_AVE);
+            this.realValues.push(item.value);
           }
         });
         this.lastRealValues = this.realValues.slice(-10);
@@ -112,40 +147,42 @@ export class MainDashboardComponent implements OnInit {
         this.updateCharts();
       });
 
-      this.service.getMonteCarloTest().subscribe({
-        next: (data: ForecastResponse) => {
-          // console.log(data);
+     
 
-          // Access forecastedResultsWithTime from the response data
-          const forecastedResultsWithTime = data.forecastedResultsWithTime;
-          const mape = data.mape;
+      // this.service.getMonteCarloTest().subscribe({
+      //   next: (data: ForecastResponse) => {
+      //     // console.log(data);
 
-          // Sort the forecastedResultsWithTime array by date
-          forecastedResultsWithTime.sort((a, b) => new Date(a.time).getTime() - new Date(b.time).getTime());
+      //     // Access forecastedResultsWithTime from the response data
+      //     const forecastedResultsWithTime = data.forecastedResultsWithTime;
+      //     const mape = data.mape;
 
-          console.log('Sorted Forecasted Results:', forecastedResultsWithTime);
-          console.log('MAPE:', mape);
+      //     // Sort the forecastedResultsWithTime array by date
+      //     forecastedResultsWithTime.sort((a, b) => new Date(a.time).getTime() - new Date(b.time).getTime());
 
-          // Extracting time and values for further processing or charting
-          this.forecastValues = forecastedResultsWithTime.map(item => item.Label_Length_AVE);
-          this.forecastDates = forecastedResultsWithTime.map(item => item.time);
+      //     console.log('Sorted Forecasted Results:', forecastedResultsWithTime);
+      //     console.log('MAPE:', mape);
 
-          console.log('Forecast Values:', this.forecastValues);
-          console.log('Forecast Dates:', this.forecastDates);
+      //     // Extracting time and values for further processing or charting
+      //     this.forecastValues = forecastedResultsWithTime.map(item => item.value);
+      //     this.forecastDates = forecastedResultsWithTime.map(item => item.time);
 
-          // Combine forecasted values with historical values if needed
-          this.combinedValues = [...this.realValues, ...this.forecastValues];
-          this.combinedDates = [...this.realDates, ...this.forecastDates];
+      //     console.log('Forecast Values:', this.forecastValues);
+      //     console.log('Forecast Dates:', this.forecastDates);
 
-          this.updateCharts();
-        },
-        error: (error) => {
-          console.error('Error fetching forecast data', error);
-        },
-        complete: () => {
-          this.spinner.hide();
-        }
-      });
+      //     // Combine forecasted values with historical values if needed
+      //     this.combinedValues = [...this.realValues, ...this.forecastValues];
+      //     this.combinedDates = [...this.realDates, ...this.forecastDates];
+
+      //     this.updateCharts();
+      //   },
+      //   error: (error) => {
+      //     console.error('Error fetching forecast data', error);
+      //   },
+      //   complete: () => {
+      //     this.spinner.hide();
+      //   }
+      // });
 
       this.service.getArimaTest().subscribe({
         next: (data: ForecastResponse) => {
@@ -162,7 +199,7 @@ export class MainDashboardComponent implements OnInit {
             // console.log('MAPE:', mape);
     
             // Extracting time and values for further processing or charting
-            this.forecastValuesA = forecastedResultsWithTime.map(item => item.Label_Length_AVE);
+            this.forecastValuesA = forecastedResultsWithTime.map(item => item.value);
             this.forecastDatesA = forecastedResultsWithTime.map(item => item.time);
     
             // console.log('Forecast Values:', this.forecastValuesA);

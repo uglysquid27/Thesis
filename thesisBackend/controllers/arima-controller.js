@@ -18,15 +18,17 @@ const formatTime = (timeString) => {
 
 const arimaForecast = async (req, res) => {
     try {
+        const { attributeName } = req.body;
+
         // Step 1: Fetch historical data with intervals rounded to 10 minutes
         const historicalData = await LabelTab.findAll({
             attributes: [
                 [Sequelize.literal('DATE_FORMAT(FROM_UNIXTIME(UNIX_TIMESTAMP(time) - MOD(UNIX_TIMESTAMP(time), 600)), "%Y-%m-%d %H:%i:00")'), 'interval_time'],
-                [Sequelize.fn('AVG', Sequelize.col('Label_Length_AVE')), 'Label_Length_AVE']
+                [Sequelize.fn('AVG', Sequelize.col(attributeName)), attributeName]
             ],
             where: {
                 [Op.and]: [
-                    { Label_Length_AVE: { [Op.ne]: 0 } },
+                    { [attributeName]: { [Op.ne]: 0 } },
                     { time: { [Op.not]: null } }
                 ]
             },
@@ -41,11 +43,11 @@ const arimaForecast = async (req, res) => {
         // Step 3: Format the fetched data and round to the nearest whole number
         const historicalValues = historicalData.map(item => ({
             time: formatTime(item.dataValues.interval_time),
-            Label_Length_AVE: Math.round(parseFloat(item.dataValues.Label_Length_AVE)) // Round to the nearest whole number
+            [attributeName]: Math.round(parseFloat(item.dataValues[attributeName])) // Round to the nearest whole number
         })).reverse(); // Reverse to get the data in chronological order
 
         // Step 4: Use the first 30 data points for ARIMA
-        const simulationBaseData = historicalValues.slice(0, 30).map(item => item.Label_Length_AVE);
+        const simulationBaseData = historicalValues.slice(0, 30).map(item => item[attributeName]);
 
         // Step 5: Initialize arrays to store forecasted values and times
         const forecastedValues = [];
@@ -68,15 +70,15 @@ const arimaForecast = async (req, res) => {
         // Step 7: Combine forecasted values with their corresponding times
         const forecastedResultsWithTime = forecastedValues.map((value, index) => ({
             time: forecastTimes[index],
-            Label_Length_AVE: value
+            [attributeName]: value
         }));
 
         // Step 8: Calculate MAPE using the last 10 historical values for comparison
         const actualValuesForComparison = historicalValues.slice(30, 40);
         const mape = actualValuesForComparison.reduce((totalError, historicalValue, index) => {
-            const forecastValue = forecastedResultsWithTime[index]?.Label_Length_AVE;
+            const forecastValue = forecastedResultsWithTime[index]?.[attributeName];
             if (forecastValue !== undefined) {
-                const error = Math.abs((historicalValue.Label_Length_AVE - forecastValue) / historicalValue.Label_Length_AVE);
+                const error = Math.abs((historicalValue[attributeName] - forecastValue) / historicalValue[attributeName]);
                 return totalError + error;
             }
             return totalError;
@@ -105,10 +107,9 @@ const arimaForecast = async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 };
-
-const index = async (req, res) => {
+const index = async (req, res, attributeName) => {
     try {
-        await arimaForecast(req, res);
+        await arimaForecast(req, res, attributeName);
     } catch (error) {
         console.error('Error in index route:', error);
         res.status(500).json({ error: 'Internal Server Error' });

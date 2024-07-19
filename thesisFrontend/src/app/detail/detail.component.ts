@@ -4,7 +4,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { monteCarlo, dataSet, monteCarloDetail, arimaDetail } from './chart';
 
 interface ForecastResponse {
-  forecastedResultsWithTime: { time: string, Label_Length_AVE: number }[];
+  forecastedResultsWithTime: { time: string, value: number }[];
   mape: number;
   steps: {
     historicalData: any[];
@@ -14,7 +14,7 @@ interface ForecastResponse {
     forecastResults: any[][];
     forecastedAverages: number[];
     forecastTimes: string[];
-    aggregatedResults: Array<{ interval_index: number, time: string, Label_Length_AVE: number }>;
+    aggregatedResults: Array<{ interval_index: number, time: string, value: number }>;
   };
 }
 
@@ -37,53 +37,53 @@ export class DetailComponent implements OnInit {
   getMonteCarloSteps() {
     console.log("Fetching Monte Carlo steps data...");
   
-    this.service.getMonteCarloTest().subscribe({
-      next: (data: ForecastResponse) => {
-        console.log("Received data:", data);
+    // this.service.getMonteCarloTest().subscribe({
+    //   next: (data: ForecastResponse) => {
+    //     console.log("Received data:", data);
   
-        if (data.steps) {
-          console.log("data.steps:", data.steps);
+    //     if (data.steps) {
+    //       console.log("data.steps:", data.steps);
   
-          if (Array.isArray(data.steps.aggregatedResults)) {
-            this.monteCarloSteps = data.steps;
-            console.log("Aggregated results:", this.monteCarloSteps.aggregatedResults);
-            this.monteCarloChartDetail();
-          } else {
-            console.error('data.steps.aggregatedResults is undefined or not an array');
-          }
-        } else {
-          console.error('data.steps is undefined or not an object');
-        }
+    //       if (Array.isArray(data.steps.aggregatedResults)) {
+    //         this.monteCarloSteps = data.steps;
+    //         console.log("Aggregated results:", this.monteCarloSteps.aggregatedResults);
+    //         this.monteCarloChartDetail();
+    //       } else {
+    //         console.error('data.steps.aggregatedResults is undefined or not an array');
+    //       }
+    //     } else {
+    //       console.error('data.steps is undefined or not an object');
+    //     }
 
-        const forecastedResultsWithTime = data.forecastedResultsWithTime;
-        const mape = data.mape;
+    //     const forecastedResultsWithTime = data.forecastedResultsWithTime;
+    //     const mape = data.mape;
         
-        // Sort the forecastedResultsWithTime array by date
-        forecastedResultsWithTime.sort((a, b) => new Date(a.time).getTime() - new Date(b.time).getTime());
+    //     // Sort the forecastedResultsWithTime array by date
+    //     forecastedResultsWithTime.sort((a, b) => new Date(a.time).getTime() - new Date(b.time).getTime());
 
-        console.log('Sorted Forecasted Results:', forecastedResultsWithTime);
-        console.log('MAPE:', mape);
+    //     console.log('Sorted Forecasted Results:', forecastedResultsWithTime);
+    //     console.log('MAPE:', mape);
 
-        // Extracting time and values for further processing or charting
-        this.forecastValues = forecastedResultsWithTime.map(item => item.Label_Length_AVE);
-        this.forecastDates = forecastedResultsWithTime.map(item => item.time);
+    //     // Extracting time and values for further processing or charting
+    //     this.forecastValues = forecastedResultsWithTime.map(item => item.value);
+    //     this.forecastDates = forecastedResultsWithTime.map(item => item.time);
 
-        console.log('Forecast Values:', this.forecastValues);
-        console.log('Forecast Dates:', this.forecastDates);
+    //     console.log('Forecast Values:', this.forecastValues);
+    //     console.log('Forecast Dates:', this.forecastDates);
 
-        // Combine forecasted values with historical values if needed
-        this.combinedValues = [...this.realValues, ...this.forecastValues];
-        this.combinedDates = [...this.realDates, ...this.forecastDates];
+    //     // Combine forecasted values with historical values if needed
+    //     this.combinedValues = [...this.realValues, ...this.forecastValues];
+    //     this.combinedDates = [...this.realDates, ...this.forecastDates];
 
-        this.monteCarloChartDetail();
-      },
-      error: (error) => {
-        console.error('Error fetching forecast data', error);
-      },
-      complete: () => {
-        this.spinner.hide();
-      }
-    });
+    //     this.monteCarloChartDetail();
+    //   },
+    //   error: (error) => {
+    //     console.error('Error fetching forecast data', error);
+    //   },
+    //   complete: () => {
+    //     this.spinner.hide();
+    //   }
+    // });
   }
   
 
@@ -155,40 +155,40 @@ changePage(page: number): void {
 
     this.loaddata = new Promise<void>((resolve, reject) => {
 
-      this.service.getMonteCarloTest().subscribe({
-        next: (data: ForecastResponse) => {
-          console.log(data);
+      // this.service.getMonteCarloTest().subscribe({
+      //   next: (data: ForecastResponse) => {
+      //     console.log(data);
 
-          // Access forecastedResultsWithTime from the response data
-          const forecastedResultsWithTime = data.forecastedResultsWithTime;
-          const mape = data.mape;
+      //     // Access forecastedResultsWithTime from the response data
+      //     const forecastedResultsWithTime = data.forecastedResultsWithTime;
+      //     const mape = data.mape;
           
-          // Sort the forecastedResultsWithTime array by date
-          forecastedResultsWithTime.sort((a, b) => new Date(a.time).getTime() - new Date(b.time).getTime());
+      //     // Sort the forecastedResultsWithTime array by date
+      //     forecastedResultsWithTime.sort((a, b) => new Date(a.time).getTime() - new Date(b.time).getTime());
 
-          console.log('Sorted Forecasted Results:', forecastedResultsWithTime);
-          console.log('MAPE:', mape);
+      //     console.log('Sorted Forecasted Results:', forecastedResultsWithTime);
+      //     console.log('MAPE:', mape);
 
-          // Extracting time and values for further processing or charting
-          this.forecastValues = forecastedResultsWithTime.map(item => item.Label_Length_AVE);
-          this.forecastDates = forecastedResultsWithTime.map(item => item.time);
+      //     // Extracting time and values for further processing or charting
+      //     this.forecastValues = forecastedResultsWithTime.map(item => item.value);
+      //     this.forecastDates = forecastedResultsWithTime.map(item => item.time);
 
-          console.log('Forecast Values:', this.forecastValues);
-          console.log('Forecast Dates:', this.forecastDates);
+      //     console.log('Forecast Values:', this.forecastValues);
+      //     console.log('Forecast Dates:', this.forecastDates);
 
-          // Combine forecasted values with historical values if needed
-          this.combinedValues = [...this.realValues, ...this.forecastValues];
-          this.combinedDates = [...this.realDates, ...this.forecastDates];
+      //     // Combine forecasted values with historical values if needed
+      //     this.combinedValues = [...this.realValues, ...this.forecastValues];
+      //     this.combinedDates = [...this.realDates, ...this.forecastDates];
 
-          this.monteCarloChartDetail();
-        },
-        error: (error) => {
-          console.error('Error fetching forecast data', error);
-        },
-        complete: () => {
-          this.spinner.hide();
-        }
-      });
+      //     this.monteCarloChartDetail();
+      //   },
+      //   error: (error) => {
+      //     console.error('Error fetching forecast data', error);
+      //   },
+      //   complete: () => {
+      //     this.spinner.hide();
+      //   }
+      // });
 
 
       this.service.getArimaTest().subscribe({
@@ -207,7 +207,7 @@ changePage(page: number): void {
           console.log('MAPE:', mape);
 
           // Extracting time and values for further processing or charting
-          this.forecastValuesA = forecastedResultsWithTime.map(item => item.Label_Length_AVE);
+          this.forecastValuesA = forecastedResultsWithTime.map(item => item.value);
           this.forecastDatesA = forecastedResultsWithTime.map(item => item.time);
 
           console.log('Forecast Values:', this.forecastValuesA);

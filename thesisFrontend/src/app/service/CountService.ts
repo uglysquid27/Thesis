@@ -7,7 +7,7 @@ import { Observable, catchError } from 'rxjs';
 var api = environment.baseUrlApi;
 
 interface ForecastResponse {
-  forecastedResultsWithTime: Array<{ time: string, Label_Length_AVE: number }>;
+  forecastedResultsWithTime: Array<{ time: string, value: number }>;
   mape: number;
   steps: any;
 }
@@ -29,8 +29,11 @@ export class CountService {
   getArimaTest() {
     return this.httpClient.get<ForecastResponse>(api + 'arima/' + "arimacalc");
   }
-  getMonteCarloTest() {
-    return this.httpClient.get<ForecastResponse>(api + 'montecarlo/' + 'montecarlocalc');
+  // getMonteCarloTest() {
+  //   return this.httpClient.get<ForecastResponse>(api + 'montecarlo/' + 'montecarlocalc');
+  // }
+  getMonteCarloTest(attributeName: string): Observable<ForecastResponse> {
+    return this.httpClient.post<ForecastResponse>(api + 'montecarlo/' + 'montecarlocalc', { attributeName });
   }
   uploadFile(file: File): Observable<any> {
     const formData = new FormData();
