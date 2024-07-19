@@ -29,13 +29,13 @@ const dataFetch = async (attributeName) => {
             },
             group: [Sequelize.literal('interval_time')],
             order: [[Sequelize.literal('interval_time'), 'DESC']],
-            limit: 40 // Fetch 40 data points
+            limit: 40 
         });
 
         const historicalValues = historicalData.map(item => ({
-            time: formatTime(item.dataValues.interval_time),
+            time: item.dataValues.interval_time,
             [attributeName]: parseFloat(item.dataValues[attributeName])
-        })).reverse(); // Reverse to get the data in chronological order
+        })).reverse(); 
 
         return { historicalValues };
     } catch (error) {

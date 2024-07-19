@@ -11,12 +11,14 @@ interface ForecastResponse {
 interface ForecastResult {
   time: string;
   value: number;
+  
 }
 
 interface ForecastResponse {
   forecastedResultsWithTime: ForecastResult[];
   mape: number;
   steps: any;
+  
 }
 
 @Component({
@@ -114,38 +116,141 @@ export class MainDashboardComponent implements OnInit {
     });
   }
 
+  fetchData(attributeName: string) {
+    this.service.getDataSet(attributeName).subscribe((data: any) => {
+      const dataArray = Object.values(data) as any[];
+  
+      // console.log('Data Array:', dataArray); // Log the entire dataArray
+  
+      dataArray.sort((a, b) => {
+        const dateA = new Date(a.time.split('/').reverse().join('-')).getTime();
+        const dateB = new Date(b.time.split('/').reverse().join('-')).getTime();
+        return dateA - dateB;
+      });
+  
+      this.realDates = [];
+      this.realValues = [];
+  
+      dataArray.forEach((item: any) => {
+        // console.log('Item structure:', item);
+  
+        // Check if item is an array
+        if (Array.isArray(item)) {
+          item.forEach(subItem => {
+            // console.log('SubItem structure:', subItem);
+            
+            const time = subItem.time;
+            const value = subItem[attributeName];
+            
+            // console.log('Time:', time);
+            // console.log('Value:', value);
+  
+            if (time && value) {
+              // console.log('Entered if condition');
+              this.realDates.push(time);
+              this.realValues.push(value);
+            }
+          });
+        } else {
+          const time = item.time;
+          const value = item[attributeName];
+          
+          // console.log('Time:', time);
+          // console.log('Value:', value);
+  
+          if (time && value) {
+            console.log('Entered if condition');
+            this.realDates.push(time);
+            this.realValues.push(value);
+          }
+        }
+      });
+  
+      this.lastRealValues = this.realValues.slice(-10);
+      // console.log(this.realValues);
+      // console.log(this.realDates);
+  
+      this.updateCharts();
+    }, error => {
+      console.error('Error fetching data', error);
+    });
+  }
+  
+  
+
+  fetchArimaForecast(attributeName: string) {
+    this.spinner.show();
+
+    this.service.getArimaTest(attributeName).subscribe({
+      next: (data: any) => { // Use 'any' instead of a specific type
+        console.log(data);
+        
+        // Access forecastedResultsWithTime from the response data
+        const forecastedResultsWithTime = data.forecastedResultsWithTime;
+        const mape = data.mape;
+
+        // Sort the forecastedResultsWithTime array by date
+        forecastedResultsWithTime.sort((a: any, b: any) => new Date(a.time).getTime() - new Date(b.time).getTime());
+
+        console.log('Sorted Forecasted Results:', forecastedResultsWithTime);
+        console.log('MAPE:', mape);
+
+        // Extracting time and values for further processing or charting
+        this.forecastValuesA = forecastedResultsWithTime.map((item: any) => item[attributeName]);
+        this.forecastDatesA = forecastedResultsWithTime.map((item: any) => item.time);
+
+        console.log('Forecast Values:', this.forecastValuesA);
+        console.log('Forecast Dates:', this.forecastDatesA);
+
+        // Combine forecasted values with historical values if needed
+        this.combinedValuesA = [...this.realValues, ...this.forecastValuesA];
+        this.combinedDatesA = [...this.realDates, ...this.forecastDatesA];
+
+        this.updateCharts();
+      },
+      error: (error) => {
+        console.error('Error fetching forecast data', error);
+      },
+      complete: () => {
+        this.spinner.hide();
+      }
+    });
+}
+
   async ngOnInit(): Promise<void> {
     window.scrollTo(0, 0);
     this.spinner.show();
 
     this.loaddata = new Promise<void>((resolve, reject) => {
+      this.fetchArimaForecast('Label_Length_AVE')
+      this.fetchData('Label_Length_AVE')
+      this.fetchMonteCarloData('Label_Length_AVE')
+      // this.service.getDataSet().subscribe(data => {
+      //   // console.log(data);
 
-      this.service.getDataSet().subscribe(data => {
-        // console.log(data);
+      //   const dataArray = Object.values(data);
 
-        const dataArray = Object.values(data);
+      //   dataArray.sort((a, b) => {
+      //     const dateA = new Date(a.time.split('/').reverse().join('-')).getTime();
+      //     const dateB = new Date(b.time.split('/').reverse().join('-')).getTime();
+      //     return dateA - dateB;
+      //   });
 
-        dataArray.sort((a, b) => {
-          const dateA = new Date(a.time.split('/').reverse().join('-')).getTime();
-          const dateB = new Date(b.time.split('/').reverse().join('-')).getTime();
-          return dateA - dateB;
-        });
-
-        this.realDates = [];
-        this.realValues = [];
+      //   this.realDates = [];
+      //   this.realValues = [];
  
-        dataArray.forEach(item => {
-          if (item.time && item.value) {
-            this.realDates.push(item.time);
-            this.realValues.push(item.value);
-          }
-        });
-        this.lastRealValues = this.realValues.slice(-10);
-        console.log(this.realValues);
-        // console.log(this.realDates);
+      //   dataArray.forEach(item => {
+      //     if (item.time && item.value) {
+      //       this.realDates.push(item.time);
+      //       this.realValues.push(item.value);
+      //     }
+      //   });
+      //   this.lastRealValues = this.realValues.slice(-10);
+      //   console.log(this.realValues);
+      //   // console.log(this.realDates);
 
-        this.updateCharts();
-      });
+      //   this.updateCharts();
+      // });
 
      
 
@@ -184,40 +289,40 @@ export class MainDashboardComponent implements OnInit {
       //   }
       // });
 
-      this.service.getArimaTest().subscribe({
-        next: (data: ForecastResponse) => {
-            console.log(data);
+    //   this.service.getArimaTest().subscribe({
+    //     next: (data: ForecastResponse) => {
+    //         console.log(data);
     
-            // Access forecastedResultsWithTime from the response data
-            const forecastedResultsWithTime = data.forecastedResultsWithTime;
-            const mape = data.mape;
+    //         // Access forecastedResultsWithTime from the response data
+    //         const forecastedResultsWithTime = data.forecastedResultsWithTime;
+    //         const mape = data.mape;
     
-            // Sort the forecastedResultsWithTime array by date
-            forecastedResultsWithTime.sort((a, b) => new Date(a.time).getTime() - new Date(b.time).getTime());
+    //         // Sort the forecastedResultsWithTime array by date
+    //         forecastedResultsWithTime.sort((a, b) => new Date(a.time).getTime() - new Date(b.time).getTime());
     
-            // console.log('Sorted Forecasted Results:', forecastedResultsWithTime);
-            // console.log('MAPE:', mape);
+    //         // console.log('Sorted Forecasted Results:', forecastedResultsWithTime);
+    //         // console.log('MAPE:', mape);
     
-            // Extracting time and values for further processing or charting
-            this.forecastValuesA = forecastedResultsWithTime.map(item => item.value);
-            this.forecastDatesA = forecastedResultsWithTime.map(item => item.time);
+    //         // Extracting time and values for further processing or charting
+    //         this.forecastValuesA = forecastedResultsWithTime.map(item => item.value);
+    //         this.forecastDatesA = forecastedResultsWithTime.map(item => item.time);
     
-            // console.log('Forecast Values:', this.forecastValuesA);
-            // console.log('Forecast Dates:', this.forecastDatesA);
+    //         // console.log('Forecast Values:', this.forecastValuesA);
+    //         // console.log('Forecast Dates:', this.forecastDatesA);
     
-            // Combine forecasted values with historical values if needed
-            this.combinedValuesA = [...this.realValues, ...this.forecastValuesA];
-            this.combinedDatesA = [...this.realDates, ...this.forecastDatesA];
+    //         // Combine forecasted values with historical values if needed
+    //         this.combinedValuesA = [...this.realValues, ...this.forecastValuesA];
+    //         this.combinedDatesA = [...this.realDates, ...this.forecastDatesA];
     
-            this.updateCharts();
-        },
-        error: (error) => {
-            console.error('Error fetching forecast data', error);
-        },
-        complete: () => {
-            this.spinner.hide();
-        }
-    });    
+    //         this.updateCharts();
+    //     },
+    //     error: (error) => {
+    //         console.error('Error fetching forecast data', error);
+    //     },
+    //     complete: () => {
+    //         this.spinner.hide();
+    //     }
+    // });    
 
       resolve();
     });
@@ -226,6 +331,8 @@ export class MainDashboardComponent implements OnInit {
   }
 
   updateCharts() {
+    console.log('masuk sini oy');
+    
     this.realValueChart();
     this.monteCarloChart();
   }

@@ -191,41 +191,41 @@ changePage(page: number): void {
       // });
 
 
-      this.service.getArimaTest().subscribe({
-        next: (data: ForecastResponse) => {
-          console.log(data);
+      // this.service.getArimaTest().subscribe({
+      //   next: (data: ForecastResponse) => {
+      //     console.log(data);
 
-          // Access forecastedResultsWithTime from the response data
-          const forecastedResultsWithTime = data.forecastedResultsWithTime;
-          const mape = data.mape;
-          this.arimaSteps = data.steps;
+      //     // Access forecastedResultsWithTime from the response data
+      //     const forecastedResultsWithTime = data.forecastedResultsWithTime;
+      //     const mape = data.mape;
+      //     this.arimaSteps = data.steps;
 
-          // Sort the forecastedResultsWithTime array by date
-          forecastedResultsWithTime.sort((a, b) => new Date(a.time).getTime() - new Date(b.time).getTime());
+      //     // Sort the forecastedResultsWithTime array by date
+      //     forecastedResultsWithTime.sort((a, b) => new Date(a.time).getTime() - new Date(b.time).getTime());
 
-          console.log('Sorted Forecasted Results:', forecastedResultsWithTime);
-          console.log('MAPE:', mape);
+      //     console.log('Sorted Forecasted Results:', forecastedResultsWithTime);
+      //     console.log('MAPE:', mape);
 
-          // Extracting time and values for further processing or charting
-          this.forecastValuesA = forecastedResultsWithTime.map(item => item.value);
-          this.forecastDatesA = forecastedResultsWithTime.map(item => item.time);
+      //     // Extracting time and values for further processing or charting
+      //     this.forecastValuesA = forecastedResultsWithTime.map(item => item.value);
+      //     this.forecastDatesA = forecastedResultsWithTime.map(item => item.time);
 
-          console.log('Forecast Values:', this.forecastValuesA);
-          console.log('Forecast Dates:', this.forecastDatesA);
+      //     console.log('Forecast Values:', this.forecastValuesA);
+      //     console.log('Forecast Dates:', this.forecastDatesA);
 
-          // Combine forecasted values with historical values if needed
-          this.combinedValuesA = [...this.realValues, ...this.forecastValuesA];
-          this.combinedDatesA = [...this.realDates, ...this.forecastDatesA];
+      //     // Combine forecasted values with historical values if needed
+      //     this.combinedValuesA = [...this.realValues, ...this.forecastValuesA];
+      //     this.combinedDatesA = [...this.realDates, ...this.forecastDatesA];
 
-          this.ArimaChartDetail();
-        },
-        error: (error) => {
-          console.error('Error fetching forecast data', error);
-        },
-        complete: () => {
-          this.spinner.hide();
-        }
-      });
+      //     this.ArimaChartDetail();
+      //   },
+      //   error: (error) => {
+      //     console.error('Error fetching forecast data', error);
+      //   },
+      //   complete: () => {
+      //     this.spinner.hide();
+      //   }
+      // });
 
       resolve();
     });

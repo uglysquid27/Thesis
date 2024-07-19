@@ -23,15 +23,13 @@ export class CountService {
     })
   }
 
-  getDataSet() {
-    return this.httpClient.get(api + 'data/');
+  getDataSet(attributeName: string): Observable<any> {
+    return this.httpClient.post<any>(api + 'data/fetch', { attributeName });
   }
-  getArimaTest() {
-    return this.httpClient.get<ForecastResponse>(api + 'arima/' + "arimacalc");
+
+  getArimaTest(attributeName: string): Observable<ForecastResponse> {
+    return this.httpClient.post<ForecastResponse>(api + 'arima/arimacalc', { attributeName });
   }
-  // getMonteCarloTest() {
-  //   return this.httpClient.get<ForecastResponse>(api + 'montecarlo/' + 'montecarlocalc');
-  // }
   getMonteCarloTest(attributeName: string): Observable<ForecastResponse> {
     return this.httpClient.post<ForecastResponse>(api + 'montecarlo/' + 'montecarlocalc', { attributeName });
   }
