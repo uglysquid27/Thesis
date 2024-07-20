@@ -5,60 +5,61 @@
         <h5 class="text-start font-bold text-2xl">Machine Category</h5>
       </div>
       <div class="pl-2 mb-4">
-        <a (click)="fetchMonteCarloData('Label_Length_AVE')" class="cursor-pointer relative p-0.5 inline-flex items-center justify-center font-bold overflow-hidden group rounded-md mx-1">
+        <a (click)="fetchMonteCarloData('Label_Length_AVE'); fetchData('Label_Length_AVE'); fetchArimaForecast('Label_Length_AVE')" class="cursor-pointer relative p-0.5 inline-flex items-center justify-center font-bold overflow-hidden group rounded-md mx-1">
           <span class="w-full h-full bg-gradient-to-br from-[#87CEFA] via-[#1E90FF] to-[#00BFFF] group-hover:from-[#00BFFF] group-hover:via-[#1E90FF] group-hover:to-[#87CEFA] absolute"></span>
           <span class="relative px-1 py-3 transition-all ease-out bg-white rounded-md group-hover:bg-opacity-0 duration-400">
-          <span  class="relative text-[#87CEFA]">Label Length AVE</span>
+              <span class="relative text-[#87CEFA]">Label Length AVE</span>
           </span>
-          </a>
-        <a (click)="fetchMonteCarloData('Label_Length_PV')" class="cursor-pointer relative p-0.5 inline-flex items-center justify-center font-bold overflow-hidden group rounded-md mx-1">
+      </a>
+      <a (click)="fetchMonteCarloData('Label_Length_PV'); fetchData('Label_Length_PV'); fetchArimaForecast('Label_Length_PV')" class="cursor-pointer relative p-0.5 inline-flex items-center justify-center font-bold overflow-hidden group rounded-md mx-1">
           <span class="w-full h-full bg-gradient-to-br from-[#87CEFA] via-[#1E90FF] to-[#00BFFF] group-hover:from-[#00BFFF] group-hover:via-[#1E90FF] group-hover:to-[#87CEFA] absolute"></span>
           <span class="relative px-1 py-3 transition-all ease-out bg-white rounded-md group-hover:bg-opacity-0 duration-400">
-          <span  class="relative text-[#87CEFA]">Label Length PV</span>
+              <span class="relative text-[#87CEFA]">Label Length PV</span>
           </span>
-          </a>
-        <a (click)="fetchMonteCarloData('Label_Length_SV')" class="cursor-pointer relative p-0.5 inline-flex items-center justify-center font-bold overflow-hidden group rounded-md mx-1">
+      </a>
+      <a (click)="fetchMonteCarloData('Label_Length_SV'); fetchData('Label_Length_SV'); fetchArimaForecast('Label_Length_SV')" class="cursor-pointer relative p-0.5 inline-flex items-center justify-center font-bold overflow-hidden group rounded-md mx-1">
           <span class="w-full h-full bg-gradient-to-br from-[#87CEFA] via-[#1E90FF] to-[#00BFFF] group-hover:from-[#00BFFF] group-hover:via-[#1E90FF] group-hover:to-[#87CEFA] absolute"></span>
           <span class="relative px-1 py-3 transition-all ease-out bg-white rounded-md group-hover:bg-opacity-0 duration-400">
-          <span  class="relative text-[#87CEFA]">Label Length SV</span>
+              <span class="relative text-[#87CEFA]">Label Length SV</span>
           </span>
-          </a>
-        <a (click)="fetchMonteCarloData('Temp_G_Roller_Body_PV')" class="cursor-pointer relative p-0.5 inline-flex items-center justify-center font-bold overflow-hidden group rounded-md mx-1">
+      </a>
+      <a (click)="fetchMonteCarloData('Temp_G_Roller_Body_PV'); fetchData('Temp_G_Roller_Body_PV'); fetchArimaForecast('Temp_G_Roller_Body_PV')" class="cursor-pointer relative p-0.5 inline-flex items-center justify-center font-bold overflow-hidden group rounded-md mx-1">
           <span class="w-full h-full bg-gradient-to-br from-[#87CEFA] via-[#1E90FF] to-[#00BFFF] group-hover:from-[#00BFFF] group-hover:via-[#1E90FF] group-hover:to-[#87CEFA] absolute"></span>
           <span class="relative px-1 py-3 transition-all ease-out bg-white rounded-md group-hover:bg-opacity-0 duration-400">
-          <span  class="relative text-[#87CEFA]">Temp Glue Roller Body PV</span>
+              <span class="relative text-[#87CEFA]">Temp Glue Roller Body PV</span>
           </span>
-          </a>
-        <a (click)="fetchMonteCarloData('Temp_Glue_Bar_PV')" class="cursor-pointer relative p-0.5 inline-flex items-center justify-center font-bold overflow-hidden group rounded-md mx-1">
+      </a>
+      <a (click)="fetchMonteCarloData('Temp_Glue_Bar_PV'); fetchData('Temp_Glue_Bar_PV'); fetchArimaForecast('Temp_Glue_Bar_PV')" class="cursor-pointer relative p-0.5 inline-flex items-center justify-center font-bold overflow-hidden group rounded-md mx-1">
           <span class="w-full h-full bg-gradient-to-br from-[#87CEFA] via-[#1E90FF] to-[#00BFFF] group-hover:from-[#00BFFF] group-hover:via-[#1E90FF] group-hover:to-[#87CEFA] absolute"></span>
           <span class="relative px-1 py-3 transition-all ease-out bg-white rounded-md group-hover:bg-opacity-0 duration-400">
-          <span  class="relative text-[#87CEFA]">Temp Glue Bar PV</span>
+              <span class="relative text-[#87CEFA]">Temp Glue Bar PV</span>
           </span>
-          </a>
-        <a (click)="fetchMonteCarloData('Temp_Glue_PV')" class="cursor-pointer relative p-0.5 inline-flex items-center justify-center font-bold overflow-hidden group rounded-md mx-1">
+      </a>
+      <a (click)="fetchMonteCarloData('Temp_Glue_PV'); fetchData('Temp_Glue_PV'); fetchArimaForecast('Temp_Glue_PV')" class="cursor-pointer relative p-0.5 inline-flex items-center justify-center font-bold overflow-hidden group rounded-md mx-1">
           <span class="w-full h-full bg-gradient-to-br from-[#87CEFA] via-[#1E90FF] to-[#00BFFF] group-hover:from-[#00BFFF] group-hover:via-[#1E90FF] group-hover:to-[#87CEFA] absolute"></span>
           <span class="relative px-1 py-3 transition-all ease-out bg-white rounded-md group-hover:bg-opacity-0 duration-400">
-          <span  class="relative text-[#87CEFA]">Temp Glue PV</span>
+              <span class="relative text-[#87CEFA]">Temp Glue PV</span>
           </span>
-          </a>
-        <a (click)="fetchMonteCarloData('Temp_Glue_Scrapper_PV')" class="cursor-pointer relative p-0.5 inline-flex items-center justify-center font-bold overflow-hidden group rounded-md mx-1">
+      </a>
+      <a (click)="fetchMonteCarloData('Temp_Glue_Scrapper_PV'); fetchData('Temp_Glue_Scrapper_PV'); fetchArimaForecast('Temp_Glue_Scrapper_PV')" class="cursor-pointer relative p-0.5 inline-flex items-center justify-center font-bold overflow-hidden group rounded-md mx-1">
           <span class="w-full h-full bg-gradient-to-br from-[#87CEFA] via-[#1E90FF] to-[#00BFFF] group-hover:from-[#00BFFF] group-hover:via-[#1E90FF] group-hover:to-[#87CEFA] absolute"></span>
           <span class="relative px-1 py-3 transition-all ease-out bg-white rounded-md group-hover:bg-opacity-0 duration-400">
-          <span  class="relative text-[#87CEFA]">Temp Glue Scrapper PV</span>
+              <span class="relative text-[#87CEFA]">Temp Glue Scrapper PV</span>
           </span>
-          </a>
-        <a (click)="fetchMonteCarloData('Temp_Glue_Tank_PV')" class="cursor-pointer relative p-0.5 inline-flex items-center justify-center font-bold overflow-hidden group rounded-md mx-1">
+      </a>
+      <a (click)="fetchMonteCarloData('Temp_Glue_Tank_PV'); fetchData('Temp_Glue_Tank_PV'); fetchArimaForecast('Temp_Glue_Tank_PV')" class="cursor-pointer relative p-0.5 inline-flex items-center justify-center font-bold overflow-hidden group rounded-md mx-1">
           <span class="w-full h-full bg-gradient-to-br from-[#87CEFA] via-[#1E90FF] to-[#00BFFF] group-hover:from-[#00BFFF] group-hover:via-[#1E90FF] group-hover:to-[#87CEFA] absolute"></span>
           <span class="relative px-1 py-3 transition-all ease-out bg-white rounded-md group-hover:bg-opacity-0 duration-400">
-          <span  class="relative text-[#87CEFA]">Temp Glue Tank PV</span>
+              <span class="relative text-[#87CEFA]">Temp Glue Tank PV</span>
           </span>
-          </a>
-        <a (click)="fetchMonteCarloData('Temp_Glue_Roller_PV')" class="cursor-pointer relative p-0.5 inline-flex items-center justify-center font-bold overflow-hidden group rounded-md mx-1">
+      </a>
+      <a (click)="fetchMonteCarloData('Temp_Glue_Roller_PV'); fetchData('Temp_Glue_Roller_PV'); fetchArimaForecast('Temp_Glue_Roller_PV')" class="cursor-pointer relative p-0.5 inline-flex items-center justify-center font-bold overflow-hidden group rounded-md mx-1">
           <span class="w-full h-full bg-gradient-to-br from-[#87CEFA] via-[#1E90FF] to-[#00BFFF] group-hover:from-[#00BFFF] group-hover:via-[#1E90FF] group-hover:to-[#87CEFA] absolute"></span>
           <span class="relative px-1 py-3 transition-all ease-out bg-white rounded-md group-hover:bg-opacity-0 duration-400">
-          <span  class="relative text-[#87CEFA]">Temp Glue Roller PV</span>
+              <span class="relative text-[#87CEFA]">Temp Glue Roller PV</span>
           </span>
-          </a>
+      </a>
+      
       </div>
       <div class="w-full px-1">
         <div
