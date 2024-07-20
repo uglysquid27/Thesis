@@ -18,12 +18,12 @@ const formatTime = (timeString) => {
 const monteCarlo = async (req, res, attributeName) => {
     try {
         if (!attributeName) {
-            return res.status(400).json({ error: 'Table name and attribute name are required' });
+            return res.status(400).json({ error: 'Attribute name is required' });
         }
-
 
         const steps = {};
 
+        // Step 1: Fetch historical data and group by 10-minute intervals
         const historicalData = await LabelTab.findAll({
             attributes: [
                 [Sequelize.literal(`DATE_FORMAT(FROM_UNIXTIME(UNIX_TIMESTAMP(time) - MOD(UNIX_TIMESTAMP(time), 600)), "%Y-%m-%d %H:%i:00")`), 'interval_time'],
@@ -42,19 +42,20 @@ const monteCarlo = async (req, res, attributeName) => {
 
         steps.historicalData = historicalData;
 
+        // Step 2: Format and reverse the historical data
         const historicalValues = historicalData.map(item => ({
             time: formatTime(item.dataValues.interval_time),
-            value: parseFloat(item.dataValues[attributeName])
-        })).reverse(); 
+            value: Math.floor(parseFloat(item.dataValues[attributeName])) // Rounded down to the nearest whole number
+        })).reverse();
 
         steps.formattedData = historicalValues; 
 
+        // Step 3: Use the first 30 data points for the simulation base
         const simulationBaseData = historicalValues.slice(0, 30);
-
         steps.simulationBaseData = simulationBaseData; 
 
+        // Step 4: Run Monte Carlo simulations
         const numberOfSimulations = 1000;
-
         const simulations = Array.from({ length: numberOfSimulations }, () => {
             return simulationBaseData.map(dataPoint => {
                 const deviation = (Math.random() - 0.5) * 0.2;
@@ -65,6 +66,7 @@ const monteCarlo = async (req, res, attributeName) => {
 
         steps.simulations = simulations;
 
+        // Step 5: Aggregate the simulation results
         const forecastResults = simulations.reduce((acc, curr) => {
             curr.forEach((dataPoint, index) => {
                 acc[index] = acc[index] ? [...acc[index], dataPoint] : [dataPoint];
@@ -74,6 +76,7 @@ const monteCarlo = async (req, res, attributeName) => {
 
         steps.forecastResults = forecastResults; 
 
+        // Step 6: Calculate the average forecast values
         const forecastedAverages = forecastResults.map(simulation => {
             const sum = simulation.reduce((total, dataPoint) => total + dataPoint.value, 0);
             return sum / simulation.length;
@@ -81,6 +84,7 @@ const monteCarlo = async (req, res, attributeName) => {
 
         steps.forecastedAverages = forecastedAverages; 
 
+        // Step 7: Generate forecast times
         const lastHistoricalTime = new Date(simulationBaseData[simulationBaseData.length - 1].time);
         const forecastTimes = [];
         for (let i = 1; i <= 10; i++) {
@@ -90,6 +94,7 @@ const monteCarlo = async (req, res, attributeName) => {
 
         steps.forecastTimes = forecastTimes; 
 
+        // Step 8: Combine forecasted values with their corresponding times
         const forecastedResultsWithTime = forecastedAverages.slice(0, 10).map((value, index) => ({
             time: forecastTimes[index],
             value: value
@@ -97,6 +102,7 @@ const monteCarlo = async (req, res, attributeName) => {
 
         steps.forecastedResultsWithTime = forecastedResultsWithTime;
 
+        // Step 9: Calculate MAPE using the last 10 historical values for comparison
         const actualValuesForComparison = historicalValues.slice(30, 40);
         const mape = actualValuesForComparison.reduce((totalError, historicalValue, index) => {
             const forecastValue = forecastedResultsWithTime[index]?.value;
@@ -109,6 +115,7 @@ const monteCarlo = async (req, res, attributeName) => {
 
         steps.mape = mape; 
 
+        // Step 10: Aggregate the forecasted results
         const aggregatedResults = forecastedResultsWithTime.map((item, index) => ({
             interval_index: index,
             time: item.time,
@@ -117,11 +124,7 @@ const monteCarlo = async (req, res, attributeName) => {
 
         steps.aggregatedResults = aggregatedResults; 
 
-        // console.log('Monte Carlo Forecast:', forecastedResultsWithTime);
-        // console.log('Historical values with formatted time:', actualValuesForComparison);
-        // console.log('MAPE:', mape);
-        // console.log('Steps:', steps);
-
+        // Send the JSON response with forecasted results, MAPE, and steps
         res.json({ forecastedResultsWithTime, mape, steps });
     } catch (error) {
         console.error('Error in Monte Carlo Forecasting:', error);

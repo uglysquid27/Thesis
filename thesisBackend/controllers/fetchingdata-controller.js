@@ -32,9 +32,10 @@ const dataFetch = async (attributeName) => {
             limit: 40 
         });
 
+        // Format and reverse the historical data
         const historicalValues = historicalData.map(item => ({
             time: item.dataValues.interval_time,
-            [attributeName]: parseFloat(item.dataValues[attributeName])
+            [attributeName]: Math.floor(parseFloat(item.dataValues[attributeName])) // Rounded down to the nearest whole number
         })).reverse(); 
 
         return { historicalValues };

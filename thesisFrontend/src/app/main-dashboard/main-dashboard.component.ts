@@ -351,6 +351,7 @@ export class MainDashboardComponent implements OnInit {
         {
           name: "Arima",
           data: [...Array(this.realValues.length - 10).fill(null), ...this.forecastValuesA] // Pad with null values
+          // data: this.forecastValuesA // Pad with null values
         }
       ],
       chart: {

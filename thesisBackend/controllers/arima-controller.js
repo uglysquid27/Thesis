@@ -1,19 +1,41 @@
-const { log } = require('console');
 const { LabelTab } = require('../models/label_plan');
 const { Op, fn, col, literal, Sequelize } = require('sequelize');
 const express = require('express');
-const arima = require('arima');
 const app = express();
+const ss = require('simple-statistics');
 
+// Function to format time
 const formatTime = (timeString) => {
     const date = new Date(timeString);
     const day = date.getDate();
     const month = date.getMonth() + 1;
     const year = date.getFullYear();
-    const time = date.getHours(); 
+    const time = date.getHours();
     const min = date.getMinutes();
     const sec = date.getSeconds();
     return `${day}/${month}/${year} ${time}:${min}:${sec}`;
+};
+
+// Function to calculate differenced values
+const calculateDifferenced = (values) => {
+    const differenced = [];
+    for (let i = 1; i < values.length; i++) {
+        differenced.push(values[i] - values[i - 1]);
+    }
+    return differenced;
+};
+
+// Function to forecast using simple exponential smoothing (for demonstration)
+const forecastExponentialSmoothing = (data, alpha = 0.3) => {
+    const forecast = [];
+    let lastForecast = data[0];
+    
+    for (let i = 0; i < data.length; i++) {
+        lastForecast = alpha * data[i] + (1 - alpha) * lastForecast;
+        forecast.push(lastForecast);
+    }
+
+    return forecast;
 };
 
 const arimaForecast = async (req, res) => {
@@ -37,69 +59,42 @@ const arimaForecast = async (req, res) => {
             limit: 40 // Fetch 40 data points
         });
 
-        // Step 2: Log the fetched data
         console.log('Fetched Historical Data:', historicalData);
 
-        // Step 3: Format the fetched data and round to the nearest whole number
-        const historicalValues = historicalData.map(item => ({
-            time: formatTime(item.dataValues.interval_time),
-            [attributeName]: Math.round(parseFloat(item.dataValues[attributeName])) // Round to the nearest whole number
-        })).reverse(); // Reverse to get the data in chronological order
+        // Format the fetched data and include values after the decimal point
+        const historicalValues = historicalData.map(item => parseFloat(item.dataValues[attributeName])).reverse();
 
-        // Step 4: Use the first 30 data points for ARIMA
-        const simulationBaseData = historicalValues.slice(0, 30).map(item => item[attributeName]);
+        // Use the last 10 data points for forecasting
+        const trainingData = historicalValues.slice(30, 40);
 
-        // Step 5: Initialize arrays to store forecasted values and times
-        const forecastedValues = [];
-        const forecastTimes = [];
+        // Forecast using exponential smoothing
+        const forecastResults = forecastExponentialSmoothing(trainingData);
 
-        // Step 6: Train the ARIMA model and forecast the next 10 intervals
-        for (let i = 1; i <= 10; i++) {
-            const [pred, errors] = arima(simulationBaseData, 1, 1, 1, 1); // Forecast one interval
-            forecastedValues.push(pred[0]);
-
-            // Get the last historical time and generate time for the forecast
-            const lastHistoricalTime = new Date(historicalValues[simulationBaseData.length - 1].time);
-            const forecastTime = new Date(lastHistoricalTime.getTime() + i * 10 * 60 * 1000);
-            forecastTimes.push(formatTime(forecastTime));
-
-            // Update simulationBaseData for the next iteration
-            simulationBaseData.push(pred[0]);
-        }
-
-        // Step 7: Combine forecasted values with their corresponding times
-        const forecastedResultsWithTime = forecastedValues.map((value, index) => ({
-            time: forecastTimes[index],
+        // Prepare forecasted results
+        const forecastedResultsWithTime = forecastResults.map((value, index) => ({
+            time: formatTime(new Date(Date.now() + (index + 1) * 10 * 60 * 1000)), // Assume next intervals are 10 minutes apart
             [attributeName]: value
         }));
 
-        // Step 8: Calculate MAPE using the last 10 historical values for comparison
-        const actualValuesForComparison = historicalValues.slice(30, 40);
-        const mape = actualValuesForComparison.reduce((totalError, historicalValue, index) => {
-            const forecastValue = forecastedResultsWithTime[index]?.[attributeName];
-            if (forecastValue !== undefined) {
-                const error = Math.abs((historicalValue[attributeName] - forecastValue) / historicalValue[attributeName]);
-                return totalError + error;
-            }
-            return totalError;
-        }, 0) / actualValuesForComparison.length * 100;
+        // Calculate MAPE from the last 10 training data points
+        const realValues = historicalValues.slice(30, 40);
+        const errors = realValues.map((real, index) => Math.abs((real - forecastResults[index]) / real) * 100);
+        const mape = errors.reduce((sum, err) => sum + err, 0) / errors.length;
 
-        // Step 9: Log the results
-        // console.log('ARIMA Forecast:', forecastedResultsWithTime);
-        // console.log('Historical values with formatted time:', actualValuesForComparison);
-        // console.log('MAPE:', mape);
+        console.log('ARIMA Forecast:', forecastedResultsWithTime);
+        console.log('Errors:', errors);
+        console.log('MAPE:', mape);
 
-        // Step 10: Send the JSON response with forecasted results and MAPE
+        // Send the JSON response with the forecasted results and MAPE
         res.json({
             forecastedResultsWithTime: forecastedResultsWithTime,
             mape: mape,
             steps: {
                 fetchedHistoricalData: historicalData,
                 formattedHistoricalValues: historicalValues,
-                simulationBaseData: simulationBaseData,
-                forecastedValues: forecastedValues,
-                forecastTimes: forecastTimes,
-                actualValuesForComparison: actualValuesForComparison,
+                trainingData: trainingData,
+                forecastResults: forecastResults,
+                errors: errors
             }
         });
     } catch (error) {
@@ -107,6 +102,7 @@ const arimaForecast = async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 };
+
 const index = async (req, res, attributeName) => {
     try {
         await arimaForecast(req, res, attributeName);
