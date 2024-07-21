@@ -2,14 +2,12 @@ const express = require('express');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
-const { importCSV, index } = require('./../controllers/import-controller'); 
-const fetchingdataController = require("../controllers/fetchingdata-controller");
+const { importCSV } = require('./../controllers/import-controller');
 
-const app = express();
 const router = express.Router();
 const upload = multer({ dest: 'uploads/' });
 
-router.post('/', upload.single('file'), (req, res) => {
+router.post('/', upload.single('file'), async (req, res) => {
     const file = req.file;
 
     if (!file) {
@@ -18,11 +16,18 @@ router.post('/', upload.single('file'), (req, res) => {
 
     const targetPath = path.join(__dirname, '..', 'uploads', file.originalname);
 
-    fs.rename(file.path, targetPath, (err) => {
+    fs.rename(file.path, targetPath, async (err) => {
         if (err) {
             return res.status(500).json({ error: 'Failed to save file' });
         }
-        res.status(200).json({ message: 'File uploaded successfully' });
+
+        try {
+            req.file.path = targetPath; 
+            await importCSV(req, res); 
+        } catch (error) {
+            console.error('Error in router:', error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
     });
 });
 
