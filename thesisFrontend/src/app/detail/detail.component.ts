@@ -33,6 +33,61 @@ export class DetailComponent implements OnInit {
 
   currentPage: number = 1;
   itemsPerPage: number = 5;
+  selectedCategory : any;
+
+  getArimaSteps(attributeName: string) {
+    
+    console.log("Fetching ARIMA steps data...");
+    this.service.getArimaTest(attributeName).subscribe({
+        next: (data: any) => { 
+            console.log(data);
+
+            // Store steps if available
+            if (data.steps) {
+                console.log("data.steps:", data.steps);
+
+                if (Array.isArray(data.steps.forecastedResultsWithTime)) {
+                    this.arimaSteps = data.steps;
+                    console.log("Forecasted results with time:", this.arimaSteps.forecastedResultsWithTime);
+                    // this.arimaChartDetail();
+                } else {
+                    console.error('data.steps.forecastedResultsWithTime is undefined or not an array');
+                }
+            } else {
+                console.error('data.steps is undefined or not an object');
+            }
+            console.log(this.arimaSteps);
+
+            // const forecastedResultsWithTime: { time: string, [key: string]: number }[] = data.forecastedResultsWithTime;
+            // const mape: number = data.mape;
+
+            // // Sort the forecastedResultsWithTime array by date
+            // forecastedResultsWithTime.sort((a: { time: string }, b: { time: string }) => new Date(a.time).getTime() - new Date(b.time).getTime());
+
+            // console.log('Sorted Forecasted Results:', forecastedResultsWithTime);
+            // console.log('MAPE:', mape);
+
+            // // Extracting time and values for further processing or charting
+            // this.forecastValues = forecastedResultsWithTime.map((item: { [key: string]: number }) => item[attributeName]);
+            // this.forecastDates = forecastedResultsWithTime.map((item: { time: string }) => item.time);
+
+            // console.log('Forecast Values:', this.forecastValues);
+            // console.log('Forecast Dates:', this.forecastDates);
+
+            // // Combine forecasted values with historical values if needed
+            // this.combinedValues = [...this.realValues, ...this.forecastValues];
+            // this.combinedDates = [...this.realDates, ...this.forecastDates];
+
+        },
+        // error: (error: any) => {
+        //     console.error('Error fetching ARIMA forecast data', error);
+        // },
+        // complete: () => {
+        //     this.spinner.hide();
+        // }
+    });
+}
+
 
   getMonteCarloSteps(attributeName: string) {
     console.log("Fetching Monte Carlo steps data...");
@@ -152,6 +207,7 @@ changePage(page: number): void {
   
 
   fetchMonteCarloData(attributeName: string) {
+    this.selectedCategory = attributeName
     this.spinner.show();
 
     this.service.getMonteCarloTest(attributeName).subscribe({

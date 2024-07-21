@@ -1,6 +1,63 @@
 <div class="lg:pl-28 max-sm:pl-6 md:pl-6 pr-2 pt-28">
   <div class="flex flex-wrap">
     <div class="w-full px-1 mx-auto">
+      <div class="pl-2 mb-4 pt-2">
+        <a (click)="fetchMonteCarloData('Label_Length_AVE'); fetchArimaForecast('Label_Length_AVE'); getArimaSteps('Label_Length_AVE'); getMonteCarloSteps('Label_Length_AVE')" class="cursor-pointer relative p-0.5 inline-flex items-center justify-center font-bold overflow-hidden group rounded-md mx-1">
+          <span class="w-full h-full bg-gradient-to-br from-[#87CEFA] via-[#1E90FF] to-[#00BFFF] group-hover:from-[#00BFFF] group-hover:via-[#1E90FF] group-hover:to-[#87CEFA] absolute"></span>
+          <span class="relative px-1 py-3 transition-all ease-out bg-white rounded-md group-hover:bg-opacity-0 duration-400">
+              <span class="relative text-[#87CEFA]">Label Length AVE</span>
+          </span>
+      </a>
+      <a (click)="fetchMonteCarloData('Label_Length_PV');  fetchArimaForecast('Label_Length_PV'); getArimaSteps('Label_Length_PV'); getMonteCarloSteps('Label_Length_PV')" class="cursor-pointer relative p-0.5 inline-flex items-center justify-center font-bold overflow-hidden group rounded-md mx-1">
+          <span class="w-full h-full bg-gradient-to-br from-[#87CEFA] via-[#1E90FF] to-[#00BFFF] group-hover:from-[#00BFFF] group-hover:via-[#1E90FF] group-hover:to-[#87CEFA] absolute"></span>
+          <span class="relative px-1 py-3 transition-all ease-out bg-white rounded-md group-hover:bg-opacity-0 duration-400">
+              <span class="relative text-[#87CEFA]">Label Length PV</span>
+          </span>
+      </a>
+      <a (click)="fetchMonteCarloData('Label_Length_SV');  fetchArimaForecast('Label_Length_SV'); getArimaSteps('Label_Length_SV'); getMonteCarloSteps('Label_Length_SV')" class="cursor-pointer relative p-0.5 inline-flex items-center justify-center font-bold overflow-hidden group rounded-md mx-1">
+          <span class="w-full h-full bg-gradient-to-br from-[#87CEFA] via-[#1E90FF] to-[#00BFFF] group-hover:from-[#00BFFF] group-hover:via-[#1E90FF] group-hover:to-[#87CEFA] absolute"></span>
+          <span class="relative px-1 py-3 transition-all ease-out bg-white rounded-md group-hover:bg-opacity-0 duration-400">
+              <span class="relative text-[#87CEFA]">Label Length SV</span>
+          </span>
+      </a>
+      <a (click)="fetchMonteCarloData('Temp_G_Roller_Body_PV');  fetchArimaForecast('Temp_G_Roller_Body_PV'); getArimaSteps('Temp_G_Roller_Body_PV'); getMonteCarloSteps('Temp_G_Roller_Body_PV')" class="cursor-pointer relative p-0.5 inline-flex items-center justify-center font-bold overflow-hidden group rounded-md mx-1">
+          <span class="w-full h-full bg-gradient-to-br from-[#87CEFA] via-[#1E90FF] to-[#00BFFF] group-hover:from-[#00BFFF] group-hover:via-[#1E90FF] group-hover:to-[#87CEFA] absolute"></span>
+          <span class="relative px-1 py-3 transition-all ease-out bg-white rounded-md group-hover:bg-opacity-0 duration-400">
+              <span class="relative text-[#87CEFA]">Temp Glue Roller Body PV</span>
+          </span>
+      </a>
+      <a (click)="fetchMonteCarloData('Temp_Glue_Bar_PV');  fetchArimaForecast('Temp_Glue_Bar_PV'); getArimaSteps('Temp_Glue_Bar_PV'); getMonteCarloSteps('Temp_Glue_Bar_PV')" class="cursor-pointer relative p-0.5 inline-flex items-center justify-center font-bold overflow-hidden group rounded-md mx-1">
+          <span class="w-full h-full bg-gradient-to-br from-[#87CEFA] via-[#1E90FF] to-[#00BFFF] group-hover:from-[#00BFFF] group-hover:via-[#1E90FF] group-hover:to-[#87CEFA] absolute"></span>
+          <span class="relative px-1 py-3 transition-all ease-out bg-white rounded-md group-hover:bg-opacity-0 duration-400">
+              <span class="relative text-[#87CEFA]">Temp Glue Bar PV</span>
+          </span>
+      </a>
+      <a (click)="fetchMonteCarloData('Temp_Glue_PV');  fetchArimaForecast('Temp_Glue_PV'); getArimaSteps('Temp_Glue_PV'); getMonteCarloSteps('Temp_Glue_PV')" class="cursor-pointer relative p-0.5 inline-flex items-center justify-center font-bold overflow-hidden group rounded-md mx-1">
+          <span class="w-full h-full bg-gradient-to-br from-[#87CEFA] via-[#1E90FF] to-[#00BFFF] group-hover:from-[#00BFFF] group-hover:via-[#1E90FF] group-hover:to-[#87CEFA] absolute"></span>
+          <span class="relative px-1 py-3 transition-all ease-out bg-white rounded-md group-hover:bg-opacity-0 duration-400">
+              <span class="relative text-[#87CEFA]">Temp Glue PV</span>
+          </span>
+      </a>
+      <a (click)="fetchMonteCarloData('Temp_Glue_Scrapper_PV');  fetchArimaForecast('Temp_Glue_Scrapper_PV'); getArimaSteps('Temp_Glue_Scrapper_PV'); getMonteCarloSteps('Temp_Glue_Scrapper_PV')" class="cursor-pointer relative p-0.5 inline-flex items-center justify-center font-bold overflow-hidden group rounded-md mx-1">
+          <span class="w-full h-full bg-gradient-to-br from-[#87CEFA] via-[#1E90FF] to-[#00BFFF] group-hover:from-[#00BFFF] group-hover:via-[#1E90FF] group-hover:to-[#87CEFA] absolute"></span>
+          <span class="relative px-1 py-3 transition-all ease-out bg-white rounded-md group-hover:bg-opacity-0 duration-400">
+              <span class="relative text-[#87CEFA]">Temp Glue Scrapper PV</span>
+          </span>
+      </a>
+      <a (click)="fetchMonteCarloData('Temp_Glue_Tank_PV');  fetchArimaForecast('Temp_Glue_Tank_PV'); getArimaSteps('Temp_Glue_Tank_PV'); getMonteCarloSteps('Temp_Glue_Tank_PV')" class="cursor-pointer relative p-0.5 inline-flex items-center justify-center font-bold overflow-hidden group rounded-md mx-1">
+          <span class="w-full h-full bg-gradient-to-br from-[#87CEFA] via-[#1E90FF] to-[#00BFFF] group-hover:from-[#00BFFF] group-hover:via-[#1E90FF] group-hover:to-[#87CEFA] absolute"></span>
+          <span class="relative px-1 py-3 transition-all ease-out bg-white rounded-md group-hover:bg-opacity-0 duration-400">
+              <span class="relative text-[#87CEFA]">Temp Glue Tank PV</span>
+          </span>
+      </a>
+      <a (click)="fetchMonteCarloData('Temp_Glue_Roller_PV');  fetchArimaForecast('Temp_Glue_Roller_PV'); getArimaSteps('Temp_Glue_Roller_PV'); getMonteCarloSteps('Temp_Glue_Roller_PV')" class="cursor-pointer relative p-0.5 inline-flex items-center justify-center font-bold overflow-hidden group rounded-md mx-1">
+          <span class="w-full h-full bg-gradient-to-br from-[#87CEFA] via-[#1E90FF] to-[#00BFFF] group-hover:from-[#00BFFF] group-hover:via-[#1E90FF] group-hover:to-[#87CEFA] absolute"></span>
+          <span class="relative px-1 py-3 transition-all ease-out bg-white rounded-md group-hover:bg-opacity-0 duration-400">
+              <span class="relative text-[#87CEFA]">Temp Glue Roller PV</span>
+          </span>
+      </a>
+      
+      </div>
       <div class="grid grid-cols-2">
         <div class="w-full px-1 p-4">
           <div
@@ -37,138 +94,89 @@
         <div class="overflow-x-auto w-full px-1 p-4">
           <div class="w-full px-1 p-4">
             <div
-              class="py-4 relative flex flex-col mb-2 min-w-0 break-words bg-gray-100 shadow-soft-lg rounded-xl bg-clip-border border-r shadow-lg">
-              <div class="flex-auto p-4">
-                <h5 (click)="getMonteCarloSteps('Label_Length_AVE')" class="text-center font-bold text-2xl">ARIMA Steps</h5>
-              </div>
-              <div class="flex-auto p-6">
-                <div *ngIf="monteCarloSteps">
-                  <!-- Step 1: Fetch Historical Data -->
-                  <div class="mb-6" *ngIf="monteCarloSteps.historicalData && monteCarloSteps.historicalData.length">
-                    <h6 class="font-semibold mb-2">Step 1: Fetch Historical Data</h6>
-                    <table class="min-w-full bg-white border-gray-200 shadow-lg rounded-xl text-center">
-                      <thead class="bg-gray-800 text-white">
-                        <tr>
-                          <th class="py-2 px-4">Interval Time</th>
-                          <th class="py-2 px-4">Label Length AVE</th>
-                        </tr>
-                      </thead>
-                      <tbody> 
-                        <tr *ngFor="let item of getFirstFiveItems(monteCarloSteps.historicalData)">
-                          <td class="py-2 px-4">{{ item.interval_time }}</td>
-                          <td class="py-2 px-4">{{ item.Label_Length_AVE }}</td>
-                        </tr> 
-                      </tbody>
-                    </table>
-                  </div>
+  class="py-4 relative flex flex-col mb-2 min-w-0 break-words bg-gray-100 shadow-soft-lg rounded-xl bg-clip-border border-r shadow-lg">
+  <div class="flex-auto p-4">
+    <h5 (click)="getArimaSteps(selectedCategory)" class="text-center font-bold text-2xl">ARIMA Forecasting Steps</h5>
+  </div>
+  <div class="flex-auto p-6">
+    <div *ngIf="arimaSteps">
+      
+      <!-- Step 1: Data Preparation -->
+      <div class="mb-6" *ngIf="arimaSteps.historicalData && arimaSteps.historicalData.length">
+        <h6 class="font-semibold mb-2">Step 1: Data Preparation</h6>
+        <table class="min-w-full bg-white border-gray-200 shadow-lg rounded-xl text-center">
+          <thead class="bg-gray-800 text-white">
+            <tr>
+              <th class="py-2 px-4">Interval Time</th>
+              <th class="py-2 px-4">Label Length AVE</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of getFirstFiveItems(arimaSteps.historicalData)">
+              <td class="py-2 px-4">{{ item.interval_time }}</td>
+              <td class="py-2 px-4">{{ item.Label_Length_AVE }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
-                  <!-- Step 2: Format the Fetched Data -->
-                  <div class="mb-6">
-                    <h6 class="font-semibold mb-2">Step 2: Format the Fetched Data</h6>
-                    <table class="min-w-full bg-white border-gray-200 shadow-lg rounded-xl text-center">
-                      <thead class="bg-gray-800 text-white">
-                        <tr>
-                          <th class="py-2 px-4">Time</th>
-                          <th class="py-2 px-4">Label Length AVE</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr *ngFor="let item of getFirstFiveItems(monteCarloSteps.formattedData)">
-                          <td class="py-2 px-4">{{ item.time }}</td>
-                          <td class="py-2 px-4">{{ item.value }}</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
+      <!-- Step 2: Model Specification -->
+      <div class="mb-6">
+        <h6 class="font-semibold mb-2">Step 2: Model Specification</h6>
+        <p>The model used is a simplified version of ARIMA with exponential smoothing. While ARIMA involves specifying parameters p, d, and q, our model uses a smoothing parameter (alpha) to adjust predictions based on recent observations.</p>
+      </div>
 
-                  <!-- Step 3: Use the First 30 Data Points for Simulation -->
-                  <div class="mb-6">
-                    <h6 class="font-semibold mb-2">Step 3: Use the First 30 Data Points for Simulation</h6>
-                    <table class="min-w-full bg-white border-gray-200 shadow-lg rounded-xl text-center">
-                      <thead class="bg-gray-800 text-white">
-                        <tr>
-                          <th class="py-2 px-4">Time</th>
-                          <th class="py-2 px-4">Label Length AVE</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr *ngFor="let dataPoint of getFirstFiveItems(monteCarloSteps.simulationBaseData)">
-                          <td class="py-2 px-4">{{ dataPoint.time }}</td>
-                          <td class="py-2 px-4">{{ dataPoint.value }}</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
+      <!-- Step 3: Parameter Estimation -->
+      <div class="mb-6">
+        <h6 class="font-semibold mb-2">Step 3: Parameter Estimation</h6>
+        <p>Adjusting the smoothing parameter (alpha) is fit the historical data. This is akin to estimating ARIMA parameters, but simplified.</p>
+      </div>
 
-                  <!-- Step 4: Generate Simulations -->
-                  <div class="mb-6">
-                    <h6 class="font-semibold mb-2">Step 4: Generate Simulations</h6>
-                    <div class="max-h-96 overflow-y-auto">
-                      <table class="min-w-full bg-white border-gray-200 shadow-lg rounded-xl text-center">
-                        <thead class="bg-gray-800 text-white">
-                          <tr>
-                            <th class="py-2 px-4">Simulation Index</th>
-                            <th class="py-2 px-4">Time</th>
-                            <th class="py-2 px-4">Label Length AVE</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <ng-container *ngFor="let simulation of getPaginatedItems(monteCarloSteps.simulations, currentPage, itemsPerPage); let i = index">
-                            <tr *ngFor="let dataPoint of simulation; let j = index">
-                              <ng-container *ngIf="j === 0">
-                                <td class="py-2 px-4" [attr.rowspan]="simulation.length">{{ (currentPage - 1) * itemsPerPage + i + 1 }}</td>
-                              </ng-container>
-                              <td class="py-2 px-4">{{ dataPoint.time }}</td>
-                              <td class="py-2 px-4">{{ dataPoint.value }}</td>
-                            </tr>
-                          </ng-container>
-                        </tbody>
-                      </table>
-                    </div>
-                    <div class="overflow-x-auto mt-4">
-                      <div class="flex justify-center w-full">
-                        <button (click)="changePage(currentPage - 1)" [disabled]="currentPage === 1" class="px-4 py-2 mx-1 bg-gray-800 text-white rounded">Previous</button>
-                        <div class="flex overflow-x-auto">
-                          <button *ngFor="let page of [].constructor(getTotalPages(monteCarloSteps.simulations)); let i = index"
-                                  (click)="changePage(i + 1)"
-                                  [class.bg-gray-600]="currentPage === i + 1"
-                                  class="px-4 py-2 mx-1 bg-gray-800 text-white rounded">
-                            {{ i + 1 }}
-                          </button>
-                        </div>
-                        <button (click)="changePage(currentPage + 1)" [disabled]="currentPage === getTotalPages(monteCarloSteps.simulations)" class="px-4 py-2 mx-1 bg-gray-800 text-white rounded">Next</button>
-                      </div>
-                    </div>
-                  </div>
+      <!-- Step 4: Forecasting -->
+      <div class="mb-6">
+        <h6 class="font-semibold mb-2">Step 4: Forecasting</h6>
+        <table class="min-w-full bg-white border-gray-200 shadow-lg rounded-xl text-center">
+          <thead class="bg-gray-800 text-white">
+            <tr>
+              <th class="py-2 px-4">Forecast Time</th>
+              <th class="py-2 px-4">Forecasted Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let forecast of getFirstFiveItems(arimaSteps.forecastedResultsWithTime)">
+              <td class="py-2 px-4">{{ forecast.time }}</td>
+              <td class="py-2 px-4">{{ forecast.Label_Length_AVE }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
-                  <!-- Step 5: Aggregate Results by Time Intervals -->
-                  <div class="mb-6">
-                    <h6 class="font-semibold mb-2">Step 5: Aggregate Results by Time Intervals</h6>
-                    <div class="max-h-96 overflow-y-auto">
-                      <table class="min-w-full bg-white border-gray-200 shadow-lg rounded-xl text-center">
-                        <thead class="bg-gray-800 text-white">
-                          <tr>
-                            <th class="py-2 px-4">Interval Index</th>
-                            <th class="py-2 px-4">Time</th>
-                            <th class="py-2 px-4">Label Length AVE</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr *ngFor="let result of getFirstFiveItems(monteCarloSteps.aggregatedResults)">
-                            <td class="py-2 px-4">{{ result.interval_index }}</td>
-                            <td class="py-2 px-4">{{ result.time }}</td>
-                            <td class="py-2 px-4">{{ result.value }}</td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                </div>
-                <div *ngIf="!monteCarloSteps">
-                  <p class="text-gray-500 text-center">Click to process the data.</p>
-                </div>
-              </div>
-            </div>
+      <!-- Step 5: Evaluation -->
+      <!-- <div class="mb-6">
+        <h6 class="font-semibold mb-2">Step 5: Evaluation</h6>
+        <p>Evaluate the forecast accuracy using Mean Absolute Percentage Error (MAPE). This metric assesses how closely the forecasts match the actual values.</p>
+        <table class="min-w-full bg-white border-gray-200 shadow-lg rounded-xl text-center">
+          <thead class="bg-gray-800 text-white">
+            <tr>
+              <th class="py-2 px-4">Error Type</th>
+              <th class="py-2 px-4">Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="py-2 px-4">MAPE</td>
+              <td class="py-2 px-4">{{ arimaSteps.mape }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div> -->
+      
+    </div>
+    <div *ngIf="!arimaSteps">
+      <p (click)="getArimaSteps(selectedCategory)" class="text-gray-500 text-center cursor-pointer">Click to process the data.</p>
+    </div>
+  </div>
+</div>
           </div>
         </div>
        
@@ -177,7 +185,7 @@
             <div
               class="py-4 relative flex flex-col mb-2 min-w-0 break-words bg-gray-100 shadow-soft-lg rounded-xl bg-clip-border border-r shadow-lg">
               <div class="flex-auto p-4">
-                <h5 class="text-center font-bold text-2xl">Monte Carlo Simulation Steps</h5>
+                <h5 (click)="getMonteCarloSteps(selectedCategory)" class="text-center font-bold text-2xl">Monte Carlo Simulation Steps</h5>
               </div>
               <div class="flex-auto p-6">
                 <div *ngIf="monteCarloSteps">
@@ -303,7 +311,7 @@
                   </div>
                 </div>
                 <div *ngIf="!monteCarloSteps">
-                  <p (click)="getMonteCarloSteps('Label_Length_AVE')"  class="text-gray-500 text-center cursor-pointer">Click to process the data.</p>
+                  <p (click)="getMonteCarloSteps(selectedCategory)"  class="text-gray-500 text-center cursor-pointer">Click to process the data.</p>
                 </div>
               </div>
             </div>

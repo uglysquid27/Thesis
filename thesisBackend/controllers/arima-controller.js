@@ -1,8 +1,7 @@
 const { LabelTab } = require('../models/label_plan');
-const { Op, fn, col, literal, Sequelize } = require('sequelize');
+const { Op, Sequelize } = require('sequelize');
 const express = require('express');
 const app = express();
-const ss = require('simple-statistics');
 
 // Function to format time
 const formatTime = (timeString) => {
@@ -16,7 +15,7 @@ const formatTime = (timeString) => {
     return `${day}/${month}/${year} ${time}:${min}:${sec}`;
 };
 
-// Function to calculate differenced values
+// Function to calculate differenced values (not used directly here but kept for reference)
 const calculateDifferenced = (values) => {
     const differenced = [];
     for (let i = 1; i < values.length; i++) {
@@ -25,7 +24,7 @@ const calculateDifferenced = (values) => {
     return differenced;
 };
 
-// Function to forecast using simple exponential smoothing (for demonstration)
+// Function to forecast using simple exponential smoothing
 const forecastExponentialSmoothing = (data, alpha = 0.3) => {
     const forecast = [];
     let lastForecast = data[0];
@@ -41,7 +40,7 @@ const forecastExponentialSmoothing = (data, alpha = 0.3) => {
 const arimaForecast = async (req, res) => {
     try {
         const { attributeName } = req.body;
-
+        
         // Step 1: Fetch historical data with intervals rounded to 10 minutes
         const historicalData = await LabelTab.findAll({
             attributes: [
@@ -59,53 +58,54 @@ const arimaForecast = async (req, res) => {
             limit: 40 // Fetch 40 data points
         });
 
-        console.log('Fetched Historical Data:', historicalData);
+        const steps = {};
+        steps.historicalData = historicalData;
 
-        // Format the fetched data and include values after the decimal point
+        // Step 2: Format and reverse the historical data
         const historicalValues = historicalData.map(item => parseFloat(item.dataValues[attributeName])).reverse();
+        steps.formattedHistoricalValues = historicalValues;
 
-        // Use the last 10 data points for forecasting
+        // Step 3: Use the last 10 data points for forecasting
         const trainingData = historicalValues.slice(30, 40);
+        steps.trainingData = trainingData;
 
-        // Forecast using exponential smoothing
+        // Step 4: Forecast using exponential smoothing
         const forecastResults = forecastExponentialSmoothing(trainingData);
+        steps.forecastResults = forecastResults;
 
-        // Prepare forecasted results
+        // Step 5: Prepare forecasted results with time
         const forecastedResultsWithTime = forecastResults.map((value, index) => ({
             time: formatTime(new Date(Date.now() + (index + 1) * 10 * 60 * 1000)), // Assume next intervals are 10 minutes apart
             [attributeName]: value
         }));
+        steps.forecastedResultsWithTime = forecastedResultsWithTime;
 
-        // Calculate MAPE from the last 10 training data points
+        // Step 6: Calculate MAPE from the last 10 training data points
         const realValues = historicalValues.slice(30, 40);
         const errors = realValues.map((real, index) => Math.abs((real - forecastResults[index]) / real) * 100);
         const mape = errors.reduce((sum, err) => sum + err, 0) / errors.length;
+        steps.errors = errors;
+        steps.mape = mape;
 
-        console.log('ARIMA Forecast:', forecastedResultsWithTime);
-        console.log('Errors:', errors);
-        console.log('MAPE:', mape);
+        // Step 7: Aggregate forecasted results
+        const aggregatedResults = forecastedResultsWithTime.map((item, index) => ({
+            interval_index: index,
+            time: item.time,
+            value: item[attributeName]
+        }));
+        steps.aggregatedResults = aggregatedResults;
 
-        // Send the JSON response with the forecasted results and MAPE
-        res.json({
-            forecastedResultsWithTime: forecastedResultsWithTime,
-            mape: mape,
-            steps: {
-                fetchedHistoricalData: historicalData,
-                formattedHistoricalValues: historicalValues,
-                trainingData: trainingData,
-                forecastResults: forecastResults,
-                errors: errors
-            }
-        });
+        // Send the JSON response with forecasted results, MAPE, and steps
+        res.json({ forecastedResultsWithTime, mape, steps });
     } catch (error) {
         console.error('Error in ARIMA Forecasting:', error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 };
 
-const index = async (req, res, attributeName) => {
+const index = async (req, res) => {
     try {
-        await arimaForecast(req, res, attributeName);
+        await arimaForecast(req, res);
     } catch (error) {
         console.error('Error in index route:', error);
         res.status(500).json({ error: 'Internal Server Error' });
