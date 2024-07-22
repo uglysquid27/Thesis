@@ -15,17 +15,7 @@ const formatTime = (timeString) => {
     return `${day}/${month}/${year} ${time}:${min}:${sec}`;
 };
 
-// Function to calculate differenced values (not used directly here but kept for reference)
-const calculateDifferenced = (values) => {
-    const differenced = [];
-    for (let i = 1; i < values.length; i++) {
-        differenced.push(values[i] - values[i - 1]);
-    }
-    return differenced;
-};
-
-// Function to forecast using simple exponential smoothing
-const forecastExponentialSmoothing = (data, alpha = 0.3) => {
+const Forecast = (data, alpha = 0.3) => {
     const forecast = [];
     let lastForecast = data[0];
     
@@ -55,7 +45,7 @@ const arimaForecast = async (req, res) => {
             },
             group: [Sequelize.literal('interval_time')],
             order: [[Sequelize.literal('interval_time'), 'DESC']],
-            limit: 40 // Fetch 40 data points
+            limit: 40 
         });
 
         const steps = {};
@@ -70,12 +60,12 @@ const arimaForecast = async (req, res) => {
         steps.trainingData = trainingData;
 
         // Step 4: Forecast using exponential smoothing
-        const forecastResults = forecastExponentialSmoothing(trainingData);
+        const forecastResults = Forecast(trainingData);
         steps.forecastResults = forecastResults;
 
         // Step 5: Prepare forecasted results with time
         const forecastedResultsWithTime = forecastResults.map((value, index) => ({
-            time: formatTime(new Date(Date.now() + (index + 1) * 10 * 60 * 1000)), // Assume next intervals are 10 minutes apart
+            time: formatTime(new Date(Date.now() + (index + 1) * 10 * 60 * 1000)), 
             [attributeName]: value
         }));
         steps.forecastedResultsWithTime = forecastedResultsWithTime;

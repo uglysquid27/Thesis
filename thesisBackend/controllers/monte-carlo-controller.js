@@ -51,7 +51,7 @@ const monteCarlo = async (req, res, attributeName) => {
         steps.formattedData = historicalValues; 
 
         // Step 3: Use the first 30 data points for the simulation base
-        const simulationBaseData = historicalValues.slice(0, 30);
+        const simulationBaseData = historicalValues.slice(20, 30);
         steps.simulationBaseData = simulationBaseData; 
 
         // Step 4: Run Monte Carlo simulations
@@ -103,7 +103,7 @@ const monteCarlo = async (req, res, attributeName) => {
         steps.forecastedResultsWithTime = forecastedResultsWithTime;
 
         // Step 9: Calculate MAPE using the last 10 historical values for comparison
-        const actualValuesForComparison = historicalValues.slice(30, 40);
+        const actualValuesForComparison = historicalValues.slice(20, 30);
         const mape = actualValuesForComparison.reduce((totalError, historicalValue, index) => {
             const forecastValue = forecastedResultsWithTime[index]?.value;
             if (forecastValue !== undefined) {
