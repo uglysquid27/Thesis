@@ -26,7 +26,7 @@ const monteCarlo = async (req, res, attributeName) => {
         // Step 1: Fetch historical data and group by 10-minute intervals
         const historicalData = await LabelTab.findAll({
             attributes: [
-                [Sequelize.literal(`DATE_FORMAT(FROM_UNIXTIME(UNIX_TIMESTAMP(time) - MOD(UNIX_TIMESTAMP(time), 600)), "%Y-%m-%d %H:%i:00")`), 'interval_time'],
+                [Sequelize.literal(`DATE_FORMAT(FROM_UNIXTIME(UNIX_TIMESTAMP(time) - MOD(UNIX_TIMESTAMP(time), 3600)), "%Y-%m-%d %H:%i:00")`), 'interval_time'],
                 [Sequelize.fn('AVG', Sequelize.col(attributeName)), attributeName]
             ],
             where: {
@@ -39,8 +39,9 @@ const monteCarlo = async (req, res, attributeName) => {
             order: [[Sequelize.literal('interval_time'), 'DESC']],
             limit: 40 
         });
-
+        
         steps.historicalData = historicalData;
+        
 
         // Step 2: Format and reverse the historical data
         const historicalValues = historicalData.map(item => ({
